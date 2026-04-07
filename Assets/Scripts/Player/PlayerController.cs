@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour{
     private bool isGrounded;
     private PlayerControls inputActions;
 
+    // PlayerController.cs に追加・修正
+    [HideInInspector]
+    public bool isKnockback; // 外から操作できるように public または [HideInInspector]
+
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
         inputActions = new PlayerControls();
@@ -73,6 +77,8 @@ public class PlayerController : MonoBehaviour{
     void FixedUpdate(){
         // ダッシュ中は通常の移動処理を行わない（ダッシュの速度で上書きされているため）
         if (isDashing) return;
+        // ノックバック中は、InputSystemによる移動入力を無視する
+        if (isKnockback) return;
 
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
     }
