@@ -84,8 +84,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
         isInvincible = false;
     }
     public void Heal(int index){
-        currentHealth += index;
-        UpdateUI();
+        if (maxHealth >= currentHealth){
+            currentHealth += index;
+            if(maxHealth <= currentHealth){
+                currentHealth = maxHealth;
+            }
+            UpdateUI();
+        }
     }
 
     private void Die(){
