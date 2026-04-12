@@ -5538,7 +5538,9 @@ MonoBehaviour:
   enemyBulletPrefab: {fileID: 7814645704091411752, guid: bb9ebfd7ab01cce4b9f18c488b6b5443, type: 3}
   firePoint: {fileID: 84646300}
   fireInterval: 2
-  shootDirection: {x: -1, y: 0}
+  isHoming: 0
+  bulletCount: 1
+  spreadAngle: 15
 --- !u!114 &2051854644
 MonoBehaviour:
   m_ObjectHideFlags: 0
