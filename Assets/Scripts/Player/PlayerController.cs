@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour{
     private bool isAttacking;
     private bool canAttack = true;
 
+    [Header("坂道対策の摩擦マテリアル")]
+    public PhysicsMaterial2D zeroFriction; // 動く時・空中の時用
+    public PhysicsMaterial2D highFriction; // 立ち止まった時用
+
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private bool isGrounded;
@@ -80,7 +84,18 @@ public class PlayerController : MonoBehaviour{
         // ノックバック中は、InputSystemによる移動入力を無視する
         if (isKnockback) return;
 
+        // 1. 移動の処理
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+
+        // 2. 坂道滑り落ち防止（摩擦の切り替え）
+        // 「地面にいる」かつ「左右の移動入力がゼロ（スティックから手を離している）」場合
+        if (isGrounded && Mathf.Abs(moveInput.x) < 0.1f){
+            // 摩擦MAXのマテリアルをセットして、斜面でもピタッと止める
+            rb.sharedMaterial = highFriction;
+        }else{
+            // 動いている時やジャンプ中は、摩擦ゼロに戻して壁への張り付きなどを防ぐ
+            rb.sharedMaterial = zeroFriction;
+        }
     }
 
     private void Jump(){
