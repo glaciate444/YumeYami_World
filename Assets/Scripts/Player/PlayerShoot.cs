@@ -14,9 +14,10 @@ public class PlayerShoot : MonoBehaviour{
     public Slider spSlider;             // キャンバスに作ったSPゲージ
 
     private PlayerControls inputActions;
-
+    private Animator anim; // ←【追加1】Animator用の変数を用意
 
     void Awake(){
+        anim = GetComponent<Animator>(); // ←【追加2】プレイヤーのAnimatorを取得する
         RecoverSp(maxSp);
         currentSp = maxSp;
         UpdateUI();
@@ -53,7 +54,11 @@ public class PlayerShoot : MonoBehaviour{
 
             // 弾に方向を渡して飛ばす
             bullet.GetComponent<Bullet>().Initialize(shootDir);
-        }else{
+
+            // ←【追加3】アニメーションの Shoot トリガーを引く
+            if (anim != null) anim.SetTrigger("Shoot");
+        }
+        else{
             Debug.Log("SP不足で撃てない！");
             // ここで「ブブッ」という音を鳴らしたり、SPゲージを赤く点滅させたりします
         }

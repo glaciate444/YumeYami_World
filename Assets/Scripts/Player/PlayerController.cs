@@ -1,4 +1,11 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : PlayerController.cs
+ * Version : Ver0.02
+ * Since : 2026/04/01
+ * Update : 2026/04/20
+ * 用途 : プレイヤー制御
+ * =================================================== */
+using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; // コルーチンを使うために追加
 
@@ -36,6 +43,7 @@ public class PlayerController : MonoBehaviour{
     private Vector2 moveInput;
     private bool isGrounded;
     private PlayerControls inputActions;
+    private Animator anim;
 
     // PlayerController.cs に追加・修正
     [HideInInspector]
@@ -43,6 +51,7 @@ public class PlayerController : MonoBehaviour{
 
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         inputActions = new PlayerControls();
 
         // 移動
@@ -76,6 +85,16 @@ public class PlayerController : MonoBehaviour{
         // 向きの反転処理（スケールを使用）
         if (moveInput.x > 0) transform.localScale = new Vector3(1, 1, 1);
         else if (moveInput.x < 0) transform.localScale = new Vector3(-1, 1, 1);
+
+        // ▼ アニメーションの更新 ▼
+        // 1. 歩行判定（左右の入力が少しでもあれば true）
+        anim.SetBool("isWalking", Mathf.Abs(moveInput.x) > 0.1f);
+
+        // 2. 接地判定
+        anim.SetBool("isGrounded", isGrounded);
+
+        // 3. Y軸の速度（ジャンプの上昇・落下判定用）
+        anim.SetFloat("velocityY", rb.linearVelocity.y);
     }
 
     void FixedUpdate(){
@@ -142,6 +161,7 @@ public class PlayerController : MonoBehaviour{
     private IEnumerator AttackRoutine(){
         canAttack = false;
         isAttacking = true;
+        anim.SetTrigger("Attack");
 
         // 攻撃判定をONにする
         if (attackHitbox != null) attackHitbox.SetActive(true);
