@@ -93,8 +93,19 @@ public class PlayerController : MonoBehaviour{
         // 2. 接地判定
         anim.SetBool("isGrounded", isGrounded);
 
-        // 3. Y軸の速度（ジャンプの上昇・落下判定用）
-        anim.SetFloat("velocityY", rb.linearVelocity.y);
+        // 現在のYの速度を取得
+        float currentVelY = rb.linearVelocity.y;
+
+        // 1. 地面にいる時は、Y方向の揺れを完全に無視して 0 にする（最強のフィルター）
+        if (isGrounded){
+            currentVelY = 0f;
+        }
+        // 2. 空中にいる時の、極小ノイズ対策
+        else if (Mathf.Abs(currentVelY) < 0.05f){
+            currentVelY = 0f;
+        }
+        // フィルターを通した綺麗な数値をAnimatorに渡す
+        anim.SetFloat("velocityY", currentVelY);
     }
 
     void FixedUpdate(){

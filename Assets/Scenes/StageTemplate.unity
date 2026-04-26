@@ -826,6 +826,7 @@ MonoBehaviour:
   knockbackTime: 0.2
   itemPrefab: {fileID: 0}
   dropChance: 50
+  explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
 --- !u!70 &659880903
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -6137,6 +6138,7 @@ MonoBehaviour:
   knockbackTime: 0.2
   itemPrefab: {fileID: 0}
   dropChance: 50
+  explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
 --- !u!212 &2051854649
 SpriteRenderer:
   serializedVersion: 2

@@ -18,23 +18,31 @@ public class Bullet : MonoBehaviour{
 
     private Rigidbody2D rb;
 
+    [Header("エフェクト")]
+    public GameObject hitEffectPrefab; // 先ほど作った HitEffect プレハブをセットする
+
     public void Initialize(Vector2 direction){
         rb = GetComponent<Rigidbody2D>();
         rb.linearVelocity = direction * speed;
         Destroy(gameObject, lifeTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision){
-        // 撃った本人（無視するタグ）や、カメラ枠なら何もしない
-        if (collision.CompareTag(ignoreTag)) return;
-        if (collision.gameObject.name == "CameraBounds") return;
+    private void OnTriggerEnter2D(Collider2D other){
+        if (other.CompareTag(ignoreTag)) return;
+        if (other.gameObject.name == "CameraBounds") return;
 
-        IDamageable target = collision.GetComponent<IDamageable>();
+        // ▼【追加】消滅する直前にエフェクトを生成する ▼
+        if (hitEffectPrefab != null){
+            Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        // ダメージ処理...
+        IDamageable target = other.GetComponent<IDamageable>();
         if (target != null){
             Vector2 knockbackDir = rb.linearVelocity.normalized;
             target.TakeDamage(damage, knockbackDir);
         }
 
-        Destroy(gameObject);
+        Destroy(gameObject); // 弾自身の消滅
     }
 }

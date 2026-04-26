@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour, IDamageable{
     [Header("ドロップ設定")]
     public GameObject itemPrefab; // 落としたいアイテムのプレハブ
     [Range(0, 100)] public int dropChance = 50; // ドロップ率（％）
+    [Header("演出")]
+    public GameObject explosionEffectPrefab; // ここに作ったプレハブをセット！
 
     private Rigidbody2D rb;
     private EnemyPatrol patrolScript;  // 歩行スクリプトを取得するための変数
@@ -38,7 +40,12 @@ public class Enemy : MonoBehaviour, IDamageable{
     }
 
     private void Die(){
-        // 確率判定
+        // 1. 爆発エフェクトを敵の現在位置に生成
+        if (explosionEffectPrefab != null){
+            Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        // アイテムドロップ確率判定
         if (Random.Range(0, 100) < dropChance && itemPrefab != null){
             Instantiate(itemPrefab, transform.position, Quaternion.identity);
         }

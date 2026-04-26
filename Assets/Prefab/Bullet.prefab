@@ -172,3 +172,5 @@ MonoBehaviour:
   speed: 15
   damage: 2
   lifeTime: 6
+  ignoreTag: Player
+  hitEffectPrefab: {fileID: 8286972500862344658, guid: 67118bc584b70f74984698d59d874fd9, type: 3}

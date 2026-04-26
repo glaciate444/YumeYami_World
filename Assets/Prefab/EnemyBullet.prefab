@@ -173,3 +173,4 @@ MonoBehaviour:
   damage: 1
   lifeTime: 6
   ignoreTag: Enemy
+  hitEffectPrefab: {fileID: 8286972500862344658, guid: 67118bc584b70f74984698d59d874fd9, type: 3}

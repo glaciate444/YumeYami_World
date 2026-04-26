@@ -8,5 +8,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StageTemplate.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/MapSelectScene.unity
+    guid: c90479d28b7206347b028d89dbc45d1c
+  - enabled: 1
+    path: Assets/Scenes/TitleScene.unity
+    guid: 73690386e21676d408b0948b7b0401ab
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 7132d61288f83ea448bea49c17303823, type: 3}
