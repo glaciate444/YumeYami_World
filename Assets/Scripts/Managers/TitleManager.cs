@@ -13,7 +13,7 @@ public class TitleManager : MonoBehaviour{
     [Header("UI設定")]
     public RectTransform cursorImage;
     public RectTransform[] menuPositions;
-    public GameObject mainPanel;      // 【追加】メインメニューのパネル
+    public GameObject mainPanel;
 
     [Header("オプション画面")]
     public GameObject optionsPanel;
@@ -21,23 +21,29 @@ public class TitleManager : MonoBehaviour{
     private int currentIndex = 0;
     private bool isOptionsOpen = false;
 
+    // 【追加】入力の貫通を防ぐためのクールタイム（待ち時間）
+    private float inputCooldown = 0f;
+
     void Start(){
-        // 最初はオプションを閉じ、メインを表示しておく
         CloseOptions();
         UpdateCursorPosition();
     }
 
     void Update(){
+        // ▼ クールタイム中は一切のキーボード入力を無視してリターンする ▼
+        if (inputCooldown > 0f){
+            inputCooldown -= Time.deltaTime;
+            return;
+        }
+
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // ▼ オプション画面が開いている時の処理 ▼
         if (isOptionsOpen){
-            // Xキー または Escキーで閉じる
             if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame){
-                CloseOptions(); // 【変更】閉じる処理をメソッド化
+                CloseOptions();
             }
-            return; // ここで処理を止める
+            return;
         }
 
         // ▼ 通常のメニュー操作 ▼
@@ -57,7 +63,7 @@ public class TitleManager : MonoBehaviour{
     }
 
     private void UpdateCursorPosition(){
-        if (menuPositions.Length > 0 && cursorImage != null){
+        if (menuPositions.Length > 0 && cursorImage != null && menuPositions[currentIndex] != null){
             Vector2 newPos = cursorImage.anchoredPosition;
             newPos.y = menuPositions[currentIndex].anchoredPosition.y;
             cursorImage.anchoredPosition = newPos;
@@ -66,32 +72,32 @@ public class TitleManager : MonoBehaviour{
 
     private void ExecuteMenu(){
         switch (currentIndex){
-            case 0: // Game Start
+            case 0:
                 SceneManager.LoadScene("MapSelectScene");
                 break;
-            case 1: // Load
+            case 1:
                 Debug.Log("ロード機能は後ほど実装します！");
                 break;
-            case 2: // Options
-                OpenOptions(); // 【変更】開く処理をメソッド化
+            case 2:
+                OpenOptions();
                 break;
         }
     }
 
-    // --- 【追加】開く・閉じる専用のメソッド（外部から呼べるように public にする） ---
-
     public void OpenOptions(){
         isOptionsOpen = true;
-        mainPanel.SetActive(false);   // メインを隠す
-        optionsPanel.SetActive(true); // オプションを表示
+        mainPanel.SetActive(false);
+        optionsPanel.SetActive(true);
+
+        inputCooldown = 0.2f; // 開いた直後も0.2秒間入力を無視する
     }
 
     public void CloseOptions(){
         isOptionsOpen = false;
-        optionsPanel.SetActive(false); // オプションを隠す
-        mainPanel.SetActive(true);     // メインを再表示
-
-        // メインに戻った時、カーソルの位置を再同期する
+        optionsPanel.SetActive(false);
+        mainPanel.SetActive(true);
         UpdateCursorPosition();
+
+        inputCooldown = 0.2f; // 閉じた直後も0.2秒間入力を無視する（これで貫通を完全ガード！）
     }
 }

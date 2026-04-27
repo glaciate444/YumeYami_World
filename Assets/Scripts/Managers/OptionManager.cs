@@ -62,6 +62,8 @@ public class OptionManager : MonoBehaviour{
         // ▼ 決定ボタン（BACK選択時のみ発動） ▼
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
             if (currentIndex == 2){ // 2番目(BACK)が選ばれている時
+                Debug.Log("BACKが押されました！ TitleManagerのセット状態: " + (titleManager != null));
+
                 // スクリプトから強制的に TitleManager の CloseOptions() を呼ぶ
                 if (titleManager != null) titleManager.CloseOptions();
 
