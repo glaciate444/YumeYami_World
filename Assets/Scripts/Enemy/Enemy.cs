@@ -1,4 +1,11 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : Enemy.cs
+ * Version : Ver0.02
+ * Since : 2026/04/09
+ * Update : 2026/04/28
+ * 用途 : 敵のデータスクリプト
+ * =================================================== */
+using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]

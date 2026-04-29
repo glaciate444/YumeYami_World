@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.02
+ * Version : Ver0.04
  * Since : 2026/04/01
- * Update : 2026/04/20
+ * Update : 2026/04/30
  * 用途 : プレイヤー制御
  * =================================================== */
 using UnityEngine;
@@ -63,6 +63,10 @@ public class PlayerController : MonoBehaviour{
     // PlayerController.cs に追加・修正
     [HideInInspector]
     public bool isKnockback; // 外から操作できるように public または [HideInInspector]
+
+    // 動く床から受け取る速度
+    [HideInInspector]
+    public Vector2 platformVelocity;
 
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
@@ -163,7 +167,11 @@ public class PlayerController : MonoBehaviour{
         }
 
         // 1. 移動の処理
-        rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+        // 【ver0.04変更後】自分の移動速度に、床の速度（platformVelocity.x）を足し合わせる！
+        rb.linearVelocity = new Vector2((moveInput.x * moveSpeed) + platformVelocity.x, rb.linearVelocity.y);
+
+        // 【超重要】足し終わったらゼロに戻す（床から降りた瞬間にピタッと止まるようにするため）
+        platformVelocity = Vector2.zero;
 
         // 2. 坂道滑り落ち防止（摩擦の切り替え）
         // 「地面にいる」かつ「左右の移動入力がゼロ（スティックから手を離している）」場合
