@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour{
     public float moveSpeed = 8f;
     public float jumpForce = 9f; // 調整済みの値
     [Range(0f, 1f)] public float jumpCutMultiplier = 0.5f;
+    public float coyoteTime = 0.15f;    // 空中ジャンプを許容する時間（0.15秒が王道です）
+    private float coyoteTimeCounter;    // 現在のタイマーの残り時間
 
     [Header("接地判定設定")]
     public Transform groundCheck;
@@ -38,6 +40,19 @@ public class PlayerController : MonoBehaviour{
     [Header("坂道対策の摩擦マテリアル")]
     public PhysicsMaterial2D zeroFriction; // 動く時・空中の時用
     public PhysicsMaterial2D highFriction; // 立ち止まった時用
+
+    [Header("壁キック設定")]
+    public Transform wallCheck;         // 壁判定用の円の中心
+    public float wallCheckRadius = 0.2f;// 壁判定の広さ
+    public LayerMask wallLayer;         // 「壁」として扱うレイヤー
+    public float wallSlidingSpeed = 2f; // 壁をずり落ちる速度
+    public Vector2 wallJumpForce = new Vector2(10f, 12f); // Xが横に飛ぶ力、Yが上に飛ぶ力
+    public float wallJumpDuration = 0.5f; // 【重要】壁キック直後の「操作無効」時間
+
+    private bool isWallTouch;
+    private bool isWallSliding;
+    private bool isWallJumping;
+    private float wallJumpTimer;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -81,6 +96,23 @@ public class PlayerController : MonoBehaviour{
         if (isDashing) return;
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        // ▼ 壁に触れているか判定 ▼
+        isWallTouch = Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, wallLayer);
+
+        // ▼ 壁ずり落ち判定 ▼
+        // 「空中にいる」かつ「壁に触れている」かつ「壁に向かってキーを押している」時にずり落ちる
+        if (isWallTouch && !isGrounded && moveInput.x != 0){
+            isWallSliding = true;
+        }else{
+            isWallSliding = false;
+        }
+        // ▼【追加】壁キック後の操作無効タイマーを減らす ▼
+        if (isWallJumping){
+            wallJumpTimer -= Time.deltaTime;
+            if (wallJumpTimer <= 0){
+                isWallJumping = false; // タイマーがゼロになったら操作可能に戻す
+            }
+        }
 
         // 向きの反転処理（スケールを使用）
         if (moveInput.x > 0) transform.localScale = new Vector3(1, 1, 1);
@@ -93,17 +125,21 @@ public class PlayerController : MonoBehaviour{
         // 2. 接地判定
         anim.SetBool("isGrounded", isGrounded);
 
+        // 【追加】壁ずり落ち中かどうかをAnimatorに教える
+        anim.SetBool("isWallSliding", isWallSliding);
+
         // 現在のYの速度を取得
         float currentVelY = rb.linearVelocity.y;
 
-        // 1. 地面にいる時は、Y方向の揺れを完全に無視して 0 にする（最強のフィルター）
+        // ▼ isGrounded の処理を1つにまとめる ▼
         if (isGrounded){
-            currentVelY = 0f;
+            currentVelY = 0f; // Y方向の揺れを無視
+            coyoteTimeCounter = coyoteTime; // 【追加】タイマーを最大値に保つ
+        }else{
+            if (Mathf.Abs(currentVelY) < 0.05f) currentVelY = 0f; // 極小ノイズ対策
+            coyoteTimeCounter -= Time.deltaTime; // 【追加】空中にいる間はタイマーを減らす
         }
-        // 2. 空中にいる時の、極小ノイズ対策
-        else if (Mathf.Abs(currentVelY) < 0.05f){
-            currentVelY = 0f;
-        }
+
         // フィルターを通した綺麗な数値をAnimatorに渡す
         anim.SetFloat("velocityY", currentVelY);
     }
@@ -113,6 +149,18 @@ public class PlayerController : MonoBehaviour{
         if (isDashing) return;
         // ノックバック中は、InputSystemによる移動入力を無視する
         if (isKnockback) return;
+
+        // 壁キックで飛んでいる最中は、通常の左右移動を無視する！ ▼
+        if (isWallJumping) return;
+
+        // ▼【変更】壁ずり落ち中の落下速度制限 ▼
+        if (isWallSliding){
+            // Y軸の落下速度を -wallSlidingSpeed (-2fなど) でストップさせ、ゆっくり落ちるようにする
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
+        }else{
+            // 1. 通常の移動の処理
+            rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+        }
 
         // 1. 移動の処理
         rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
@@ -129,9 +177,27 @@ public class PlayerController : MonoBehaviour{
     }
 
     private void Jump(){
-        // ダッシュ中・攻撃中はジャンプ不可にする場合は条件を追加
-        if (isGrounded && !isDashing){
+        // 【変更】isGrounded ではなく coyoteTimeCounter が 0 より大きいかで判定する
+        if (coyoteTimeCounter > 0f && !isDashing){
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
+            // 【超重要】ジャンプしたらタイマーを即座にゼロにする（空中での連続ジャンプ防止）
+            coyoteTimeCounter = 0f;
+        }
+        // 2. ▼【追加】壁キック ▼
+        else if (isWallSliding){
+            isWallJumping = true;                 // 壁キック状態にする
+            wallJumpTimer = wallJumpDuration;     // 操作無効タイマーをセット
+
+            // 今プレイヤーが向いている方向（スケールのX）を取得し、その「逆方向」へ飛ぶ
+            float facingDir = Mathf.Sign(transform.localScale.x);
+            float jumpDirection = -facingDir;
+
+            // 斜め上に向かって力を加える
+            rb.linearVelocity = new Vector2(wallJumpForce.x * jumpDirection, wallJumpForce.y);
+
+            // 飛ぶと同時に、プレイヤーの向き（絵）も反転させる
+            transform.localScale = new Vector3(jumpDirection, 1, 1);
         }
     }
 
