@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI; // SPゲージ用
+using TMPro;
 
 public class PlayerShoot : MonoBehaviour{
     [Header("射撃設定")]
@@ -12,6 +13,7 @@ public class PlayerShoot : MonoBehaviour{
     public int currentSp;
     public int spCost = 1;              // 1発あたりの消費SP
     public Slider spSlider;             // キャンバスに作ったSPゲージ
+    public TMP_Text spText;
 
     private PlayerControls inputActions;
     private Animator anim; // ←【追加1】Animator用の変数を用意
@@ -20,6 +22,7 @@ public class PlayerShoot : MonoBehaviour{
         anim = GetComponent<Animator>(); // ←【追加2】プレイヤーのAnimatorを取得する
         RecoverSp(maxSp);
         currentSp = maxSp;
+        spText.text = currentSp.ToString();
         UpdateUI();
 
         inputActions = new PlayerControls();
@@ -69,5 +72,6 @@ public class PlayerShoot : MonoBehaviour{
             spSlider.maxValue = maxSp;
             spSlider.value = currentSp;
         }
+        spText.text = currentSp.ToString();
     }
 }

@@ -146,6 +146,9 @@ public class PlayerController : MonoBehaviour{
 
         // フィルターを通した綺麗な数値をAnimatorに渡す
         anim.SetFloat("velocityY", currentVelY);
+
+        // ▼ 【追加】今、攻撃ルーチンの真っ最中かどうかをAnimatorに教える ▼
+        anim.SetBool("isAttacking", isAttacking);
     }
 
     void FixedUpdate(){

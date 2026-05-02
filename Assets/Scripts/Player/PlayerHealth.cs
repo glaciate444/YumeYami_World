@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI; // UI操作に必要
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour, IDamageable{
     [Header("HP設定")]
@@ -10,6 +11,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
 
     [Header("UI連携")]
     public Slider healthSlider;
+    public TMP_Text healthText;
 
     [Header("ノックバック設定")]
     public float knockbackForce = 10f;
@@ -27,11 +29,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
 
         sr = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
-
+       
         // 初期UIの更新
         if (healthSlider != null){
             healthSlider.maxValue = maxHealth;
             healthSlider.value = currentHealth;
+            
+        }
+        if (healthText != null){
+            healthText.text = currentHealth.ToString();
         }
     }
 
@@ -67,6 +73,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
     void UpdateUI(){
         if (healthSlider != null){
             healthSlider.value = currentHealth;
+        }
+        if (healthText != null){
+            healthText.text = currentHealth.ToString();
         }
     }
 
