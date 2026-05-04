@@ -3,18 +3,22 @@
 public class Pickup : MonoBehaviour{
     public ItemData data;
 
-    private void OnTriggerEnter2D(Collider2D collision){
-        if (collision.CompareTag("Player")){
+    private void OnTriggerEnter2D(Collider2D other){
+        if (other.CompareTag("Player")){
             switch (data.itemType){
                 case ItemType.Health:
-                    collision.GetComponent<PlayerHealth>().Heal(data.value);
+                    other.GetComponent<PlayerHealth>().Heal(data.value);
                     break;
                 case ItemType.SP:
-                    collision.GetComponent<PlayerShoot>().RecoverSp(data.value);
+                    other.GetComponent<PlayerShoot>().RecoverSp(data.value);
                     break;
                 case ItemType.Stock:
                     // 後述のストックシステムに送る
-                    collision.GetComponent<PlayerInventory>().AddItem(data);
+                    other.GetComponent<PlayerInventory>().AddItem(data);
+                    break;
+                // コインだった場合の処理
+                case ItemType.Coin:
+                    other.GetComponent<PlayerInventory>().AddCoin(data.value);
                     break;
             }
             Destroy(gameObject);

@@ -8,6 +8,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; // コルーチンを使うために追加
+using TMPro;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour{
@@ -27,8 +29,21 @@ public class PlayerController : MonoBehaviour{
     public float dashSpeed = 15f;      // ダッシュ中の速度
     public float dashDuration = 0.2f;  // ダッシュしている時間
     public float dashCooldown = 0.5f;  // 次のダッシュができるまでの時間
+    public int maxDashCharges = 3;     // ダッシュの最大ストック数
+    public int currentDashCharges;     // 現在のストック数
+    public float dashRecoveryTime = 2.0f; // 1メモリ回復するまでの秒数
+    private float dashRecoveryTimer = 0f;
     private bool isDashing;
     private bool canDash = true;
+    // ▼ダッシュ設定のUI連携部分を書き換え
+    [Header("ダッシュUI連携（アイコン式）")]
+    public Sprite dashOnSprite;  // 黄色いアイコン
+    public Sprite dashOffSprite; // 白い（空の）アイコン
+    // スクリプト内で見つけたアイコンを格納する配列
+    private Image[] dashIcons;
+
+    [Header("ダッシュUI連携")]
+    public TMP_Text dashText; // ※アイコンにする場合は後でImageの配列等に変更可能です
 
     [Header("攻撃設定")]
     public GameObject attackHitbox;    // 攻撃判定用の小オブジェクト
@@ -73,6 +88,20 @@ public class PlayerController : MonoBehaviour{
         anim = GetComponent<Animator>();
         inputActions = new PlayerControls();
 
+        // ▼【追加】ダッシュチャージの初期化とUI検索
+        currentDashCharges = maxDashCharges;
+
+        // ▼【変更】親オブジェクトを探し、子供のImageを全て取得する
+        GameObject dashIconContainer = GameObject.FindWithTag("DashText");
+        if (dashIconContainer != null){
+            // 親オブジェクトの下にあるすべての Image コンポーネントを取得
+            dashIcons = dashIconContainer.GetComponentsInChildren<Image>();
+        }else{
+            Debug.LogWarning("DashTextタグの付いたアイコンの親が見つかりません。");
+        }
+
+        UpdateDashUI(); // 初期表示の更新
+
         // 移動
         inputActions.Player.Move.performed += context => moveInput = context.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += context => moveInput = Vector2.zero;
@@ -82,9 +111,9 @@ public class PlayerController : MonoBehaviour{
         inputActions.Player.Jump.canceled += context => OnJumpCanceled();
 
         // --- 追加：ダッシュと攻撃 ---
-        // 押された瞬間(performed)にコルーチンを開始
+        // ▼【変更】ダッシュ実行の条件に「チャージが残っているか」を追加
         inputActions.Player.Dash.performed += context => {
-            if (canDash) StartCoroutine(DashRoutine());
+            if (canDash && currentDashCharges > 0) StartCoroutine(DashRoutine());
         };
 
         inputActions.Player.Attack.performed += context => {
@@ -149,6 +178,18 @@ public class PlayerController : MonoBehaviour{
 
         // ▼ 【追加】今、攻撃ルーチンの真っ最中かどうかをAnimatorに教える ▼
         anim.SetBool("isAttacking", isAttacking);
+
+        // ▼【追加】ダッシュチャージの自然回復処理 ▼
+        if (currentDashCharges < maxDashCharges){
+            dashRecoveryTimer += Time.deltaTime;
+            if (dashRecoveryTimer >= dashRecoveryTime){
+                currentDashCharges++;
+                dashRecoveryTimer = 0f; // タイマーリセット
+                UpdateDashUI();
+            }
+        }else{
+            dashRecoveryTimer = 0f; // 満タンの時はタイマーを回さない
+        }
     }
 
     void FixedUpdate(){
@@ -221,29 +262,43 @@ public class PlayerController : MonoBehaviour{
     // ==========================================
     // コルーチン（時間経過処理）
     // ==========================================
-
     private IEnumerator DashRoutine(){
         canDash = false;
         isDashing = true;
 
-        // ダッシュ中は重力を無視して水平に飛ぶようにする（お好みで外してもOK）
+        // ▼【追加】チャージを1消費してUIを更新
+        currentDashCharges--;
+        UpdateDashUI();
+
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
 
-        // 現在向いている方向（スケールのX）へダッシュ速度を適用
         float facingDirection = Mathf.Sign(transform.localScale.x);
         rb.linearVelocity = new Vector2(facingDirection * dashSpeed, 0f);
 
-        // 指定時間（dashDuration）待機
         yield return new WaitForSeconds(dashDuration);
 
-        // ダッシュ終了・元の状態に戻す
         rb.gravityScale = originalGravity;
         isDashing = false;
 
-        // クールダウン待機
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    // ▼【変更】UI更新用のメソッド（アイコン切り替え版）
+    private void UpdateDashUI(){
+        // アイコンが見つかっていなければ何もしない
+        if (dashIcons == null || dashIcons.Length == 0) return;
+
+        // アイコンの数だけループ処理
+        for (int i = 0; i < dashIcons.Length; i++){
+            // i番目のアイコンが、現在のチャージ数より小さければON画像、それ以外はOFF画像
+            if (i < currentDashCharges){
+                dashIcons[i].sprite = dashOnSprite;
+            }else{
+                dashIcons[i].sprite = dashOffSprite;
+            }
+        }
     }
 
     private IEnumerator AttackRoutine(){
@@ -265,4 +320,5 @@ public class PlayerController : MonoBehaviour{
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
     }
+
 }

@@ -399,7 +399,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: c76e61746936fa54cb007350baa52185, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eb68c2056e6ca444b8ff7f3c9c76ad92, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -460,6 +460,12 @@ MonoBehaviour:
   dashSpeed: 15
   dashDuration: 0.2
   dashCooldown: 0.5
+  maxDashCharges: 3
+  currentDashCharges: 0
+  dashRecoveryTime: 5
+  dashOnSprite: {fileID: 21300000, guid: 926ff5087e9ab724d9607ebf0ea9166a, type: 3}
+  dashOffSprite: {fileID: 21300000, guid: f64fc45b30882d041ab0046b22382f7a, type: 3}
+  dashText: {fileID: 0}
   attackHitbox: {fileID: 1810350716830482527}
   attackDuration: 0.1
   attackCooldown: 0.3
@@ -490,6 +496,7 @@ MonoBehaviour:
   maxHealth: 12
   currentHealth: 12
   healthSlider: {fileID: 0}
+  healthText: {fileID: 0}
   knockbackForce: 6
   knockbackDuration: 0.2
   invincibilityDuration: 1
@@ -511,6 +518,7 @@ MonoBehaviour:
   currentSp: 6
   spCost: 1
   spSlider: {fileID: 0}
+  spText: {fileID: 0}
 --- !u!70 &1249696312333318633
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -545,8 +553,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.01688695, y: -0.023290753}
-  m_Size: {x: 0.5947124, y: 1.7462482}
+  m_Offset: {x: -0.01688695, y: -0.04033208}
+  m_Size: {x: 0.5947124, y: 1.7803309}
   m_Direction: 0
 --- !u!114 &5823058687030863279
 MonoBehaviour:

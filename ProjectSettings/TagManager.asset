@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - OneWayPlatform
+  - HPSlider
+  - SPSlider
+  - CoinText
+  - DashText
   layers:
   - Default
   - TransparentFX

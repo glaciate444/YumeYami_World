@@ -29,7 +29,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
 
         sr = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
-       
+
+        // インスペクターで設定されていなければ、タグを使ってシーン内から自動で探す
+        if (healthSlider == null){
+            GameObject sliderObj = GameObject.FindWithTag("HPSlider");
+            if (sliderObj != null) healthSlider = sliderObj.GetComponent<Slider>();
+        }
+
         // 初期UIの更新
         if (healthSlider != null){
             healthSlider.maxValue = maxHealth;
