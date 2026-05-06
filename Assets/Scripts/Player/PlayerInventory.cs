@@ -1,4 +1,11 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : PlayerInventory.cs
+ * Version : Ver0.02
+ * Since : 2026/04/01
+ * Update : 2026/05/05
+ * 用途 : アイテムインベントリー
+ * =================================================== */
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using TMPro; // UI操作に必要

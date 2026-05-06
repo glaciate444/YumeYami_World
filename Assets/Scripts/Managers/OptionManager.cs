@@ -65,7 +65,7 @@ public class OptionManager : MonoBehaviour{
                 Debug.Log("BACKが押されました！ TitleManagerのセット状態: " + (titleManager != null));
 
                 // スクリプトから強制的に TitleManager の CloseOptions() を呼ぶ
-                if (titleManager != null) titleManager.CloseOptions();
+                //if (titleManager != null) titleManager.CloseOptions();
 
                 // 次回開いた時に一番上のBGMに戻るようにリセットしておく
                 currentIndex = 0;

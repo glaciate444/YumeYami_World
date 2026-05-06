@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.04
+ * Version : Ver0.05
  * Since : 2026/04/01
- * Update : 2026/04/30
+ * Update : 2026/05/07
  * 用途 : プレイヤー制御
  * =================================================== */
 using UnityEngine;
@@ -301,24 +301,30 @@ public class PlayerController : MonoBehaviour{
         }
     }
 
+    // ▼ 今までの AttackRoutine を上書きします
     private IEnumerator AttackRoutine(){
         canAttack = false;
         isAttacking = true;
         anim.SetTrigger("Attack");
 
-        // 攻撃判定をONにする
-        if (attackHitbox != null) attackHitbox.SetActive(true);
+        // 万が一、着地などでアニメーションが途切れてイベントが不発だった時のための「絶対解除タイマー（安全装置）」
+        // ※攻撃アニメーション全体（0.5秒）より少し長い 0.6秒 後に、強制的に false に戻します
+        Invoke("ResetAttackState", 0.6f);
 
-        // 攻撃の持続時間待機
-        yield return new WaitForSeconds(attackDuration);
-
-        // 攻撃判定をOFFにする
-        if (attackHitbox != null) attackHitbox.SetActive(false);
-        isAttacking = false;
-
-        // クールダウン待機
+        // 連続で攻撃できるクールダウン（間隔）
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
+    }
+
+    // アニメーションイベントから呼ばれる処理
+    public void OnAttackAnimEnd(){
+        ResetAttackState();
+    }
+
+    // ▼ 新しく追加：isAttacking を安全に解除する共通の処理
+    private void ResetAttackState(){
+        isAttacking = false;
+        CancelInvoke("ResetAttackState"); // 重複して呼ばれるのを防ぐ
     }
 
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class EnemyPatrol : MonoBehaviour{
+public class EnemyPatrol : EnemyMovement{
     [Header("移動設定")]
     public float moveSpeed = 2f;
     private bool movingRight = true;

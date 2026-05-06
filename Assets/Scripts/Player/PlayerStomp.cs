@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerStomp.cs
- * Version : Ver0.01
+ * Version : Ver0.02
  * Since : 2026/04/29
- * Update : 2026/04/29
+ * Update : 2026/05/05
  * 用途 : プレイヤーが敵を踏みつけた処理
  * =================================================== */
 using UnityEngine;
@@ -21,13 +21,18 @@ public class PlayerStomp : MonoBehaviour{
 
     private void OnTriggerEnter2D(Collider2D other){
         // ▼ 落下している（Yの速度が0以下）時のみ踏みつけ判定を有効にする ▼
-        // これにより、ジャンプの上昇中に下から敵にぶつかった時は踏みつけにならず、通常ダメージを受けます
         if (playerRb != null && playerRb.linearVelocity.y <= 0f){
             // 触れた相手が IDamageable を持っているか確認
             IDamageable target = other.GetComponent<IDamageable>();
 
             // 相手がいて、かつ自分自身（Player）ではない場合
             if (target != null && !other.CompareTag("Player")){
+
+                // ▼【追加】相手が「木箱（BreakableBlock）」の場合は踏みつけ攻撃をキャンセルする ▼
+                if (other.GetComponent<BreakableBlock>() != null) {
+                    return; 
+                }
+
                 // 敵に2ダメージを与える（上から踏んだので、ノックバック方向は真下を指定）
                 target.TakeDamage(stompDamage, Vector2.down);
 

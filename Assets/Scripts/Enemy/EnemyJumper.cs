@@ -1,15 +1,16 @@
 ﻿/* ===================================================
  * スクリプト名 : EnemyJumper.cs
- * Version : Ver0.01
+ * Version : Ver0.02
  * Since : 2026/04/30
- * Update : 2026/04/30
+ * Update : 2026/05/07
  * 用途 : ぴょんぴょん跳ねて近づいてくる敵
+ * 更新 : 基底クラス実装
  * =================================================== */
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))] // 画面外判定に必要
-public class EnemyJumper : MonoBehaviour{
+public class EnemyJumper : EnemyMovement{
     [Header("ジャンプ設定")]
     public float jumpForceX = 3f;  // 横に飛ぶ力
     public float jumpForceY = 7f;  // 上に飛ぶ力
