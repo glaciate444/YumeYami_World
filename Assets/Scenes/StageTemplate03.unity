@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1727009743244101717, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
+      propertyPath: dashCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2234151228853066145, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
       propertyPath: spText
       value: 
