@@ -179,6 +179,9 @@ public class PlayerController : MonoBehaviour{
         // ▼ 【追加】今、攻撃ルーチンの真っ最中かどうかをAnimatorに教える ▼
         anim.SetBool("isAttacking", isAttacking);
 
+        // ▼ 【追加】今、ノックバック中かどうかをAnimatorに教える ▼
+        anim.SetBool("isKnockback", isKnockback);
+
         // ▼【追加】ダッシュチャージの自然回復処理 ▼
         if (currentDashCharges < maxDashCharges){
             dashRecoveryTimer += Time.deltaTime;

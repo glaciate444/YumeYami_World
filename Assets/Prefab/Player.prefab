@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 553bdbf9435d3b04a9dd9087abf5632f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  attackPower: 1
+  attackPower: 2
 --- !u!1 &4218694174269193068
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +440,7 @@ MonoBehaviour:
   healthSlider: {fileID: 0}
   healthText: {fileID: 0}
   knockbackForce: 6
-  knockbackDuration: 0.2
+  knockbackDuration: 0.3
   invincibilityDuration: 1
 --- !u!114 &2234151228853066145
 MonoBehaviour:
