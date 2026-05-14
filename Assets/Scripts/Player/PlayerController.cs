@@ -1,9 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.05
+ * Version : Ver0.06
  * Since : 2026/04/01
- * Update : 2026/05/07
+ * Update : 2026/05/15
  * 用途 : プレイヤー制御
+ * 更新 : 梯子対応
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -64,6 +65,12 @@ public class PlayerController : MonoBehaviour{
     public Vector2 wallJumpForce = new Vector2(10f, 12f); // Xが横に飛ぶ力、Yが上に飛ぶ力
     public float wallJumpDuration = 0.5f; // 【重要】壁キック直後の「操作無効」時間
 
+    [Header("梯子設定")]
+    public float climbSpeed = 5f; // 登る速度
+    private bool isNearLadder;    // 梯子に触れているか
+    private bool isClimbing;      // 今実際に登っているか
+    private float defaultGravity; // 元の重力を記憶しておく用
+
     private bool isWallTouch;
     private bool isWallSliding;
     private bool isWallJumping;
@@ -86,6 +93,8 @@ public class PlayerController : MonoBehaviour{
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        defaultGravity = rb.gravityScale; // 初期重力を記憶
         inputActions = new PlayerControls();
 
         // ▼【追加】ダッシュチャージの初期化とUI検索
@@ -164,6 +173,19 @@ public class PlayerController : MonoBehaviour{
         // 現在のYの速度を取得
         float currentVelY = rb.linearVelocity.y;
 
+        // ▼ 梯子に触れている時に「上下」を入力したら登り状態に移行 ▼
+        if (isNearLadder && Mathf.Abs(moveInput.y) > 0.1f){
+            isClimbing = true;
+            anim.SetFloat("velocityY", isClimbing ? 0f : currentVelY);
+        }
+
+        // ▼ アニメーションの更新部分に以下を追加 ▼
+        anim.SetBool("isClimbing", isClimbing);
+        // 上下に入力がある（動いている）時だけ true にする
+        // 0.1f だと敏感すぎる場合があるので、0.3f くらいまで上げると安定します
+        bool isMovingOnLadder = isClimbing && Mathf.Abs(moveInput.y) > 0.3f;
+        anim.SetBool("isClimbingMoving", isMovingOnLadder);
+
         // ▼ isGrounded の処理を1つにまとめる ▼
         if (isGrounded){
             currentVelY = 0f; // Y方向の揺れを無視
@@ -203,6 +225,18 @@ public class PlayerController : MonoBehaviour{
 
         // 壁キックで飛んでいる最中は、通常の左右移動を無視する！ ▼
         if (isWallJumping) return;
+
+        // ▼ 【追加】梯子を登っている最中の専用処理 ▼
+        if (isClimbing){
+            rb.gravityScale = 0f; // 重力をゼロにして落下を防ぐ
+
+            // X軸（左右）の移動も許可するか、梯子中は上下移動のみにするかで変わります。
+            // 今回は少しだけ左右にも動ける王道アクションスタイルにします
+            rb.linearVelocity = new Vector2(moveInput.x * moveSpeed * 0.5f, moveInput.y * climbSpeed);
+            return; // 梯子中はこれ以下の通常の移動処理を全てキャンセルする！
+        }else{
+            rb.gravityScale = defaultGravity; // 梯子から降りたら重力を元に戻す
+        }
 
         // ▼【変更】壁ずり落ち中の落下速度制限 ▼
         if (isWallSliding){
@@ -253,6 +287,10 @@ public class PlayerController : MonoBehaviour{
 
             // 飛ぶと同時に、プレイヤーの向き（絵）も反転させる
             transform.localScale = new Vector3(jumpDirection, 1, 1);
+        }
+
+        if (isClimbing){
+            isClimbing = false;
         }
     }
 
@@ -329,5 +367,17 @@ public class PlayerController : MonoBehaviour{
         isAttacking = false;
         CancelInvoke("ResetAttackState"); // 重複して呼ばれるのを防ぐ
     }
+    // 梯子の判定（Trigger）に触れた時と離れた時
+    private void OnTriggerEnter2D(Collider2D other){
+        if (other.CompareTag("Ladder")){
+            isNearLadder = true;
+        }
+    }
 
+    private void OnTriggerExit2D(Collider2D other){
+        if (other.CompareTag("Ladder")){
+            isNearLadder = false;
+            isClimbing = false; // 梯子から離れたら強制的に登り状態を解除
+        }
+    }
 }

@@ -9,6 +9,7 @@ TagManager:
   - SPSlider
   - CoinText
   - DashText
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Item
   - Enemy
   - EnemyAttack
-  - 
+  - Ladder
   - 
   - 
   - 
