@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 1
   levelName: "1-1 : \u59CB\u307E\u308A\u306E\u5834\u6240"
-  sceneName: Stage01_1
+  sceneName: StageTemplate03
   requiredUnlockLevel: 1
   thumbnail: {fileID: 0}
   description: 
