@@ -1,4 +1,11 @@
-﻿using System.Collections;
+﻿/* ===================================================
+ * スクリプト名 : PlayerHealth.cs
+ * Version : Ver0.02
+ * Since : 2026/04/01
+ * Update : 2026/04/30
+ * 用途 : プレイヤーのHP管理
+ * =================================================== */
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI; // UI操作に必要
