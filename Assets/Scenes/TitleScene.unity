@@ -1809,6 +1809,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1235763317686977011, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4509460032205517663, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
       propertyPath: m_Name
       value: TransitionManager
