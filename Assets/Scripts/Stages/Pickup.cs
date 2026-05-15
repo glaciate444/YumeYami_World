@@ -22,19 +22,16 @@ public class Pickup : MonoBehaviour{
 
     // ▼ 共通の取得処理
     private void PickItem(GameObject playerObj){
-        if (playerObj.CompareTag("Player"))
-        {
+        if (playerObj.CompareTag("Player")){
             PlayerInventory inventory = playerObj.GetComponent<PlayerInventory>();
 
             // 安全装置：インベントリ系のアイテムなのにスクリプトが付いていない場合
-            if ((data.itemType == ItemType.Coin || data.itemType == ItemType.Stock) && inventory == null)
-            {
+            if ((data.itemType == ItemType.Coin || data.itemType == ItemType.Stock) && inventory == null){
                 Debug.LogError("エラー：プレイヤーに PlayerInventory スクリプトがアタッチされていません！");
                 return;
             }
 
-            switch (data.itemType)
-            {
+            switch (data.itemType){
                 case ItemType.Health:
                     playerObj.GetComponent<PlayerHealth>().Heal(data.value);
                     break;

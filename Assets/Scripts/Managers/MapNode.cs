@@ -36,13 +36,11 @@ public class MapNode : MonoBehaviour{
         int currentLevel = 1; // プレイヤーの現在レベル
 
         // GameManagerがいる場合（本番の挙動）
-        if (GameManager.Instance != null)
-        {
+        if (GameManager.Instance != null){
             currentLevel = GameManager.Instance.unlockedStageLevel;
         }
         // GameManagerがいない場合（Map画面から直接テスト再生した時の挙動）
-        else
-        {
+        else{
             Debug.LogWarning($"【テストモード】 GameManagerがいないため、{myLevelData.levelName} を強制解放します！");
             currentLevel = 999; // 全ステージ解放とみなす
         }

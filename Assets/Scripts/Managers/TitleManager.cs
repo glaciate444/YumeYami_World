@@ -129,7 +129,8 @@ public class TitleManager : MonoBehaviour{
         switch (currentIndex){
             case 0: 
                 Debug.Log("ニューゲームを開始します！");
-                SceneManager.LoadScene("MapSelectScene");
+                //SceneManager.LoadScene("MapSelectScene");
+                SceneTransitionManager.Instance.LoadScene("MapSelectScene");
                 break;
             case 1: case 2: case 3: case 4: 
                 Debug.Log($"セーブデータ {currentIndex} をロードします！");

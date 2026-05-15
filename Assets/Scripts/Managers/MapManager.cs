@@ -118,7 +118,12 @@ public class MapManager : MonoBehaviour{
 
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
             if (currentNode != null && currentNode.myLevelData != null && currentNode.IsUnlocked){
-                SceneManager.LoadScene(currentNode.myLevelData.sceneName);
+                // ▼ 【変更】今までの直接ロードから、トランジション付きのロードに変更！ ▼
+                // 第一引数にシーン名、第二引数に LevelData に設定した「始まりの森」などの名前を渡す
+                SceneTransitionManager.Instance.LoadCourse(
+                    currentNode.myLevelData.sceneName,
+                    currentNode.myLevelData.levelName
+                );
             }
         }
     }
