@@ -1379,6 +1379,63 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1001 &923328014
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4509460032205517663, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_Name
+      value: TransitionManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 22.84707
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.18142
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
 --- !u!1 &964970788
 GameObject:
   m_ObjectHideFlags: 0
@@ -6763,7 +6820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae955b2e98b2c754f9c10e00dc26d4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
-  nextSceneName: Stage2
+  nextSceneName: MapSelectScene
 --- !u!61 &2112631401
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7136,6 +7193,7 @@ SceneRoots:
   - {fileID: 1544441402}
   - {fileID: 651392034}
   - {fileID: 1816880839}
+  - {fileID: 923328014}
   - {fileID: 1955534518}
   - {fileID: 7688359783295501847}
   - {fileID: 501079012}
