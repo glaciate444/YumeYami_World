@@ -1,9 +1,9 @@
 ﻿/* ===================================================
  * スクリプト名 : Enemy.cs
- * Version : Ver0.03
+ * Version : Ver0.04
  * Since : 2026/04/09
- * Update : 2026/05/07
- * 用途 : 敵のステータス管理（継承対応版）
+ * Update : 2026/05/19
+ * 用途 : 敵のステータス管理（アニメーション対応版）
  * =================================================== */
 using UnityEngine;
 using System.Collections;
@@ -22,14 +22,15 @@ public class Enemy : MonoBehaviour, IDamageable {
     public GameObject explosionEffectPrefab; 
 
     private Rigidbody2D rb;
-
-    // ▼ 【変更】EnemyPatrolではなく、基底クラスである EnemyMovement を取得する
     private EnemyMovement movementScript; 
+    // ▼【追加】アニメーターを制御するための変数
+    private Animator anim;
 
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
-        // アタッチされている「EnemyMovementを継承した何らかのスクリプト」を自動で探す
         movementScript = GetComponent<EnemyMovement>(); 
+        // ▼【追加】アタッチされているAnimatorを取得
+        anim = GetComponent<Animator>();
     }
 
     public void TakeDamage(int damage, Vector2 knockbackDirection){
@@ -38,6 +39,11 @@ public class Enemy : MonoBehaviour, IDamageable {
 
         Vector2 force = new Vector2(knockbackDirection.x, 0f).normalized * knockbackForce;
         rb.AddForce(force, ForceMode2D.Impulse);
+
+        // ▼【追加】ダメージを受けた瞬間に、Animatorへ合図を送る
+        if (anim != null) {
+            anim.SetTrigger("Damage");
+        }
 
         if (hp <= 0){
             Die();
@@ -57,16 +63,16 @@ public class Enemy : MonoBehaviour, IDamageable {
     }
 
     private IEnumerator DamageRoutine(){
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        // ▼【変更】色を変える処理（SpriteRenderer）を丸ごと削除しました！
+        // 動きを止める処理と、待機する処理だけを残します。
 
-        // ▼ 【変更】どんな動きの敵であっても、共通の命令で動きを停止させる
+        // 動きを一時停止
         if (movementScript != null) movementScript.PauseMovement(true);
 
-        sr.color = Color.white;
+        // ノックバック時間だけ待つ
         yield return new WaitForSeconds(knockbackTime);
-        sr.color = Color.red;
 
-        // ▼ 【変更】ノックバックが終わったら動きを再開させる
+        // 動きを再開
         if (movementScript != null) movementScript.PauseMovement(false);
     }
 }
