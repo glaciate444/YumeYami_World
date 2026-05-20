@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 5548814011895451184}
   - component: {fileID: 8022458734846777390}
   m_Layer: 11
-  m_Name: Enemy
+  m_Name: Mofuria
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

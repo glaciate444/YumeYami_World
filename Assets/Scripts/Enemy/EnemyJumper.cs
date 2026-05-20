@@ -26,9 +26,11 @@ public class EnemyJumper : EnemyMovement{
     private float jumpTimer;
     private bool isVisible = false; // 画面に映っているかどうかのフラグ
     private bool isGrounded;
+    private Animator anim; // アニメーターを操作するための変数
 
     void Start(){
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>(); // ▼【追加】アタッチされているAnimatorを取得
 
         // プレイヤーを探して記憶する（Playerタグが付いている前提）
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -55,6 +57,14 @@ public class EnemyJumper : EnemyMovement{
     void Update(){
         // 画面外にいる時、またはプレイヤーがいない時は何もしない
         if (!isVisible || player == null) return;
+
+        // 接地判定
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+
+        // ▼【追加】現在の接地状態をAnimatorに毎フレーム教える
+        if (anim != null){
+            anim.SetBool("isGrounded", isGrounded);
+        }
 
         // 接地判定
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);

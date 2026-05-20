@@ -5453,7 +5453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae955b2e98b2c754f9c10e00dc26d4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
-  nextSceneName: Stage2
+  nextSceneName: MapSelectScene
 --- !u!61 &2112631401
 BoxCollider2D:
   m_ObjectHideFlags: 0

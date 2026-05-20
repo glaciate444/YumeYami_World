@@ -995,6 +995,7 @@ GameObject:
   - component: {fileID: 659880903}
   - component: {fileID: 659880907}
   - component: {fileID: 659880906}
+  - component: {fileID: 659880908}
   m_Layer: 11
   m_Name: Enemy
   m_TagString: Untagged
@@ -1051,7 +1052,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 89f2a4b194176e6429820ba22de211c7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8031a0daf7f7be645830a62628ed05af, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -1190,10 +1191,32 @@ MonoBehaviour:
   jumpForceY: 7
   jumpInterval: 2
   groundCheck: {fileID: 1838461833}
-  checkRadius: 0.2
+  checkRadius: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+--- !u!95 &659880908
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 659880899}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 91f5bceb76150914796d31e29573350c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &729514600
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,6 +1754,7 @@ GameObject:
   - component: {fileID: 1000825262}
   - component: {fileID: 1000825261}
   - component: {fileID: 1000825260}
+  - component: {fileID: 1000825267}
   m_Layer: 11
   m_Name: 'Circle_Move_Enemy '
   m_TagString: Untagged
@@ -1898,9 +1922,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.19272226, b: 0.38055548, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: 21300000, guid: 7cba6b3f09394724b9d1c48b5ab53176, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -1925,6 +1949,28 @@ Transform:
   - {fileID: 2011077057}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1000825267
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000825259}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: defc4a19149c1c14abbcecc6591ccad2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1030639953
 GameObject:
   m_ObjectHideFlags: 0
@@ -5933,6 +5979,7 @@ GameObject:
   - component: {fileID: 1775963451}
   - component: {fileID: 1775963450}
   - component: {fileID: 1775963449}
+  - component: {fileID: 1775963456}
   m_Layer: 11
   m_Name: Circle_Move_Enemy  (1)
   m_TagString: Untagged
@@ -6100,9 +6147,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.19272226, b: 0.38055548, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: 21300000, guid: ea791434d172d6c4da2426a48ba28fdb, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -6127,6 +6174,28 @@ Transform:
   - {fileID: 1697900629}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1775963456
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775963448}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: defc4a19149c1c14abbcecc6591ccad2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1816880835
 GameObject:
   m_ObjectHideFlags: 0
@@ -6307,7 +6376,7 @@ Transform:
   m_GameObject: {fileID: 1838461832}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.44, z: 0}
+  m_LocalPosition: {x: 0, y: -0.551, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
