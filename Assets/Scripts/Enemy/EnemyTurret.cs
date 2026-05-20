@@ -1,9 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : 敵の弾スクリプト
- * Version : Ver0.02
- * Update : 2026/04/09
+ * Version : Ver0.03
+ * Since : 2026/04/09
+ * Update : 2026/05/20
  * 用途 : 弾のスクリプト、味方敵共通
- * 変更点 : 追尾ON、OFF切り替え
+ * 変更点 : アニメーションイベント連動に対応
  * =================================================== */
 using UnityEngine;
 
@@ -20,21 +21,31 @@ public class EnemyTurret : MonoBehaviour{
 
     private Transform player;
     private float timer;
+    private Animator anim; // ▼【追加】アニメーター制御用
 
     void Start(){
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
+
+        // ▼【追加】Animatorを取得
+        anim = GetComponent<Animator>();
     }
 
     void Update(){
         timer += Time.deltaTime;
         if (timer >= fireInterval){
-            Shoot();
             timer = 0f;
+
+            // ▼【変更】Animatorがあれば「Attack」の合図を送る。無ければそのまま撃つ。
+            if (anim != null){
+                anim.SetTrigger("Attack");
+            }else{
+                Shoot();
+            }
         }
     }
 
-    private void Shoot(){
+    public void Shoot(){
         if (enemyBulletPrefab == null || firePoint == null) return;
 
         // 1. ベースとなる方向を決定
