@@ -1,33 +1,48 @@
 ﻿/* ===================================================
- * スクリプト名 : 敵の弾スクリプト
- * Version : Ver0.03
- * Since : 2026/04/09
- * Update : 2026/05/20
- * 用途 : 弾のスクリプト、味方敵共通
- * 変更点 : アニメーションイベント連動に対応
+ * スクリプト名 : EnemyTurret.cs
+ * Version : Ver0.04
+ * Update : 2026/05/21
+ * 用途 : アクエディ風の高性能な敵弾発射システム
  * =================================================== */
 using UnityEngine;
+using System.Collections; // コルーチンに必要
 
 public class EnemyTurret : MonoBehaviour{
+    // ▼【追加】アクエディの「方向・対象」に相当する設定
+    public enum AimType {
+        Forward,        // 前方（今のキャラクターが向いている方向）
+        AimAtPlayer,    // ターゲット（プレイヤー）を狙う
+        RandomDirection // ランダムな方向（全方位）
+    }
+
     [Header("基本設定")]
     public GameObject enemyBulletPrefab;
     public Transform firePoint;
     public float fireInterval = 2f;
 
-    [Header("攻撃の拡張")]
-    public bool isHoming = true;      // trueで自機狙い、falseで正面（右向き）
-    public int bulletCount = 1;       // 弾の数（1, 3, 5...）
-    public float spreadAngle = 15f;   // 弾ごとの角度差
+    [Header("発射フォーメーション")]
+    public AimType aimType = AimType.AimAtPlayer;
+    public int bulletCount = 1;       // 発射数
+    public float spreadAngle = 15f;   // 分散角度
+    [Tooltip("0なら同時発射。0より大きければマシンガンのように連射します")]
+    public float burstInterval = 0f;  // 間隔（秒数）
+
+    [Header("ズレ（ゆらぎ）設定")]
+    public float angleRandomness = 0f; // 角度のズレ
+    public Vector2 positionOffset;     // 発射位置のズレX, Y
+    public Vector2 positionRandomness; // ランダムな位置のズレ（散布界）
 
     private Transform player;
     private float timer;
-    private Animator anim; // ▼【追加】アニメーター制御用
+    private Animator anim;
+
+    [Header("ターゲット補正")]
+    [Tooltip("プレイヤーの足元ではなく、中心や頭を狙うためのズレ（Yを0.5などに設定）")]
+    public Vector2 targetOffset = new Vector2(0f, 0.5f);
 
     void Start(){
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
-
-        // ▼【追加】Animatorを取得
         anim = GetComponent<Animator>();
     }
 
@@ -36,54 +51,77 @@ public class EnemyTurret : MonoBehaviour{
         if (timer >= fireInterval){
             timer = 0f;
 
-            // ▼【変更】Animatorがあれば「Attack」の合図を送る。無ければそのまま撃つ。
             if (anim != null){
                 anim.SetTrigger("Attack");
             }else{
+                // アニメーションが無い場合は直接コルーチンの開始メソッドを呼ぶ
                 Shoot();
             }
         }
     }
 
+    // アニメーションイベントからはこのメソッドを呼ぶ
     public void Shoot(){
-        if (enemyBulletPrefab == null || firePoint == null) return;
+        // 間隔（burstInterval）に対応するため、発射処理をコルーチンに任せる
+        StartCoroutine(ShootRoutine());
+    }
 
-        // 1. ベースとなる方向を決定
-        Vector2 baseDir;
-        if (isHoming && player != null){
-            baseDir = (player.position - firePoint.position).normalized;
-        }else{
-            // オブジェクトのスケール（向き）を見て方向を決定する
-            // 親オブジェクトの反転も考慮して lossyScale を使用します
-            float facingDirection = Mathf.Sign(transform.lossyScale.x);
+    private IEnumerator ShootRoutine(){
+        if (enemyBulletPrefab == null || firePoint == null) yield break;
+
+        // 1. ベースとなる方向を決定（方向・対象）
+        Vector2 baseDir = Vector2.right; 
+        float facingDirection = Mathf.Sign(transform.lossyScale.x);
+
+        if (aimType == AimType.AimAtPlayer && player != null){
+            Vector2 targetPos = (Vector2)player.position + targetOffset;
+            baseDir = (targetPos - (Vector2)firePoint.position).normalized;
+        }
+        else if (aimType == AimType.Forward){
             baseDir = new Vector2(facingDirection, 0).normalized;
+        }else if (aimType == AimType.RandomDirection){
+            float randomAngle = Random.Range(0f, 360f);
+            baseDir = new Vector2(Mathf.Cos(randomAngle * Mathf.Deg2Rad), Mathf.Sin(randomAngle * Mathf.Deg2Rad));
         }
 
         // 2. 弾の数だけループして発射
         for (int i = 0; i < bulletCount; i++){
-            // 拡散させるための角度計算
-            // i=0なら中心、それ以降は左右に振り分ける計算
-            float offset = (i - (bulletCount - 1) / 2f) * spreadAngle;
-            Vector2 finalDir = RotateVector(baseDir, offset);
+            
+            // --- 角度の計算 ---
+            float offsetAngle = 0f;
+            if (bulletCount > 1) {
+                offsetAngle = (i - (bulletCount - 1) / 2f) * spreadAngle;
+            }
+            // 角度のズレを追加
+            offsetAngle += Random.Range(-angleRandomness, angleRandomness);
+            Vector2 finalDir = RotateVector(baseDir, offsetAngle);
 
-            // 弾の生成
-            GameObject bullet = Instantiate(enemyBulletPrefab, firePoint.position, Quaternion.identity);
+            // --- 発射位置の計算 ---
+            // ※「右向きなら反転」の仕様も facingDirection を掛けることで再現
+            Vector2 randomPosOffset = new Vector2(Random.Range(-positionRandomness.x, positionRandomness.x), Random.Range(-positionRandomness.y, positionRandomness.y));
+            Vector2 finalPos = (Vector2)firePoint.position 
+                             + new Vector2(positionOffset.x * facingDirection, positionOffset.y)
+                             + randomPosOffset;
 
-            // 弾の向きを合わせる（演出）
+            // --- 弾の生成 ---
+            GameObject bullet = Instantiate(enemyBulletPrefab, finalPos, Quaternion.identity);
+
             float angle = Mathf.Atan2(finalDir.y, finalDir.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            // 発射
             Bullet b = bullet.GetComponent<Bullet>();
             if (b != null) b.Initialize(finalDir);
+
+            // --- 間隔（連射）の待機 ---
+            if (burstInterval > 0f){
+                yield return new WaitForSeconds(burstInterval);
+            }
         }
     }
 
-    // ベクトルを指定した角度(degree)だけ回転させる補助関数
     private Vector2 RotateVector(Vector2 v, float degrees){
         float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
         float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
-
         float tx = v.x;
         float ty = v.y;
         v.x = (cos * tx) - (sin * ty);

@@ -63,9 +63,6 @@ public class Enemy : MonoBehaviour, IDamageable {
     }
 
     private IEnumerator DamageRoutine(){
-        // ▼【変更】色を変える処理（SpriteRenderer）を丸ごと削除しました！
-        // 動きを止める処理と、待機する処理だけを残します。
-
         // 動きを一時停止
         if (movementScript != null) movementScript.PauseMovement(true);
 

@@ -220,6 +220,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SPBar
       objectReference: {fileID: 0}
+    - target: {fileID: 366827213951480667, guid: 3c8ad4dc9f18b5041b86c6e443a299f1, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 27ede715144d3c8438e68cae4b7d093d, type: 3}
     - target: {fileID: 3141130429316143560, guid: 3c8ad4dc9f18b5041b86c6e443a299f1, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -414,6 +418,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5210242408555384123, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d4691a7dfecb27e4e8fcec79d6abba6c, type: 3}
     - target: {fileID: 5520614238648737290, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
       propertyPath: m_Name
       value: HealthBar
