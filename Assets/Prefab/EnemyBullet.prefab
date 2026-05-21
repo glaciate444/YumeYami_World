@@ -169,8 +169,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 903757c7d0c81fd44a6a376261df8601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  speed: 5
-  damage: 1
+  speed: 8
+  damage: 2
+  impact: 5
   lifeTime: 6
   ignoreTag: Enemy
   hitEffectPrefab: {fileID: 8286972500862344658, guid: 67118bc584b70f74984698d59d874fd9, type: 3}

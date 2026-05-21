@@ -21,7 +21,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
     public TMP_Text healthText;
 
     [Header("ノックバック設定")]
-    public float knockbackForce = 10f;
     public float knockbackDuration = 0.2f;
     private Rigidbody2D rb;
     private PlayerController playerController;
@@ -75,7 +74,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
 
         // 現在の速度をリセットして、斜め上に弾き飛ばす
         rb.linearVelocity = Vector2.zero;
-        Vector2 force = new Vector2(direction.x, 0.5f).normalized * knockbackForce;
+
+        // ▼【変更】送られてきたベクトルから、衝撃の強さ（長さ）と方向を取り出す
+        float impact = direction.magnitude;
+        Vector2 dir = direction.normalized;
+
+        Vector2 force = new Vector2(dir.x, 0.5f).normalized * impact;
         rb.AddForce(force, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(knockbackDuration);

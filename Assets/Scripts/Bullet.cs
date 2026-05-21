@@ -1,8 +1,9 @@
 ﻿/* ===================================================
  * スクリプト名 : 弾スクリプト
- * Version : Ver0.01
- * Update : 2026/04/09
- * 用途 : 弾のスクリプト、味方敵共通
+ * Version : Ver0.02
+ * Since : 2026/04/09
+ * Update :2026/5/21
+ * 用途 : 弾のスクリプト、味方敵共通、ノックバック設定
  * =================================================== */
 using UnityEngine;
 
@@ -10,7 +11,9 @@ using UnityEngine;
 public class Bullet : MonoBehaviour{
     [Header("弾の設定")]
     public float speed = 15f;
-    public int damage = 2;
+    public int damage = 2;         // 「ダメージの値」
+    public float impact = 5f;      // 「衝撃」
+
     public float lifeTime = 2f;
 
     [Header("同士討ち防止")]
@@ -39,8 +42,8 @@ public class Bullet : MonoBehaviour{
         // ダメージ処理...
         IDamageable target = other.GetComponent<IDamageable>();
         if (target != null){
-            Vector2 knockbackDir = rb.linearVelocity.normalized;
-            target.TakeDamage(damage, knockbackDir);
+            Vector2 knockbackForce = rb.linearVelocity.normalized * impact;
+            target.TakeDamage(damage, knockbackForce);
         }
 
         Destroy(gameObject); // 弾自身の消滅

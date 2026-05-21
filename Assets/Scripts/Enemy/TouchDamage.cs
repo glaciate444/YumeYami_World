@@ -11,6 +11,7 @@ using UnityEngine;
 public class TouchDamage : MonoBehaviour{
     [Header("ダメージ設定")]
     public int damage = 1;
+    public float impact = 5f; // 接触時の「衝撃」
 
     [Header("踏みつけ対策")]
     [Tooltip("チェックを入れると、上から踏まれた時にプレイヤーへダメージを与えません（敵用）")]
@@ -48,7 +49,8 @@ public class TouchDamage : MonoBehaviour{
 
             // 敵からプレイヤーへの方向を計算
             Vector2 dir = (other.transform.position - transform.position).normalized;
-            target.TakeDamage(damage, dir);
+            // ▼【変更】方向 × 衝撃 を渡す
+            target.TakeDamage(damage, dir * impact);
         }
     }
 }

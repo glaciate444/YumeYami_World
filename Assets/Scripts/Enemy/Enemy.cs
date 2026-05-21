@@ -11,7 +11,6 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : MonoBehaviour, IDamageable {
     public int hp = 3;
-    public float knockbackForce = 5f;
     public float knockbackTime = 0.2f; 
 
     [Header("ドロップ設定")]
@@ -37,7 +36,7 @@ public class Enemy : MonoBehaviour, IDamageable {
         hp -= damage;
         rb.linearVelocity = Vector2.zero;
 
-        Vector2 force = new Vector2(knockbackDirection.x, 0f).normalized * knockbackForce;
+        Vector2 force = new Vector2(knockbackDirection.x, 0f);
         rb.AddForce(force, ForceMode2D.Impulse);
 
         // ▼【追加】ダメージを受けた瞬間に、Animatorへ合図を送る
