@@ -10,9 +10,10 @@ using System.Collections; // コルーチンに必要
 public class EnemyTurret : MonoBehaviour{
     // ▼【追加】アクエディの「方向・対象」に相当する設定
     public enum AimType {
-        Forward,        // 前方（今のキャラクターが向いている方向）
-        AimAtPlayer,    // ターゲット（プレイヤー）を狙う
-        RandomDirection // ランダムな方向（全方位）
+        Forward,         // 前方（今のキャラクターが向いている方向）
+        AimAtPlayer,     // ターゲット（プレイヤー）を狙う
+        RandomDirection, // ランダムな方向（全方位）
+        Up               // ▼真上
     }
 
     [Header("基本設定")]
@@ -82,6 +83,9 @@ public class EnemyTurret : MonoBehaviour{
         }else if (aimType == AimType.RandomDirection){
             float randomAngle = Random.Range(0f, 360f);
             baseDir = new Vector2(Mathf.Cos(randomAngle * Mathf.Deg2Rad), Mathf.Sin(randomAngle * Mathf.Deg2Rad));
+        }else if (aimType == AimType.Up){
+            // ▼【追加】真上（X:0, Y:1）を向く
+            baseDir = Vector2.up; 
         }
 
         // 2. 弾の数だけループして発射
