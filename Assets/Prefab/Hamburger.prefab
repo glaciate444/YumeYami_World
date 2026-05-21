@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4230419755792400783}
   - component: {fileID: 5668221358299100353}
   m_Layer: 10
-  m_Name: Heal
+  m_Name: Hamburger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

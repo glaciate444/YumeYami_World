@@ -893,7 +893,7 @@ MonoBehaviour:
   aimType: 3
   bulletCount: 3
   spreadAngle: 15
-  burstInterval: 12
+  burstInterval: 4
   angleRandomness: 10
   positionOffset: {x: 0, y: 0}
   positionRandomness: {x: 0, y: 0}
@@ -5650,6 +5650,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6306910720730316081, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
   m_PrefabInstance: {fileID: 62210895}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1759936154
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5257941673775293830, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_Name
+      value: Cake
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 68.487045
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.43601918
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6667304912941497877, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ecc534605f8c6d94bb00812df302f6c3, type: 3}
 --- !u!1 &1816880835
 GameObject:
   m_ObjectHideFlags: 0
@@ -6876,6 +6933,7 @@ SceneRoots:
   - {fileID: 786437269}
   - {fileID: 1263007393}
   - {fileID: 4905946732373500362}
+  - {fileID: 1759936154}
   - {fileID: 1595878391}
   - {fileID: 431195627}
   - {fileID: 2112631403}
