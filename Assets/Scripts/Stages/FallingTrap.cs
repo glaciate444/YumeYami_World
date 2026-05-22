@@ -1,9 +1,9 @@
-/* ===================================================
-* ƒXƒNƒŠƒvƒg–¼ : FallingTrap.cs
+ï»¿/* ===================================================
+* ã‚¹ã‚¯ãƒªãƒ—ãƒˆå : FallingTrap.cs
  * Version : Ver0.01
  * Since : 2026/05/22
  * Update : 2026/05/22
-* —p“r : ƒvƒŒƒCƒ„[‚ª‰º‚ğ’Ê‚é‚Æ—‰º‚µ‚Ä‚­‚éã©
+* ç”¨é€” : ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸‹ã‚’é€šã‚‹ã¨è½ä¸‹ã—ã¦ãã‚‹ç½ 
  * =================================================== */
 using UnityEngine;
 using System.Collections;
@@ -11,35 +11,35 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody2D))]
 public class FallingTrap : MonoBehaviour {
 
-    // ¥ —‰º‚Ìƒpƒ^[ƒ“‚Ìí—Ş
+    // â–¼ è½ä¸‹ã®ãƒ‘ã‚¿ãƒ¼ãƒ³ã®ç¨®é¡
     public enum DropPattern {
-        WarningParticles, // ƒp[ƒeƒBƒNƒ‹‚Å—\‚µ‚½Œã‚ÉoŒ»‚µ‚Ä—‰º
-        ShakeAndDrop      // •X’Œ‚Ì‚æ‚¤‚ÉA‚ä‚ç‚ä‚ç—h‚ê‚Ä‚©‚ç—‰º
+        WarningParticles, // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã§äºˆå‘Šã—ãŸå¾Œã«å‡ºç¾ã—ã¦è½ä¸‹
+        ShakeAndDrop      // æ°·æŸ±ã®ã‚ˆã†ã«ã€ã‚†ã‚‰ã‚†ã‚‰æºã‚Œã¦ã‹ã‚‰è½ä¸‹
     }
 
-    // ¥ —‰ºŒã‚Ì‹““®‚Ìí—Ş
+    // â–¼ è½ä¸‹å¾Œã®æŒ™å‹•ã®ç¨®é¡
     public enum ImpactAction {
-        DestroyOnImpact, // ’n–Ê‚âƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚çÓ‚¯U‚é
-        RemainOnGround   // ‰ó‚ê‚¸‚É‘«ê‚âáŠQ•¨‚Æ‚µ‚Ä‚»‚Ì‚Ü‚Üc‚é
+        DestroyOnImpact, // åœ°é¢ã‚„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã£ãŸã‚‰ç •ã‘æ•£ã‚‹
+        RemainOnGround   // å£Šã‚Œãšã«è¶³å ´ã‚„éšœå®³ç‰©ã¨ã—ã¦ãã®ã¾ã¾æ®‹ã‚‹
     }
 
-    [Header("—‰ºE—\İ’è")]
+    [Header("è½ä¸‹ãƒ»äºˆå‘Šè¨­å®š")]
     public DropPattern dropPattern = DropPattern.WarningParticles;
-    public float warningTime = 1.0f; // —\iƒp[ƒeƒBƒNƒ‹‚â—h‚êj‚ÌŠÔ
+    public float warningTime = 1.0f; // äºˆå‘Šï¼ˆãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚„æºã‚Œï¼‰ã®æ™‚é–“
 
-    [Header("Õ“ËŒã‚Ìİ’è")]
+    [Header("è¡çªå¾Œã®è¨­å®š")]
     public ImpactAction impactAction = ImpactAction.DestroyOnImpact;
-    public GameObject breakEffectPrefab; // Ó‚¯‚½‚ÌƒGƒtƒFƒNƒg
+    public GameObject breakEffectPrefab; // ç •ã‘ãŸæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 
-    [Header("—h‚êİ’èiShakeAndDrop—pj")]
-    public float shakeMagnitude = 0.05f; // —h‚ê‚é•
+    [Header("æºã‚Œè¨­å®šï¼ˆShakeAndDropç”¨ï¼‰")]
+    public float shakeMagnitude = 0.05f; // æºã‚Œã‚‹å¹…
 
-    [Header("ƒ_ƒ[ƒWEÕŒ‚")]
+    [Header("ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ»è¡æ’ƒ")]
     public int damage = 2;
     public float impact = 10f;
 
-    [Header("˜AŒgƒRƒ“ƒ|[ƒlƒ“ƒg")]
-    [Tooltip("—\—pƒp[ƒeƒBƒNƒ‹iqƒIƒuƒWƒFƒNƒg‚É”z’u‚µ‚ÄƒAƒ^ƒbƒ`‚µ‚Ä‚­‚¾‚³‚¢j")]
+    [Header("é€£æºã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ")]
+    [Tooltip("äºˆå‘Šç”¨ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ï¼ˆå­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«é…ç½®ã—ã¦ã‚¢ã‚¿ãƒƒãƒã—ã¦ãã ã•ã„ï¼‰")]
     public ParticleSystem warningParticles;
 
     private Rigidbody2D rb;
@@ -53,16 +53,16 @@ public class FallingTrap : MonoBehaviour {
 
         initialPosition = transform.position;
 
-        // Å‰‚Íd—Í‚Ì‰e‹¿‚ğó‚¯‚È‚¢‚æ‚¤‚ÉŒÅ’è‚µ‚Ä‚¨‚­
+        // æœ€åˆã¯é‡åŠ›ã®å½±éŸ¿ã‚’å—ã‘ãªã„ã‚ˆã†ã«å›ºå®šã—ã¦ãŠã
         rb.bodyType = RigidbodyType2D.Kinematic;
 
-        // uWarningParticlesvƒpƒ^[ƒ“‚Ìê‡AÅ‰‚Í–{‘Ì‚ğ“§–¾‚É‚µ‚Ä‚¨‚­
+        // ã€ŒWarningParticlesã€ãƒ‘ã‚¿ãƒ¼ãƒ³ã®å ´åˆã€æœ€åˆã¯æœ¬ä½“ã‚’é€æ˜ã«ã—ã¦ãŠã
         if (dropPattern == DropPattern.WarningParticles && sr != null){
             sr.enabled = false;
         }
     }
 
-    // ƒvƒŒƒCƒ„[‚ªƒZƒ“ƒT[i‰º‚ÉL‚Î‚µ‚½TriggerƒRƒ‰ƒCƒ_[j‚ÉG‚ê‚½‚ç”­“®
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã‚»ãƒ³ã‚µãƒ¼ï¼ˆä¸‹ã«ä¼¸ã°ã—ãŸTriggerã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ï¼‰ã«è§¦ã‚ŒãŸã‚‰ç™ºå‹•
     private void OnTriggerEnter2D(Collider2D other){
         if (!isTriggered && other.CompareTag("Player")){
             StartCoroutine(DropRoutine());
@@ -72,14 +72,14 @@ public class FallingTrap : MonoBehaviour {
     private IEnumerator DropRoutine(){
         isTriggered = true;
 
-        // ¥ ƒpƒ^[ƒ“‚²‚Æ‚Ì—\‰‰o ¥
+        // â–¼ ãƒ‘ã‚¿ãƒ¼ãƒ³ã”ã¨ã®äºˆå‘Šæ¼”å‡º â–¼
         if (dropPattern == DropPattern.WarningParticles){
-            // ƒp[ƒeƒBƒNƒ‹‚ğÄ¶‚µAw’èŠÔ‘Ò‚Á‚Ä‚©‚ç–{‘Ì‚ğ•\¦
+            // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’å†ç”Ÿã—ã€æŒ‡å®šæ™‚é–“å¾…ã£ã¦ã‹ã‚‰æœ¬ä½“ã‚’è¡¨ç¤º
             if (warningParticles != null) warningParticles.Play();
             yield return new WaitForSeconds(warningTime);
             if (sr != null) sr.enabled = true;
         }else if (dropPattern == DropPattern.ShakeAndDrop){
-            // w’èŠÔ‚ÌŠÔA¶‰E‚Éƒ‰ƒ“ƒ_ƒ€‚É—h‚ç‚·
+            // æŒ‡å®šæ™‚é–“ã®é–“ã€å·¦å³ã«ãƒ©ãƒ³ãƒ€ãƒ ã«æºã‚‰ã™
             float elapsed = 0f;
             while (elapsed < warningTime){
                 float x = initialPosition.x + Random.Range(-shakeMagnitude, shakeMagnitude);
@@ -87,52 +87,52 @@ public class FallingTrap : MonoBehaviour {
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            // —h‚ê‚ªI‚í‚Á‚½‚çŒ³‚ÌXÀ•W‚É–ß‚·
+            // æºã‚ŒãŒçµ‚ã‚ã£ãŸã‚‰å…ƒã®Xåº§æ¨™ã«æˆ»ã™
             transform.position = initialPosition;
         }
 
-        // ¥ —‰ºŠJn ¥
-        // ƒLƒlƒ}ƒeƒBƒbƒNiŒÅ’èj‚©‚çƒ_ƒCƒiƒ~ƒbƒNi•¨—‰‰Zj‚É•ÏX‚µAd—Í‚Å—‚Æ‚·
+        // â–¼ è½ä¸‹é–‹å§‹ â–¼
+        // ã‚­ãƒãƒãƒ†ã‚£ãƒƒã‚¯ï¼ˆå›ºå®šï¼‰ã‹ã‚‰ãƒ€ã‚¤ãƒŠãƒŸãƒƒã‚¯ï¼ˆç‰©ç†æ¼”ç®—ï¼‰ã«å¤‰æ›´ã—ã€é‡åŠ›ã§è½ã¨ã™
         rb.bodyType = RigidbodyType2D.Dynamic;
     }
 
-    // —‰º’†‚É‰½‚©‚ÉŒƒ“Ë‚µ‚½‚Ìˆ—
+    // è½ä¸‹ä¸­ã«ä½•ã‹ã«æ¿€çªã—ãŸæ™‚ã®å‡¦ç†
     private void OnCollisionEnter2D(Collision2D other){
         if (!isTriggered) return;
 
-        // ¥y’Ç‰Áz“Vˆä‚ÉG‚ê‚½”»’è‚Å‘¦À‚É©”š‚·‚é‚Ì‚ğ–h‚®ˆ— ¥
+        // â–¼ã€è¿½åŠ ã€‘å¤©äº•ã«è§¦ã‚ŒãŸåˆ¤å®šã§å³åº§ã«è‡ªçˆ†ã™ã‚‹ã®ã‚’é˜²ãå‡¦ç† â–¼
         bool isHitFromBottom = false;
 
-        // ‚Ô‚Â‚©‚Á‚½‚·‚×‚Ä‚Ìƒ|ƒCƒ“ƒgiÚ“_j‚ğŠm”F‚·‚é
+        // ã¶ã¤ã‹ã£ãŸã™ã¹ã¦ã®ãƒã‚¤ãƒ³ãƒˆï¼ˆæ¥ç‚¹ï¼‰ã‚’ç¢ºèªã™ã‚‹
         foreach (ContactPoint2D contact in other.contacts){
-            // Ú“_‚ªã©‚Ì’†S‚æ‚èu‰ºv‚Å‚ ‚ê‚ÎA’n–Ê‚©ƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚Æ”»’è
+            // æ¥ç‚¹ãŒç½ ã®ä¸­å¿ƒã‚ˆã‚Šã€Œä¸‹ã€ã§ã‚ã‚Œã°ã€åœ°é¢ã‹ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã£ãŸã¨åˆ¤å®š
             if (contact.point.y < transform.position.y + 0.1f){
                 isHitFromBottom = true;
                 break;
             }
         }
 
-        // ‰º‚É‚Ô‚Â‚©‚Á‚Ä‚¢‚È‚¢i“Vˆä‚ÉG‚ê‚Ä‚¢‚é‚¾‚¯j‚È‚çA‚±‚±‚Åˆ—‚ğ~‚ß‚é
+        // ä¸‹ã«ã¶ã¤ã‹ã£ã¦ã„ãªã„ï¼ˆï¼å¤©äº•ã«è§¦ã‚Œã¦ã„ã‚‹ã ã‘ï¼‰ãªã‚‰ã€ã“ã“ã§å‡¦ç†ã‚’æ­¢ã‚ã‚‹
         if (!isHitFromBottom) return;
 
-        // 1. ƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½ê‡‚Íƒ_ƒ[ƒW‚ÆÕŒ‚‚ğ—^‚¦‚é
+        // 1. ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã£ãŸå ´åˆã¯ãƒ€ãƒ¡ãƒ¼ã‚¸ã¨è¡æ’ƒã‚’ä¸ãˆã‚‹
         if (other.gameObject.CompareTag("Player")){
             IDamageable target = other.gameObject.GetComponent<IDamageable>();
             if (target != null){
-                // Î‚ß‰º•ûŒü‚ÉÕŒ‚‚ğŒvZ
+                // æ–œã‚ä¸‹æ–¹å‘ã«è¡æ’ƒã‚’è¨ˆç®—
                 Vector2 dir = (other.transform.position - transform.position).normalized;
                 target.TakeDamage(damage, dir * impact);
             }
         }
 
-        // 2. Õ“ËŒã‚Ìˆ—iÓ‚¯‚é or c‚éj
+        // 2. è¡çªå¾Œã®å‡¦ç†ï¼ˆç •ã‘ã‚‹ or æ®‹ã‚‹ï¼‰
         if (impactAction == ImpactAction.DestroyOnImpact){
             if (breakEffectPrefab != null){
                 Instantiate(breakEffectPrefab, transform.position, Quaternion.identity);
             }
-            Destroy(gameObject); // ©•ª©g‚ğÁ–Å
+            Destroy(gameObject); // è‡ªåˆ†è‡ªèº«ã‚’æ¶ˆæ»…
         }else{
-            // c‚éê‡‚ÍA‚±‚êˆÈãƒ_ƒ[ƒW‚ğ—^‚¦‚È‚¢‚æ‚¤‚ÉƒXƒNƒŠƒvƒg©‘Ì‚ğƒIƒt‚É‚·‚é
+            // æ®‹ã‚‹å ´åˆã¯ã€ã“ã‚Œä»¥ä¸Šãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆãªã„ã‚ˆã†ã«ã‚¹ã‚¯ãƒªãƒ—ãƒˆè‡ªä½“ã‚’ã‚ªãƒ•ã«ã™ã‚‹
             this.enabled = false;
         }
     }
