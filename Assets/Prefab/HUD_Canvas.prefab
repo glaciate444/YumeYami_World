@@ -221,6 +221,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 77f412a476ece6a489c11c7d2c138146, type: 3}
+    - target: {fileID: 2116824308055516901, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
+      propertyPath: m_Name
+      value: BOSS_HP_Img
+      objectReference: {fileID: 0}
     - target: {fileID: 2199028886138008736, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
       propertyPath: m_SizeDelta.x
       value: 120
@@ -340,6 +344,10 @@ PrefabInstance:
     - target: {fileID: 5520614238648737290, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8229167464594475619, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
+      propertyPath: m_Name
+      value: BOSS_HP_TEXT_BOARD
       objectReference: {fileID: 0}
     - target: {fileID: 9141535543435176177, guid: 55849d1dfdf4cc54c9df86065272e399, type: 3}
       propertyPath: m_SizeDelta.x
