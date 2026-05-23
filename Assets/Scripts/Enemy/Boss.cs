@@ -1,9 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : Boss.cs
- * Version : Ver0.01a
+ * Version : Ver0.02
  * Since : 2026/05/23
  * Update : 2026/05/23
  * 用途 : ボスのステータス管理、HPバー連動、登場演出
+* 拡張 : 大ボス/中ボスのenum切り替え、撃破時の部屋ロック解除に対応
  * =================================================== */
 using System.Collections;
 using TMPro;
@@ -12,8 +13,15 @@ using UnityEngine.UI; // Sliderの操作に必要
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Boss : MonoBehaviour, IDamageable{
-    
+
+    // ▼【追加】ボスの種類の定義
+    public enum BossType{
+        StageBoss,   // 大ボス（倒したらステージクリアなど）
+        RoomGuarder  // 中ボス / ルームガーダー（倒したら部屋を開放）
+    }
+
     [Header("ボス基本ステータス")]
+    public BossType bossType = BossType.RoomGuarder; // インスペクターで選択
     public string bossName = "大ボス";
     public int maxHp = 50;
     private int currentHp;
@@ -22,6 +30,14 @@ public class Boss : MonoBehaviour, IDamageable{
     [Tooltip("HUD_Canvas内にある『BossHealthBar』のSliderオブジェクトをセット")]
     public Slider bossHpSlider;
     public TMP_Text bossHpText;
+
+    // ▼【追加】中ボス（RoomGuarder）用の連動オブジェクト
+    [Header("ルームガーダー用解放設定")]
+    [Tooltip("倒したときに消去する見えない壁（Entrance Blocker）をセット")]
+    public GameObject entranceBlocker;
+    public GameObject entranceBlockerR;
+    [Tooltip("倒したときにオフにするボス部屋カメラ（BossRoomCamera）をセット")]
+    public GameObject bossCameraObj;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -139,6 +155,26 @@ public class Boss : MonoBehaviour, IDamageable{
         // 撃破されたらHPバーを非表示にする（またはリザルトへ）
         if (bossHpSlider != null){
             bossHpSlider.gameObject.SetActive(false);
+        }
+
+        // ▼【追加】中ボスだった場合の部屋の未ロック（ギミック解除）処理 ▼
+        if (bossType == BossType.RoomGuarder){
+            // 1. 閉じ込められていた見えない壁を消す
+            if (entranceBlocker != null){
+                entranceBlocker.SetActive(false);
+                entranceBlockerR.SetActive(false);
+                Debug.Log("封鎖が解除された！");
+            }
+
+            // 2. ボス部屋カメラをOFFにする
+            // ※これをOFFにするだけで、Cinemachineが自動的にプレイヤーを追うメインカメラへ滑らかに戻してくれます！
+            if (bossCameraObj != null){
+                bossCameraObj.SetActive(false);
+                Debug.Log("カメラワークが元に戻りました。");
+            }
+        }else if (bossType == BossType.StageBoss){
+            // 将来的にはここに「ステージクリアのファンファーレ」や「リザルト画面への遷移」などを書きます
+            Debug.Log("ステージクリア演出へ！");
         }
 
         // 死亡アニメーションの再生や、ドアの解錠、クリアアイテムのドロップなどをここに書く
