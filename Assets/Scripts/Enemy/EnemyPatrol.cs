@@ -4,7 +4,7 @@
 public class EnemyPatrol : EnemyMovement{
     [Header("移動設定")]
     public float moveSpeed = 2f;
-    private bool movingRight = true;
+    private bool movingRight = false;
 
     [Header("壁・崖の判定")]
     public Transform wallCheck;    // 目の前に配置する空オブジェクト

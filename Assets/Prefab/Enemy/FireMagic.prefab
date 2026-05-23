@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5382326903708877659}
   - component: {fileID: 7587009235645555821}
   - component: {fileID: 8852134983423741830}
+  - component: {fileID: -1161840261371566641}
   m_Layer: 11
   m_Name: FireMagic
   m_TagString: Untagged
@@ -139,7 +140,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 4
-  knockbackForce: 0
   knockbackTime: 0.2
   itemPrefab: {fileID: 0}
   dropChance: 50
@@ -194,6 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
   damage: 1
+  impact: 5
   canBeStomped: 1
 --- !u!95 &7587009235645555821
 Animator:
@@ -232,9 +233,28 @@ MonoBehaviour:
   enemyBulletPrefab: {fileID: 7814645704091411752, guid: bb9ebfd7ab01cce4b9f18c488b6b5443, type: 3}
   firePoint: {fileID: 5466242431524282105}
   fireInterval: 2
-  isHoming: 1
+  aimType: 1
   bulletCount: 1
   spreadAngle: 15
+  burstInterval: 0
+  angleRandomness: 0
+  positionOffset: {x: 0, y: 0}
+  positionRandomness: {x: 0, y: 0}
+  targetOffset: {x: 0, y: 0.5}
+--- !u!114 &-1161840261371566641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4743028728278434382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75298aa14076a04b8c3054f1917e291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyActivator
+  activationDistance: 25
+  resetPositionWhenFar: 1
 --- !u!1 &6207995849522876969
 GameObject:
   m_ObjectHideFlags: 0

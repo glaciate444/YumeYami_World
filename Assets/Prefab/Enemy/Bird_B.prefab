@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 8505329884342263385}
   - component: {fileID: 4214104537876411887}
   - component: {fileID: 4956378995937708153}
+  - component: {fileID: -810350089609410748}
   m_Layer: 11
   m_Name: Bird_B
   m_TagString: Untagged
@@ -143,7 +144,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 3
-  knockbackForce: 5
   knockbackTime: 0.2
   itemPrefab: {fileID: 0}
   dropChance: 50
@@ -240,6 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
   damage: 1
+  impact: 5
   canBeStomped: 1
 --- !u!95 &4956378995937708153
 Animator:
@@ -263,6 +264,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-810350089609410748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740725382011479331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75298aa14076a04b8c3054f1917e291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyActivator
+  activationDistance: 25
+  resetPositionWhenFar: 1
 --- !u!1 &5375582973465520602
 GameObject:
   m_ObjectHideFlags: 0
