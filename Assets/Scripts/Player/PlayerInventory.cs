@@ -52,7 +52,15 @@ public class PlayerInventory : MonoBehaviour{
 
     // コインを拾った時に呼ばれる
     public void AddCoin(int amount){
-        GameManager.Instance.totalCoins += amount;
+        // ▼【重要】GameManagerが「存在する時だけ」セーブ用の変数に足す
+        if (GameManager.Instance != null){
+            GameManager.Instance.totalCoins += amount;
+        }else{
+            // テストプレイ用に、無い場合は警告だけ出してエラーで止まるのを防ぐ
+            Debug.LogWarning("GameManagerがありません。テストプレイ中のためコインはセーブされません。");
+        }
+
+        // --- 以下はこれまで通りの処理 ---
         currentCoins += amount;
         UpdateUI();
         Debug.Log($"コインをゲット！ 現在: {currentCoins}枚");
