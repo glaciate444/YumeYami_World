@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickup
   data: {fileID: 11400000, guid: 48defd7b468d7f4489b1762b061f3b08, type: 2}
+  itemSE: {fileID: 8300000, guid: 3531c97c63637c747ba4f98b247f22cd, type: 3}
 --- !u!58 &-1202491127766689105
 CircleCollider2D:
   m_ObjectHideFlags: 0

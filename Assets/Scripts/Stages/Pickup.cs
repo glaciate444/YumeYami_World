@@ -10,6 +10,9 @@ using UnityEngine;
 public class Pickup : MonoBehaviour{
     public ItemData data;
 
+    [Header("効果音")]
+    public AudioClip itemSE;
+
     // ▼ すり抜けるタイプ（空中に浮いているコインなど）で呼ばれる
     private void OnTriggerEnter2D(Collider2D other){
         PickItem(other.gameObject);
@@ -24,6 +27,11 @@ public class Pickup : MonoBehaviour{
     private void PickItem(GameObject playerObj){
         if (playerObj.CompareTag("Player")){
             PlayerInventory inventory = playerObj.GetComponent<PlayerInventory>();
+
+            // ▼ 音を鳴らす（安全装置付き）
+            if (SoundManager.instance != null){
+                SoundManager.instance.PlaySE(itemSE);
+            }
 
             // 安全装置：インベントリ系のアイテムなのにスクリプトが付いていない場合
             if ((data.itemType == ItemType.Coin || data.itemType == ItemType.Stock) && inventory == null){
