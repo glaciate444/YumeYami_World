@@ -1,10 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.06
+ * Version : Ver0.07
  * Since : 2026/04/01
- * Update : 2026/05/15
+ * Update : 2026/05/25
  * 用途 : プレイヤー制御
- * 更新 : 梯子対応
+ * 更新 : 効果音追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -81,6 +81,9 @@ public class PlayerController : MonoBehaviour{
     private bool isGrounded;
     private PlayerControls inputActions;
     private Animator anim;
+
+    [Header("効果音")]
+    public AudioClip jumpSE; // ← ここに追加
 
     // PlayerController.cs に追加・修正
     [HideInInspector]
@@ -270,6 +273,11 @@ public class PlayerController : MonoBehaviour{
         if (coyoteTimeCounter > 0f && !isDashing){
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
+            // ▼ 音を鳴らす（安全装置付き）
+            if (SoundManager.instance != null){
+                SoundManager.instance.PlaySE(jumpSE);
+            }
+
             // 【超重要】ジャンプしたらタイマーを即座にゼロにする（空中での連続ジャンプ防止）
             coyoteTimeCounter = 0f;
         }
@@ -284,6 +292,11 @@ public class PlayerController : MonoBehaviour{
 
             // 斜め上に向かって力を加える
             rb.linearVelocity = new Vector2(wallJumpForce.x * jumpDirection, wallJumpForce.y);
+
+            // ▼ 音を鳴らす（安全装置付き）
+            if (SoundManager.instance != null){
+                SoundManager.instance.PlaySE(jumpSE);
+            }
 
             // 飛ぶと同時に、プレイヤーの向き（絵）も反転させる
             transform.localScale = new Vector3(jumpDirection, 1, 1);

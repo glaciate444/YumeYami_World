@@ -421,6 +421,8 @@ MonoBehaviour:
   wallSlidingSpeed: 2
   wallJumpForce: {x: 8, y: 12}
   wallJumpDuration: 0.4
+  climbSpeed: 5
+  jumpSE: {fileID: 8300000, guid: aaedd21b2b9a14d43911160b41247e82, type: 3}
   isKnockback: 0
   platformVelocity: {x: 0, y: 0}
 --- !u!114 &3311214140920176185
@@ -439,7 +441,6 @@ MonoBehaviour:
   currentHealth: 12
   healthSlider: {fileID: 0}
   healthText: {fileID: 0}
-  knockbackForce: 6
   knockbackDuration: 0.3
   invincibilityDuration: 1
 --- !u!114 &2234151228853066145
@@ -645,6 +646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStomp
   stompDamage: 2
   bounceForce: 12
+  stompSE: {fileID: 8300000, guid: afa8813c64902c54ba08975551a26ab5, type: 3}
 --- !u!1 &6239977293470616225
 GameObject:
   m_ObjectHideFlags: 0

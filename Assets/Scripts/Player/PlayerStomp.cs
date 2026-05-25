@@ -12,6 +12,9 @@ public class PlayerStomp : MonoBehaviour{
     public int stompDamage = 2; // 固定2ダメージ
     public float bounceForce = 12f; // 踏んだ後の跳ねる力
 
+    [Header("効果音")]
+    public AudioClip stompSE; // ← ここに追加
+
     private Rigidbody2D playerRb;
 
     void Start(){
@@ -35,6 +38,11 @@ public class PlayerStomp : MonoBehaviour{
 
                 // 敵に2ダメージを与える（上から踏んだので、ノックバック方向は真下を指定）
                 target.TakeDamage(stompDamage, Vector2.down);
+
+                // ▼ 敵自身が Destroy されても、SoundManager が鳴らすので音は途切れません！
+                if (SoundManager.instance != null){
+                    SoundManager.instance.PlaySE(stompSE);
+                }
 
                 // プレイヤーを上に跳ねさせる（現在のX速度は維持し、Y速度だけ上書き）
                 playerRb.linearVelocity = new Vector2(playerRb.linearVelocity.x, bounceForce);
