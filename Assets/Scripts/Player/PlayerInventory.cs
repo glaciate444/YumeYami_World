@@ -52,6 +52,7 @@ public class PlayerInventory : MonoBehaviour{
 
     // コインを拾った時に呼ばれる
     public void AddCoin(int amount){
+        GameManager.Instance.totalCoins += amount;
         currentCoins += amount;
         UpdateUI();
         Debug.Log($"コインをゲット！ 現在: {currentCoins}枚");
