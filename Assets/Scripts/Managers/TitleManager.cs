@@ -168,4 +168,15 @@ public class TitleManager : MonoBehaviour{
                 break;
         }
     }
+    // オプション画面を閉じるボタン用
+    public void CloseOptions(){
+        ChangeState(TitleState.MainMenu);
+        inputCooldown = 0.2f; // キーボードとの重複入力を防ぐためのクールダウン
+    }
+
+    // クレジット画面を閉じるボタン用（もしあれば）
+    public void CloseCredits(){
+        ChangeState(TitleState.MainMenu);
+        inputCooldown = 0.2f;
+    }
 }

@@ -59,19 +59,6 @@ public class OptionManager : MonoBehaviour{
             AdjustSlider(slideSpeed * Time.deltaTime);
         }
 
-        // ▼ 決定ボタン（BACK選択時のみ発動） ▼
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
-            if (currentIndex == 2){ // 2番目(BACK)が選ばれている時
-                Debug.Log("BACKが押されました！ TitleManagerのセット状態: " + (titleManager != null));
-
-                // スクリプトから強制的に TitleManager の CloseOptions() を呼ぶ
-                //if (titleManager != null) titleManager.CloseOptions();
-
-                // 次回開いた時に一番上のBGMに戻るようにリセットしておく
-                currentIndex = 0;
-                UpdateCursorPosition();
-            }
-        }
     }
 
     // スライダーの数値を増減させる（UnityのSliderは自動的にMin/Max内に収まるので安心です）
