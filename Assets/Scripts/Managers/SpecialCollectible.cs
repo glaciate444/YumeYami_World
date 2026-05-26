@@ -54,7 +54,11 @@ public class SpecialCollectible : MonoBehaviour {
             PlayerPrefs.Save();
 
             // 2. GameManager 等で UI に通知する処理があればここに書く
-            // (例: K-O-N-G のUIを点灯させるなど)
+            // ▼【ここを追加！】画面内の HUD スクリプトを探して、UIを最新状態に更新させる ▼
+            SpecialCollectibleHUD hud = FindFirstObjectByType<SpecialCollectibleHUD>();
+            if (hud != null){
+                hud.UpdateHUD();
+            }
 
             // 3. 音を鳴らす
             if (SoundManager.instance != null && collectSE != null){
