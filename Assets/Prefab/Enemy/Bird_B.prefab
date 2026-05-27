@@ -64,7 +64,7 @@ Transform:
   m_GameObject: {fileID: 4740725382011479331}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46.32, y: 2.13, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -148,6 +148,7 @@ MonoBehaviour:
   itemPrefab: {fileID: 0}
   dropChance: 50
   explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
+  isFallingDeath: 0
 --- !u!50 &7118707299467722457
 Rigidbody2D:
   serializedVersion: 5
@@ -205,7 +206,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0

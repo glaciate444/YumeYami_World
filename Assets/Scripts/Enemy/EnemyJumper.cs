@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : EnemyJumper.cs
- * Version : Ver0.02
+ * Version : Ver0.03
  * Since : 2026/04/30
- * Update : 2026/05/07
+ * Update : 2026/05/27
  * 用途 : ぴょんぴょん跳ねて近づいてくる敵
  * 更新 : 基底クラス実装
  * =================================================== */
@@ -58,26 +58,28 @@ public class EnemyJumper : EnemyMovement{
         // 画面外にいる時、またはプレイヤーがいない時は何もしない
         if (!isVisible || player == null) return;
 
-        // 接地判定
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+        // ▼【重要・修正】上昇中（ジャンプ直後）は、強制的に接地判定をOFFにする！
+        if (rb.linearVelocity.y > 0.1f){
+            isGrounded = false;
+        }else{
+            // 落下中、または停止中の時だけ足元の判定を行う
+            isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+        }
 
-        // ▼【追加】現在の接地状態をAnimatorに毎フレーム教える
+        // 現在の接地状態をAnimatorに毎フレーム教える
         if (anim != null){
             anim.SetBool("isGrounded", isGrounded);
         }
 
-        // 接地判定
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+        // ▼【修正】重複していた2回目の接地判定は削除しました
 
         if (isGrounded){
             jumpTimer -= Time.deltaTime;
 
-            // ▼【修正】飛んだ直後（タイマーがリセットされた直後）の数フレームは横移動を止めない！
-            // タイマーが少し減って「完全に着地して待機している状態」の時だけピタッと止める
+            // 飛んだ直後（タイマーがリセットされた直後）の数フレームは横移動を止めない！
             if (jumpTimer < jumpInterval - 0.1f){
                 rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             }
-
             // タイマーが0になったらジャンプ
             if (jumpTimer <= 0f){
                 JumpTowardsPlayer();
@@ -96,5 +98,13 @@ public class EnemyJumper : EnemyMovement{
 
         // 斜め上に向かって力を加えてジャンプ！
         rb.linearVelocity = new Vector2(direction * jumpForceX, jumpForceY);
+    }
+    // ▼ スクリプトの最後（最後の } の手前）にこれを追加するだけ！ ▼
+    private void OnDrawGizmos(){
+        if (groundCheck != null){
+            // エディタ上で、センサーの位置に赤い円を描画して見やすくする
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
+        }
     }
 }
