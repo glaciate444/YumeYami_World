@@ -21,7 +21,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7eaada23bf815bc4b8be3c64f980d962, type: 2}
+  m_Motion: {fileID: 7400000, guid: 28dc63b45f9d35346b9eb0cd90ac0199, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -84,7 +84,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Enemy001_Anim
+  m_Name: Enemy001B_Anim
   serializedVersion: 6
   m_AnimatorParameters:
   - m_Name: Damage
@@ -149,7 +149,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 72037b0c565e9924882ede296b179915, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6a6f4c722e75212459cca991a9b1da95, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
