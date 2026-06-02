@@ -1,10 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.07
+ * Version : Ver0.08
  * Since : 2026/04/01
- * Update : 2026/05/25
+ * Update : 2026/06/02
  * 用途 : プレイヤー制御
- * 更新 : 効果音追加
+ * 更新 : ゴール時の動き
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -392,5 +392,23 @@ public class PlayerController : MonoBehaviour{
             isNearLadder = false;
             isClimbing = false; // 梯子から離れたら強制的に登り状態を解除
         }
+    }
+    // ==========================================
+    // ▼ここから追加：ゴール時の演出用メソッド▼
+    // ==========================================
+    public void PlayGoalAction(){
+        // 1. キーボードやゲームパッドの入力を完全にシャットアウトする
+        inputActions.Disable();
+
+        // 2. 移動の速度を強制的にゼロにして、その場でピタッと止める
+        rb.linearVelocity = Vector2.zero;
+
+        // 3. アニメーションを「待機」状態に戻す
+        anim.SetBool("isWalking", false);
+        anim.SetFloat("velocityY", 0f);
+
+        // ▼「Goal」という名前のTriggerをAnimatorに追加すれば、ここで専用ポーズを再生できます！
+        // （ポーズのアニメーションを作成したら、以下のコメントアウトを外してください）
+        // anim.SetTrigger("Goal"); 
     }
 }

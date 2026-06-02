@@ -1,46 +1,58 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalPoint.cs
- * Version : Ver0.03
- * 用途 : ゴール判定とトランジション遷移
- * 更新 : クリア時にGameManagerの進行度を更新する機能を追加
+ * Version : Ver0.04
+ * 用途 : ゴール判定とアイリスアウト遷移
  * =================================================== */
 using UnityEngine;
 using UnityEngine.SceneManagement; 
+using System.Collections; // コルーチンを使うために追加
 
 public class GoalPoint : MonoBehaviour{
     [Header("遷移先シーン名")]
-    [Tooltip("クリア後に戻るマップ画面や、次のステージ名を指定")]
-    public string nextSceneName = "MapSelectScene";
+    public string nextSceneName = "MapSelectScene"; // ※後でここを「ミニゲームのScene名」に変更します
 
-    // ▼【追加】クリアした時に解放するレベル（進行度）
     [Header("ステージ進行設定")]
-    [Tooltip("このゴールに触れた時に、GameManagerの進行度をいくつにするか（例：1-1クリアなら2）")]
     public int unlockLevelReward = 2;
+
+    [Header("演出時間")]
+    public float waitTime = 2.0f; // ポーズをとってから暗転が始まるまでの「ドヤ顔」の時間
 
     private bool isGoal;
 
     private void OnTriggerEnter2D(Collider2D other){
-        // まだゴールしておらず、プレイヤーが触れたら
         if (!isGoal && other.CompareTag("Player")){
             isGoal = true;
-            Debug.Log("ゴール！おめでとう！");
+            Debug.Log("ゴール！");
 
-            // ▼【追加】GameManagerに「クリアしたから次のレベルを解放して！」と伝える ▼
+            // 1. プレイヤーの操作を奪い、ポーズを取らせる
+            PlayerController player = other.GetComponent<PlayerController>();
+            if (player != null){
+                player.PlayGoalAction();
+            }
+
+            // 2. GameManagerの進行度を更新
             if (GameManager.Instance != null){
-                // 現在の進行度より、このゴールで得られる進行度の方が大きければ上書き更新する
                 if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){
                     GameManager.Instance.unlockedStageLevel = unlockLevelReward;
-                    
-                    // ※もし今後 GameManager にセーブ機能（Save()など）を作った場合は、ここで呼ぶとベストです！
                 }
             }
 
-            // SceneTransitionManagerを使って、フェードアウトで画面遷移する
-            if (SceneTransitionManager.Instance != null) {
-                SceneTransitionManager.Instance.LoadScene(nextSceneName, TransitionType.Fade);
-            } else {
-                SceneManager.LoadScene(nextSceneName);
-            }
+            // 3. 待ち時間＆アイリスアウトをコルーチンで開始
+            StartCoroutine(GoalRoutine(other.transform));
+        }
+    }
+
+    private IEnumerator GoalRoutine(Transform playerTransform){
+        // ポーズを見せるために指定した時間（2秒）だけ待機
+        yield return new WaitForSeconds(waitTime);
+
+        // アイリスアウトのマネージャーを探して起動！
+        IrisTransitionManager iris = FindFirstObjectByType<IrisTransitionManager>();
+        if (iris != null){
+            iris.StartIrisOut(playerTransform, nextSceneName);
+        } else {
+            // マネージャーが無ければ保険として普通に遷移
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }
