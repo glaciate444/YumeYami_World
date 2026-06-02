@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6adca6a612ad38c4d8818db72da41cc5, type: 3}
-  m_Name: Level_03_Data
+  m_Name: Level_04_Data
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
-  stageNumber: 3
-  levelName: No.03
-  sceneName: Level1-Stage3
-  requiredUnlockLevel: 3
+  stageNumber: 4
+  levelName: No.04
+  sceneName: Level1-Stage4
+  requiredUnlockLevel: 4
   thumbnail: {fileID: 0}
   description: 

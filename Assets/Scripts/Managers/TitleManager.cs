@@ -130,6 +130,10 @@ public class TitleManager : MonoBehaviour{
             case 0: 
                 Debug.Log("ニューゲームを開始します！");
                 //SceneManager.LoadScene("MapSelectScene");
+                // ▼【重要】過去のセーブデータをすべて消去して、まっさらな状態にする！
+                PlayerPrefs.DeleteAll();
+                PlayerPrefs.Save();
+
                 SceneTransitionManager.Instance.LoadScene("MapSelectScene");
                 break;
             case 1: case 2: case 3: case 4: 
