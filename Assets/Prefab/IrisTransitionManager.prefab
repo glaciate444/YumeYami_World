@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8592e2ba89ba064797f8e7524ecfeee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IrisTransitionManager
-  irisImageRect: {fileID: 0}
-  irisDuration: 1.5
+  irisDuration: 2
+  startSize: 20
+  circleSprite: {fileID: 21300000, guid: a810dc81c70fc3c489d5bf9297612827, type: 3}
