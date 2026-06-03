@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 4214104537876411887}
   - component: {fileID: 4956378995937708153}
   - component: {fileID: -810350089609410748}
+  - component: {fileID: 6356264180012389600}
   m_Layer: 11
   m_Name: Bird_C
   m_TagString: Untagged
@@ -148,7 +149,6 @@ MonoBehaviour:
   itemPrefab: {fileID: 0}
   dropChance: 50
   explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
-  isFallingDeath: 0
 --- !u!50 &7118707299467722457
 Rigidbody2D:
   serializedVersion: 5
@@ -279,6 +279,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyActivator
   activationDistance: 25
   resetPositionWhenFar: 1
+--- !u!70 &6356264180012389600
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740725382011479331}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.108148575, y: -0.029913127}
+  m_Size: {x: 0.5996208, y: 0.7837039}
+  m_Direction: 0
 --- !u!1 &5375582973465520602
 GameObject:
   m_ObjectHideFlags: 0
