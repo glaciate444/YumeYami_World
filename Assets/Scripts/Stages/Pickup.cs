@@ -5,6 +5,7 @@
  * Update : 2026/05/05
  * 用途 : アイテム
  * =================================================== */
+using NUnit.Framework.Interfaces;
 using UnityEngine;
 
 public class Pickup : MonoBehaviour{
@@ -38,6 +39,9 @@ public class Pickup : MonoBehaviour{
                 Debug.LogError("エラー：プレイヤーに PlayerInventory スクリプトがアタッチされていません！");
                 return;
             }
+            if(GameManager.Instance == null){
+                Debug.LogError("エラー：GameManagerがありません！");
+            }
 
             switch (data.itemType){
                 case ItemType.Health:
@@ -51,6 +55,9 @@ public class Pickup : MonoBehaviour{
                     break;
                 case ItemType.Coin:
                     inventory.AddCoin(data.value);
+                    break;
+                case ItemType.LifePiece:
+                    GameManager.Instance.AddLifePiece(data.value);
                     break;
             }
             Destroy(gameObject); // アイテムを消す
