@@ -1,9 +1,9 @@
 ﻿/* ===================================================
  * スクリプト名 : GameManager.cs
- * Version : Ver0.02
- * Update : 2026/05/25
+ * Version : Ver0.03
+ * Update : 2026/06/04
  * 用途 : シーンを切り替えても絶対に消滅しない、ゲームの総司令塔
- * 拡張 : コインの保持、および PlayerPrefs によるセーブ・ロード機能の追加
+ * 拡張 : 残基（Stock）と、1UPアイテム（LifePiece）のシステムを追加
  * =================================================== */
 using UnityEngine;
 
@@ -18,6 +18,14 @@ public class GameManager : MonoBehaviour{
     
     // ▼【追加】コインの所持数
     public int totalCoins = 0;
+
+    // ▼【追加】残基と1UP用のアイテム数
+    [Header("残基システム")]
+    public int currentLives = 3;       // 残基（初期値3）
+    public int currentLifePieces = 0;  // 1UPアイテムの所持数（0～99）
+
+    // ▼【追加】1UPの効果音（インスペクターからセットできます）
+    public AudioClip oneUpSE;
 
     void Awake(){
         // 自分が最初の1つ目なら、シーンを跨いでも消えないようにする
@@ -35,6 +43,29 @@ public class GameManager : MonoBehaviour{
     }
 
     // ==========================================
+    // 1UPアイテムを取得した時の専用処理
+    // ==========================================
+    public void AddLifePiece(int amount){
+        currentLifePieces += amount;
+        Debug.Log($"1UPアイテムゲット！ 現在: {currentLifePieces} / 100");
+        
+        // 100個以上になったら1UPする！
+        if (currentLifePieces >= 100){
+            // 100引いて、残りを繰り越す（例: 98個の時に5個取ったら、3個残る）
+            currentLifePieces -= 100;
+            currentLives++;
+            
+            // 1UPのファンファーレを鳴らす
+            if (SoundManager.instance != null && oneUpSE != null) {
+                SoundManager.instance.PlaySE(oneUpSE);
+            }
+            Debug.Log($"1UPしました！ 残基: {currentLives}");
+        }
+        
+        // ※後ほど、ここでHUD（UI）を更新する処理を呼びます
+    }
+
+    // ==========================================
     // セーブ・ロード機能 (PlayerPrefs を使用)
     // ==========================================
 
@@ -45,26 +76,23 @@ public class GameManager : MonoBehaviour{
         PlayerPrefs.SetInt("UnlockedStageLevel", unlockedStageLevel);
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
 
-        PlayerPrefs.Save(); // 書き込みを確定させる
+        // ▼【追加】
+        PlayerPrefs.SetInt("CurrentLives", currentLives);
+        PlayerPrefs.SetInt("CurrentLifePieces", currentLifePieces);
+
+        PlayerPrefs.Save();
+
         Debug.Log($"セーブ完了！ コイン: {totalCoins}, 解放ステージ: {unlockedStageLevel}");
     }
+    public void LoadGame(){
+        if (PlayerPrefs.HasKey("MaxHp")) currentMaxHp = PlayerPrefs.GetInt("MaxHp");
+        if (PlayerPrefs.HasKey("MaxSp")) currentMaxSp = PlayerPrefs.GetInt("MaxSp");
+        if (PlayerPrefs.HasKey("UnlockedStageLevel")) unlockedStageLevel = PlayerPrefs.GetInt("UnlockedStageLevel");
+        if (PlayerPrefs.HasKey("TotalCoins")) totalCoins = PlayerPrefs.GetInt("TotalCoins");
 
-    public void LoadGame() {
-        // HasKey で「そのデータが過去にセーブされているか」を確認してから読み込む
-        if (PlayerPrefs.HasKey("MaxHp")) {
-            currentMaxHp = PlayerPrefs.GetInt("MaxHp");
-        }
-        if (PlayerPrefs.HasKey("MaxSp")) {
-            currentMaxSp = PlayerPrefs.GetInt("MaxSp");
-        }
-        if (PlayerPrefs.HasKey("UnlockedStageLevel")) {
-            unlockedStageLevel = PlayerPrefs.GetInt("UnlockedStageLevel");
-        }
-        if (PlayerPrefs.HasKey("TotalCoins")) {
-            totalCoins = PlayerPrefs.GetInt("TotalCoins");
-        }
-
-        Debug.Log("ロード完了！");
+        // ▼【追加】
+        if (PlayerPrefs.HasKey("CurrentLives")) currentLives = PlayerPrefs.GetInt("CurrentLives");
+        if (PlayerPrefs.HasKey("CurrentLifePieces")) currentLifePieces = PlayerPrefs.GetInt("CurrentLifePieces");
     }
 
     // テスト用にデータを初期化するメソッド（タイトル画面の「初めから」などで使います）
@@ -76,7 +104,9 @@ public class GameManager : MonoBehaviour{
         currentMaxSp = 6;
         unlockedStageLevel = 1;
         totalCoins = 0;
-        
-        Debug.Log("セーブデータを全て削除し、初期化しました。");
+
+        // ▼【追加】初期値に戻す
+        currentLives = 3;
+        currentLifePieces = 0;
     }
 }

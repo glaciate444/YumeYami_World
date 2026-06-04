@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : ItemData.cs
+ * =================================================== */
+using UnityEngine;
 
-public enum ItemType { Health, SP, Score, Stock, Coin } // アイテムの種類を定義
+public enum ItemType { Health, SP, Score, Stock, Coin, LifePiece }
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Game/ItemData")]
 public class ItemData : ScriptableObject{
