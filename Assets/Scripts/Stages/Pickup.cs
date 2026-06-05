@@ -39,8 +39,9 @@ public class Pickup : MonoBehaviour{
                 Debug.LogError("エラー：プレイヤーに PlayerInventory スクリプトがアタッチされていません！");
                 return;
             }
-            if(GameManager.Instance == null){
+            if(data.itemType == ItemType.LifePiece && GameManager.Instance == null){
                 Debug.LogError("エラー：GameManagerがありません！");
+                return;
             }
 
             switch (data.itemType){
