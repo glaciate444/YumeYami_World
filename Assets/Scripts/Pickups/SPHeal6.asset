@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d34713f0173619241994e0808f11d574, type: 3}
-  m_Name: SPHeal2
+  m_Name: SPHeal6
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Candy_Otange
+  itemName: Candy_Green
   itemType: 1
-  value: 2
+  value: 6
   prefab: {fileID: 0}

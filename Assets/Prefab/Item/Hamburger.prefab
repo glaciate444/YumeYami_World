@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be1ca429c42552544b0b7a0675a408c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickup
-  data: {fileID: 11400000, guid: 3a8bfab767e123747b95b82e54d75d84, type: 2}
+  data: {fileID: 11400000, guid: 0f256d1561b87694683259ae2b43ca49, type: 2}
   itemSE: {fileID: 8300000, guid: 94a12207012b5fa4db40db8f5df129a8, type: 3}
 --- !u!58 &5668221358299100353
 CircleCollider2D:

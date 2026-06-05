@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d34713f0173619241994e0808f11d574, type: 3}
-  m_Name: Heal6
+  m_Name: Heal10
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: Heal6
+  itemName: Hamburger
   itemType: 0
-  value: 6
+  value: 10
   prefab: {fileID: 5257941673775293830, guid: 83572438239ad11488ad91ae0b6b15e8, type: 3}
