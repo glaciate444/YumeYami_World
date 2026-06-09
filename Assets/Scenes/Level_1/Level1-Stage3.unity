@@ -1001,7 +1001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MapSelectScene
-  unlockLevelReward: 3
+  unlockLevelReward: 4
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:

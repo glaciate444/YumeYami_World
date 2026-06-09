@@ -1,8 +1,9 @@
 ﻿/* ===================================================
  * スクリプト名 : EnemyTurret.cs
- * Version : Ver0.04
- * Update : 2026/05/21
+ * Version : Ver0.05
+ * Update : 2026/06/09
  * 用途 : アクエディ風の高性能な敵弾発射システム
+ * 修正 : SpriteRendererのFlipXによる左右反転に対応
  * =================================================== */
 using UnityEngine;
 using System.Collections; // コルーチンに必要
@@ -67,47 +68,50 @@ public class EnemyTurret : MonoBehaviour{
         StartCoroutine(ShootRoutine());
     }
 
-    private IEnumerator ShootRoutine(){
+private IEnumerator ShootRoutine(){
         if (enemyBulletPrefab == null || firePoint == null) yield break;
 
-        // 1. ベースとなる方向を決定（方向・対象）
-        Vector2 baseDir = Vector2.right; 
+        // ▼【超重要・修正】向きの判定を「Scale」と「FlipX」の両方に対応させる ▼
+        // まずスケールでの反転状況を取得（基本は 1 か -1）
         float facingDirection = Mathf.Sign(transform.lossyScale.x);
+        
+        // 次に、自分自身や子オブジェクトにある SpriteRenderer を探す
+        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        
+        // もし SpriteRenderer があって、かつ FlipX にチェックが入っていたら向きを反転させる！
+        if (sr != null && sr.flipX){
+            facingDirection *= -1f; 
+        }
+
+        Vector2 baseDir = Vector2.right; 
 
         if (aimType == AimType.AimAtPlayer && player != null){
             Vector2 targetPos = (Vector2)player.position + targetOffset;
             baseDir = (targetPos - (Vector2)firePoint.position).normalized;
         }
         else if (aimType == AimType.Forward){
+            // 修正した facingDirection を適用して、正しい方向へ発射！
             baseDir = new Vector2(facingDirection, 0).normalized;
         }else if (aimType == AimType.RandomDirection){
             float randomAngle = Random.Range(0f, 360f);
             baseDir = new Vector2(Mathf.Cos(randomAngle * Mathf.Deg2Rad), Mathf.Sin(randomAngle * Mathf.Deg2Rad));
         }else if (aimType == AimType.Up){
-            // ▼【追加】真上（X:0, Y:1）を向く
             baseDir = Vector2.up; 
         }
 
-        // 2. 弾の数だけループして発射
         for (int i = 0; i < bulletCount; i++){
-            
-            // --- 角度の計算 ---
             float offsetAngle = 0f;
             if (bulletCount > 1) {
                 offsetAngle = (i - (bulletCount - 1) / 2f) * spreadAngle;
             }
-            // 角度のズレを追加
             offsetAngle += Random.Range(-angleRandomness, angleRandomness);
             Vector2 finalDir = RotateVector(baseDir, offsetAngle);
 
-            // --- 発射位置の計算 ---
-            // ※「右向きなら反転」の仕様も facingDirection を掛けることで再現
             Vector2 randomPosOffset = new Vector2(Random.Range(-positionRandomness.x, positionRandomness.x), Random.Range(-positionRandomness.y, positionRandomness.y));
             Vector2 finalPos = (Vector2)firePoint.position 
-                             + new Vector2(positionOffset.x * facingDirection, positionOffset.y)
+                             + new Vector2(positionOffset.x * facingDirection, positionOffset.y) // ▼ 弾の出現位置のズレにも対応
                              + randomPosOffset;
 
-            // --- 弾の生成 ---
             GameObject bullet = Instantiate(enemyBulletPrefab, finalPos, Quaternion.identity);
 
             float angle = Mathf.Atan2(finalDir.y, finalDir.x) * Mathf.Rad2Deg;
@@ -116,7 +120,6 @@ public class EnemyTurret : MonoBehaviour{
             Bullet b = bullet.GetComponent<Bullet>();
             if (b != null) b.Initialize(finalDir);
 
-            // --- 間隔（連射）の待機 ---
             if (burstInterval > 0f){
                 yield return new WaitForSeconds(burstInterval);
             }
