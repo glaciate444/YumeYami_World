@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 880010590450309392}
   - component: {fileID: 7115139521258500274}
   - component: {fileID: 6096256069808751810}
+  - component: {fileID: -4065744021933012305}
   m_Layer: 11
   m_Name: Leaf
   m_TagString: Untagged
@@ -265,6 +266,21 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.03422767, y: -0.012835413}
   m_Radius: 0.4472619
+--- !u!114 &-4065744021933012305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913187578946394003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
+  damage: 1
+  impact: 10
+  canBeStomped: 1
 --- !u!1 &6779976759082059956
 GameObject:
   m_ObjectHideFlags: 0
