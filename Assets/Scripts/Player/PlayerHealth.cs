@@ -120,11 +120,26 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
     }
 
     private void Die(){
-        // 現在のシーンの名前を取得して再読み込み
+        // ▼ 1. GameManager が存在する場合（本番環境）
+        if (GameManager.Instance != null){
+            GameManager.Instance.currentLives--;
+            Debug.Log($"ミス！ 残り残基: {GameManager.Instance.currentLives}");
+
+            // ▼ もし残基が0未満（ゲームオーバー）になった場合
+            if (GameManager.Instance.currentLives < 0){
+                Debug.Log("ゲームオーバー！");
+
+                // 【ここを修正！】ゲームオーバー画面へ強制移動する
+                SceneManager.LoadScene("GameOverScene"); 
+                return; // 必須：ここで処理を終わらせて、下の「現在のシーン再読み込み」をキャンセルする
+            }
+        }
+        else {
+            Debug.Log("【テストモード】GameManagerがないため、無限残基扱いで復活します。");
+        }
+
+        // ▼ 3. 残基がまだある場合、現在のシーンを再読み込みして復活（リトライ）
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
-
-        // 特定のチェックポイントからリスポーンさせたい場合は、
-        // シーン遷移ではなく、transform.position = checkpoint.position にします。
     }
 }
