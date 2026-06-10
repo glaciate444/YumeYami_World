@@ -1,18 +1,18 @@
-/* ===================================================
- * �X�N���v�g�� : �g���b�v�p�X�N���v�g
+﻿/* ===================================================
+ * スクリプト名 : パララックススクリプト
  * Version : Ver0.02
  * Since : 2026/04/29
  * Update : 2026/04/30
- * �p�r : �����̌i�F�i���_�j�̓J�����ƈꏏ�ɂ�����蓮��
- * ��ԉ��̔w�i�i��E���z�Ȃǁj: 1 �ɐݒ肵�܂��B�i�J�����Ɗ��S�ɓ������x�œ������߁A�i���ɉ����ɂ���悤�Ɍ����܂��j
- * ���Ԃ̔w�i�i�����̎R�Ȃǁj: 0.8 �� 0.5 �Ȃǂɐݒ肵�܂��B
- * ��O�̔w�i�i�߂��̖؂Ȃǁj: 0.2 �� 0.1 �Ȃǂɐݒ肵�܂��B
+ * 用途 : 遠くの景色（空や雲）はカメラと一緒にゆっくり動く
+ * 一番奥の背景（空・太陽など）: 1 に設定します。（カメラと完全に同じ速度で動くため、永遠に遠くにあるように見えます）
+ * 中間の背景（遠くの山など）: 0.8 や 0.5 などに設定します。
+ * 手前の背景（近くの木など）: 0.2 や 0.1 などに設定します。
  * =================================================== */
 using UnityEngine;
 
 public class ParallaxBackground : MonoBehaviour{
-    [Header("�p�����b�N�X�ݒ�")]
-    [Tooltip("1 = �J�����Ɋ��S�ɒǏ], 0 = �ʏ�̃X�N���[��, 0.5 = ���Ԃ̑��x")]
+    [Header("パララックス設定")]
+    [Tooltip("1 = カメラに完全に追従, 0 = 通常のスクロール, 0.5 = 中間の速度")]
     public float parallaxEffect;
 
     private Transform cam;
@@ -27,30 +27,30 @@ public class ParallaxBackground : MonoBehaviour{
         if (sr != null){
             length = sr.bounds.size.x;
 
-            // ���y�ǉ��z�����ō��E�Ɂu�q���ځv�p�̕��g�����I ��
+            // ▼【追加】自動で左右に「繋ぎ目」用の分身を作る！ ▼
             CreateClone(length, "RightClone");
             CreateClone(-length, "LeftClone");
         }else{
-            Debug.LogWarning("SpriteRenderer��������܂���B");
+            Debug.LogWarning("SpriteRendererが見つかりません。");
         }
     }
 
-    // --- �y�ǉ��z���g�i�N���[���j�𐶐������p���\�b�h ---
+    // --- 【追加】分身（クローン）を生成する専用メソッド ---
     private void CreateClone(float offsetX, string cloneName){
-        // �V������̃I�u�W�F�N�g�����
+        // 新しい空のオブジェクトを作る
         GameObject clone = new GameObject(cloneName);
 
-        // ���̃I�u�W�F�N�g�i�e�j�̎q�v�f�ɂ���
+        // このオブジェクト（親）の子要素にする
         clone.transform.SetParent(this.transform);
 
-        // �e�̃X�P�[���iX:3�Ȃǁj���l�����āA���[�J�����W�ł̃Y�����v�Z���Ĕz�u
+        // 親のスケール（X:3など）を考慮して、ローカル座標でのズレを計算して配置
         float localOffsetX = offsetX / transform.localScale.x;
         clone.transform.localPosition = new Vector3(localOffsetX, 0, 0);
 
-        // �X�P�[���͐e�̐ݒ�������p������ 1 �ɂ���
+        // スケールは親の設定を引き継ぐため 1 にする
         clone.transform.localScale = Vector3.one;
 
-        // �G�iSpriteRenderer�j�̐ݒ���ێʂ�����
+        // 絵（SpriteRenderer）の設定を丸写しする
         SpriteRenderer mySr = GetComponent<SpriteRenderer>();
         SpriteRenderer cloneSr = clone.AddComponent<SpriteRenderer>();
 
