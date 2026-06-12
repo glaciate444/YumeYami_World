@@ -14,7 +14,8 @@ public class EnemyTurret : MonoBehaviour{
         Forward,         // 前方（今のキャラクターが向いている方向）
         AimAtPlayer,     // ターゲット（プレイヤー）を狙う
         RandomDirection, // ランダムな方向（全方位）
-        Up               // ▼真上
+        Up,               // ▼真上
+        Down             // ▼追加：真下
     }
 
     [Header("基本設定")]
@@ -97,6 +98,8 @@ private IEnumerator ShootRoutine(){
             baseDir = new Vector2(Mathf.Cos(randomAngle * Mathf.Deg2Rad), Mathf.Sin(randomAngle * Mathf.Deg2Rad));
         }else if (aimType == AimType.Up){
             baseDir = Vector2.up; 
+        }else if (aimType == AimType.Down){
+            baseDir = Vector2.down; 
         }
 
         for (int i = 0; i < bulletCount; i++){
