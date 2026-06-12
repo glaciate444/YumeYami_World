@@ -118,7 +118,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
             UpdateUI();
         }
     }
+    // ==========================================
+    // ▼ ここから追加：落下時などの即死処理（無敵貫通）
+    // ==========================================
+    public void InstantDie(){
+        // HPを強制的に0にしてUIを更新
+        currentHealth = 0;
+        UpdateUI();
 
+        // 通常の死亡処理（残基減少・シーンリロード等）を呼ぶ
+        Die();
+    }
     private void Die(){
         // ▼ 1. GameManager が存在する場合（本番環境）
         if (GameManager.Instance != null){

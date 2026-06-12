@@ -1,10 +1,9 @@
 ﻿/* ===================================================
  * スクリプト名 : 落下判定用スクリプト
- * Version : Ver0.01
- * Update : 2026/04/08
- * 用途 : 落下した判定
+ * Version : Ver0.02
+ * Update : 2026/06/12
+ * 用途 : 落下した判定（無敵貫通対応）
  * =================================================== */
-
 using UnityEngine;
 
 public class FallZone : MonoBehaviour{
@@ -13,8 +12,8 @@ public class FallZone : MonoBehaviour{
         if (other.CompareTag("Player")){
             PlayerHealth health = other.GetComponent<PlayerHealth>();
             if (health != null){
-                // 即死させる（最大HP分のダメージを与える）
-                health.TakeDamage(health.maxHealth, Vector2.zero);
+                // ▼【変更】TakeDamageではなく、無敵を無視する即死メソッドを呼ぶ！
+                health.InstantDie();
             }
         }
     }
