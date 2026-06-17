@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : RollingHazard.cs
  * 用途 : 物理演算で転がり、プレイヤーを狙う障害物
- * 更新 : 着地・激突時の効果音（衝撃検知）を追加
+ * 更新 : 破壊時の減速を防ぐための「バンパー（Trigger）センサー」に対応
  * =================================================== */
 using UnityEngine;
 
@@ -18,10 +18,8 @@ public class RollingHazard : MonoBehaviour{
     [Header("消滅設定")]
     public float lifeTime = 10f; 
 
-    // ▼【追加】効果音の設定
     [Header("効果音設定")]
-    public AudioClip impactSE; // 着地・激突した時の「ドスッ」という音
-    [Tooltip("どのくらいの強さでぶつかったら音を鳴らすか（小さすぎるとコロコロ転がるだけで鳴ります）")]
+    public AudioClip impactSE; 
     public float impactThreshold = 2.0f; 
 
     private Rigidbody2D rb;
@@ -39,22 +37,32 @@ public class RollingHazard : MonoBehaviour{
         Destroy(gameObject, lifeTime);
     }
 
-    private void OnCollisionEnter2D(Collision2D other){
-        // ▼【追加】何かにぶつかった時の「衝撃の強さ」を計算して音を鳴らす ▼
-        // other.relativeVelocity.magnitude が、ぶつかった瞬間のスピード（衝撃）です
-        if (other.relativeVelocity.magnitude > impactThreshold){
-            if (SoundManager.instance != null && impactSE != null){
-                SoundManager.instance.PlaySE(impactSE);
-            }
-        }
-
-        // ▼ 以下は元のプレイヤーへのダメージ処理 ▼
-        if (other.gameObject.CompareTag("Player")){
-            IDamageable target = other.gameObject.GetComponent<IDamageable>();
-            if (target != null){
+    // ▼【追加】物理的にぶつかる「直前」に検知するセンサー処理
+    private void OnTriggerEnter2D(Collider2D other){
+        IDamageable target = other.GetComponent<IDamageable>();
+        
+        if (target != null){
+            // 1. プレイヤーだった場合
+            if (other.CompareTag("Player")){
                 Vector2 knockbackDir = (other.transform.position - transform.position).normalized;
                 knockbackDir.y = Mathf.Max(knockbackDir.y, 0.5f); 
                 target.TakeDamage(damage, knockbackDir);
+            }
+            // 2. 木箱や敵だった場合
+            else {
+                // 物理エンジンがブレーキをかける「前」に、センサーが触れた瞬間に破壊する！
+                Vector2 dir = (other.transform.position - transform.position).normalized;
+                target.TakeDamage(damage, dir);
+            }
+        }
+    }
+
+    // ▼【変更】通常の物理的な激突（地面や壁へのバウンドなど）
+    private void OnCollisionEnter2D(Collision2D other){
+        // ダメージ処理は OnTriggerEnter2D に引っ越したため、ここでは「音を鳴らすだけ」にします
+        if (other.relativeVelocity.magnitude > impactThreshold){
+            if (SoundManager.instance != null && impactSE != null){
+                SoundManager.instance.PlaySE(impactSE);
             }
         }
     }
