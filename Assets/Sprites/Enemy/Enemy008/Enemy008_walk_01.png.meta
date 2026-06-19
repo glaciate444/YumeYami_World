@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 76a4c73df0e51594fa56f84a2f5298c3
+guid: b3cdbc9cc538c254fb194f380119d5b0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2134432313724913768
-    second: Enemy008_walk_01_0
+      213: -7297236169178505514
+    second: Enemy008_Walk_01 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 192
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Enemy008_walk_01_0
+      name: Enemy008_Walk_01 1_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 9
-        width: 268
-        height: 242
+        x: 11
+        y: 3
+        width: 310
+        height: 322
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 86840b071e60f9d10800000000000000
-      internalID: 2134432313724913768
+      spriteID: 6de9bf5dd520bba90800000000000000
+      internalID: -7297236169178505514
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Enemy008_walk_01_0: 2134432313724913768
+      Enemy008_Walk_01 1_0: -7297236169178505514
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
