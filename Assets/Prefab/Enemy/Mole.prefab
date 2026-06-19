@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1907684487281694475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1572058061663644588
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6561823591438473962}
+  m_Layer: 11
+  m_Name: EdgeCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6561823591438473962
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572058061663644588}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.466, y: -0.607, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1907684487281694475}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1951195454167552889
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 1951195454167552889}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.515, z: 0}
+  m_LocalPosition: {x: 0, y: -0.568, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -78,6 +109,7 @@ GameObject:
   - component: {fileID: 5745614572243951454}
   - component: {fileID: 8649332807927262432}
   - component: {fileID: 8288282931556353592}
+  - component: {fileID: 7063969208018833730}
   m_Layer: 11
   m_Name: Mole
   m_TagString: Untagged
@@ -98,6 +130,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6561823591438473962}
   - {fileID: 1317165026370305706}
   - {fileID: 6052465335557419548}
   m_Father: {fileID: 0}
@@ -242,7 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPatrol
   moveSpeed: 2
   wallCheck: {fileID: 1317165026370305706}
-  edgeCheck: {fileID: 6052465335557419548}
+  edgeCheck: {fileID: 6561823591438473962}
   checkRadius: 0.1
   groundLayer:
     serializedVersion: 2
@@ -307,3 +340,17 @@ CapsuleCollider2D:
   m_Offset: {x: -0.013446808, y: 0.047855496}
   m_Size: {x: 0.95736885, y: 1.1933515}
   m_Direction: 0
+--- !u!114 &7063969208018833730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7836767885309377579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75298aa14076a04b8c3054f1917e291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyActivator
+  activationDistance: 30
+  resetPositionWhenFar: 1
