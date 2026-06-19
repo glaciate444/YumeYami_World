@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 8649332807927262432}
   - component: {fileID: 8288282931556353592}
   - component: {fileID: 7063969208018833730}
+  - component: {fileID: 5230921741765187522}
   m_Layer: 11
   m_Name: Mole
   m_TagString: Untagged
@@ -354,3 +355,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyActivator
   activationDistance: 30
   resetPositionWhenFar: 1
+--- !u!114 &5230921741765187522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7836767885309377579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
+  damage: 1
+  impact: 5
+  canBeStomped: 1
