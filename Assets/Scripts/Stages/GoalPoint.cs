@@ -30,6 +30,14 @@ public class GoalPoint : MonoBehaviour{
                 player.PlayGoalAction();
             }
 
+            // ▼【修正】プレイヤーのコインを回収し、GameManagerの一時枠（stageCoins）にそのまま記憶させる
+            PlayerInventory inventory = other.GetComponent<PlayerInventory>();
+            if (inventory != null && GameManager.Instance != null){
+                // ※inventory.currentCoins の部分は、お使いのインベントリの変数名に合わせてください
+                GameManager.Instance.stageCoins = inventory.currentCoins;
+                Debug.Log($"ゴール！ ステージコイン {GameManager.Instance.stageCoins} 枚をミニゲームへ引き継ぎます。");
+            }
+
             // 2. GameManagerの進行度を更新
             if (GameManager.Instance != null){
                 if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){

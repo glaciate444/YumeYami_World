@@ -15,6 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/MapSelectScene.unity
     guid: c90479d28b7206347b028d89dbc45d1c
   - enabled: 1
+    path: Assets/Scenes/MiniGameScene.unity
+    guid: f4fb243433358f942b1613cfdd9a48fd
+  - enabled: 1
+    path: Assets/Scenes/ResultScene.unity
+    guid: 3da6cf54c2e412448abc14f74564a90a
+  - enabled: 1
     path: Assets/Scenes/Level_1/Level1-Stage1.unity
     guid: e95aeb4e8e37c0244bccd3b45908ee19
   - enabled: 1

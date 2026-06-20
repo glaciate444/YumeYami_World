@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour{
     public int unlockedStageLevel = 1; 
     public int totalCoins = 0;
 
+    [Header("ステージで集めたコインの一時保存用（セーブ非対象）")]
+    public int stageCoins = 0;
+
     [Header("残基システム")]
     public int currentLives = 3;       
     public int currentLifePieces = 0;  
