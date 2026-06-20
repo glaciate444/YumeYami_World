@@ -207,7 +207,6 @@ GameObject:
   - component: {fileID: 51222713}
   - component: {fileID: 51222712}
   - component: {fileID: 51222711}
-  - component: {fileID: 51222710}
   m_Layer: 5
   m_Name: Chest_3
   m_TagString: Untagged
@@ -234,38 +233,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &51222710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51222708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &51222711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -634,7 +601,6 @@ GameObject:
   - component: {fileID: 428581094}
   - component: {fileID: 428581093}
   - component: {fileID: 428581092}
-  - component: {fileID: 428581091}
   m_Layer: 5
   m_Name: Chest_7
   m_TagString: Untagged
@@ -661,38 +627,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &428581091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 428581089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &428581092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,7 +721,6 @@ GameObject:
   - component: {fileID: 499481744}
   - component: {fileID: 499481743}
   - component: {fileID: 499481742}
-  - component: {fileID: 499481741}
   m_Layer: 5
   m_Name: Chest_1
   m_TagString: Untagged
@@ -814,38 +747,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &499481741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499481739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &499481742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1478,7 +1379,6 @@ GameObject:
   - component: {fileID: 643850966}
   - component: {fileID: 643850965}
   - component: {fileID: 643850964}
-  - component: {fileID: 643850963}
   m_Layer: 5
   m_Name: Chest_5
   m_TagString: Untagged
@@ -1505,38 +1405,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &643850963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 643850961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &643850964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1768,7 +1636,6 @@ GameObject:
   - component: {fileID: 949417895}
   - component: {fileID: 949417894}
   - component: {fileID: 949417893}
-  - component: {fileID: 949417892}
   m_Layer: 5
   m_Name: Chest_2
   m_TagString: Untagged
@@ -1795,38 +1662,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &949417892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 949417890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &949417893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2018,7 +1853,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -736, y: 388}
+  m_AnchoredPosition: {x: -23, y: -288}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1129642638
@@ -2071,7 +1906,6 @@ GameObject:
   - component: {fileID: 1195746330}
   - component: {fileID: 1195746329}
   - component: {fileID: 1195746328}
-  - component: {fileID: 1195746327}
   m_Layer: 5
   m_Name: Chest_4
   m_TagString: Untagged
@@ -2098,38 +1932,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1195746327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195746325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &1195746328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2844,15 +2646,21 @@ MonoBehaviour:
   openChestSprite: {fileID: -1089752354001653685, guid: 7ab70e1194f5e4e4180b5faa3f437a98, type: 3}
   rewards:
   - isCoin: 1
-    amount: 30
-  - isCoin: 1
     amount: 50
+  - isCoin: 1
+    amount: 20
+  - isCoin: 1
+    amount: 10
+  - isCoin: 1
+    amount: -5
   - isCoin: 1
     amount: -10
   - isCoin: 0
-    amount: 10
+    amount: 50
   - isCoin: 0
-    amount: -5
+    amount: 20
+  - isCoin: 0
+    amount: 1
   cursorImage: {fileID: 1129642637}
   menuPositions:
   - {fileID: 514455126}
@@ -2866,6 +2674,13 @@ MonoBehaviour:
   - {fileID: 558324401}
   cursorOffset: {x: 0, y: 0}
   resultSceneName: ResultScene
+  hudCoinText: {fileID: 1449899627}
+  hudHeartText: {fileID: 1943605285}
+  hudLivesText: {fileID: 784486700}
+  remainingOpensText: {fileID: 165150236}
+  rewardPopupPrefab: {fileID: 800950626308445020, guid: 5811631e8a71d6341b1e56d42e401d14, type: 3}
+  coinIconSprite: {fileID: 21300000, guid: 1c84412520c289c499a608727d37da11, type: 3}
+  heartIconSprite: {fileID: 21300000, guid: ac4c4c3c7b46498408bb5f271c41ad5b, type: 3}
 --- !u!1 &2002358072
 GameObject:
   m_ObjectHideFlags: 0
@@ -2878,7 +2693,6 @@ GameObject:
   - component: {fileID: 2002358077}
   - component: {fileID: 2002358076}
   - component: {fileID: 2002358075}
-  - component: {fileID: 2002358074}
   m_Layer: 5
   m_Name: Chest_6
   m_TagString: Untagged
@@ -2905,38 +2719,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2002358074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2002358072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583ac9f444158f04f8f79bc8ab4ec099, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureMiniGame
-  chestButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  openChestSprite: {fileID: 0}
-  rewards:
-  - isCoin: 0
-    amount: 0
-  cursorImage: {fileID: 0}
-  menuPositions:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cursorOffset: {x: 0, y: 50}
-  resultSceneName: ResultScene
 --- !u!114 &2002358075
 MonoBehaviour:
   m_ObjectHideFlags: 0

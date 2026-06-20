@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : TreasureMiniGame.cs
- * 用途 : 8つの宝箱から2つを選んで開けるミニゲーム (Input System対応版)
- * 修正 : ShuffleRewardsの追加と、GameManagerのAddLifePiece連携に対応
+ * 用途 : 8つの宝箱から2つを選んで開けるミニゲーム (完全版)
+ * 拡張 : HUDの自動更新、残り回数表示、ポップアップ演出の追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem; 
+using TMPro; // HUDの文字を書き換えるために追加
 
 public class TreasureMiniGame : MonoBehaviour {
     [System.Serializable]
@@ -24,13 +25,23 @@ public class TreasureMiniGame : MonoBehaviour {
 
     [Header("UIナビゲーション設定")]
     public RectTransform cursorImage;
-    [Tooltip("0〜7: 宝箱のボタン, 8: スキップボタン の順にセットします(合計9個)")]
     public RectTransform[] menuPositions; 
-    [Tooltip("カーソルをボタンからどれくらいズラすか")]
-    public Vector2 cursorOffset = new Vector2(0f, 50f);
+    public Vector2 cursorOffset = new Vector2(0f, 0f);
 
     [Header("遷移先")]
     public string resultSceneName = "ResultScene"; 
+
+    // ▼【新規追加】HUDとポップアップ用の設定
+    [Header("HUD連携")]
+    public TextMeshProUGUI hudCoinText;     // コインの数字
+    public TextMeshProUGUI hudHeartText;    // ハートの数字
+    public TextMeshProUGUI hudLivesText;    // 残基の数字
+    public TextMeshProUGUI remainingOpensText; // 残り開けられる回数（画面右上の「2」など）
+
+    [Header("ポップアップ演出")]
+    public GameObject rewardPopupPrefab;    // Step1で作るプレハブ
+    public Sprite coinIconSprite;           // コインのアイコン画像
+    public Sprite heartIconSprite;          // ハートのアイコン画像
 
     private int openedCount = 0;
     private const int MAX_OPENS = 2;
@@ -40,30 +51,38 @@ public class TreasureMiniGame : MonoBehaviour {
     private float inputCooldown = 0f;
 
     private readonly int[,] navigation = new int[9, 4] {
-        { 0, 4, 0, 1 }, 
-        { 1, 5, 0, 2 }, 
-        { 2, 6, 1, 3 }, 
-        { 3, 7, 2, 3 }, 
-        { 0, 8, 4, 5 }, 
-        { 1, 8, 4, 6 }, 
-        { 2, 8, 5, 7 }, 
-        { 3, 8, 6, 7 }, 
+        { 0, 4, 0, 1 }, { 1, 5, 0, 2 }, { 2, 6, 1, 3 }, { 3, 7, 2, 3 }, 
+        { 0, 8, 4, 5 }, { 1, 8, 4, 6 }, { 2, 8, 5, 7 }, { 3, 8, 6, 7 }, 
         { 5, 8, 8, 8 }  
     };
 
     void Start() {
-        // ▼【修正】ここで下のシャッフルメソッドを呼び出します
+        // ▼【追加】設定の数が足りない時に、日本語で警告を出す安全装置
+        if (rewards.Count < chestButtons.Length) {
+            Debug.LogError($"【設定エラー】Rewards（中身）の数が足りません！宝箱が {chestButtons.Length} 個あるのに対し、Rewardsが {rewards.Count} 個しかありません。");
+            return; // エラー回避のためここで止める
+        }
+        if (menuPositions.Length < 9) {
+            Debug.LogError($"【設定エラー】Menu Positions の数が足りません！宝箱8個＋スキップ1個の合計 9個 設定してください。");
+            return; 
+        }
+        // ▲ 安全装置ここまで
+
         ShuffleRewards();
 
         for (int i = 0; i < chestButtons.Length; i++) {
+            if (chestButtons[i] == null) {
+                Debug.LogError($"【設定エラー】Chest Buttons の Element {i} が空っぽ(None)です！");
+                continue; 
+            }
             int index = i; 
             chestButtons[i].onClick.AddListener(() => OnClickChest(index));
         }
 
         UpdateCursorPosition();
+        UpdateHUD(); 
     }
 
-    // ▼【追加・修正】前回抜け落ちていたシャッフル用のメソッド
     private void ShuffleRewards() {
         for (int i = 0; i < rewards.Count; i++) {
             RewardData temp = rewards[i];
@@ -112,11 +131,7 @@ public class TreasureMiniGame : MonoBehaviour {
 
     private void UpdateCursorPosition() {
         if (menuPositions.Length > 0 && cursorImage != null && menuPositions[currentIndex] != null) {
-            
-            // 1. 【超重要】「親が違うUI」でも位置を合わせるため、ワールド座標(.position)を直接コピーする
             cursorImage.position = menuPositions[currentIndex].position;
-            
-            // 2. その後、インスペクターで設定したズレ（オフセット）をローカルで足す
             cursorImage.anchoredPosition += cursorOffset; 
         }
     }
@@ -144,7 +159,7 @@ public class TreasureMiniGame : MonoBehaviour {
         }
         clickedChest.interactable = false; 
 
-        ApplyReward(rewards[chestIndex]);
+        ApplyReward(rewards[chestIndex], clickedChest); // 宝箱の場所を渡す
 
         if (openedCount >= MAX_OPENS) {
             isGameOver = true; 
@@ -152,21 +167,61 @@ public class TreasureMiniGame : MonoBehaviour {
         }
     }
 
-    private void ApplyReward(RewardData reward) {
-        if (GameManager.Instance == null) return;
+    private void ApplyReward(RewardData reward, Button chestBtn) {
+        // ▼【修正】ポップアップはGameManagerが無くても出せるように、チェックの前に引っ越します！
+        ShowPopup(chestBtn, reward);
 
-        if (reward.isCoin) {
-            // ▼【修正】トータルではなく、ゴールから引き継いだステージコインを増減させる
-            GameManager.Instance.stageCoins += reward.amount;
-            
-            // コインがマイナスになったら0にする
-            if (GameManager.Instance.stageCoins < 0) GameManager.Instance.stageCoins = 0;
-            
-            Debug.Log($"ステージコインが {reward.amount} 枚変化しました！ 現在: {GameManager.Instance.stageCoins}枚");
+        // ▼【修正】GameManagerが必要な計算だけを、この「ifの中」に隔離します
+        if (GameManager.Instance != null) {
+            if (reward.isCoin) {
+                GameManager.Instance.stageCoins += reward.amount;
+                if (GameManager.Instance.stageCoins < 0) GameManager.Instance.stageCoins = 0;
+            } else {
+                GameManager.Instance.AddLifePiece(reward.amount);
+            }
         } else {
-            // 残基パーツの獲得はそのままGameManagerに加算
-            GameManager.Instance.AddLifePiece(reward.amount);
-            Debug.Log($"LifePieceが {reward.amount} 個変化しました！");
+            // GameManagerが無い時は、コンソールにログだけ残す（テスト用）
+            Debug.LogWarning($"【テストモード】GameManagerが無いため、数値の内部保存はスキップされます。(中身: {(reward.isCoin ? "コイン" : "LifePiece")} / 量: {reward.amount})");
+        }
+
+        // ▼【修正】GameManagerが無くても、残り開けられる回数（右上）などを更新するために必ず呼ぶ
+        UpdateHUD();
+    }
+
+    // ▼ HUDの文字を書き換える処理
+    private void UpdateHUD() {
+        if (GameManager.Instance != null) {
+            if (hudCoinText != null) hudCoinText.text = GameManager.Instance.stageCoins.ToString("D3");
+            if (hudHeartText != null) hudHeartText.text = GameManager.Instance.currentLifePieces.ToString("D2");
+            if (hudLivesText != null) hudLivesText.text = GameManager.Instance.currentLives.ToString("D2");
+        }
+
+        if (remainingOpensText != null) {
+            // MAX(2) - 開けた数 = 残り回数
+            remainingOpensText.text = (MAX_OPENS - openedCount).ToString();
+        }
+    }
+
+    // ▼ ポップアッププレハブを生成する処理
+    private void ShowPopup(Button chest, RewardData reward) {
+        if (rewardPopupPrefab == null) return;
+
+        // 1. 親となる Canvas を探す
+        Canvas parentCanvas = GetComponentInParent<Canvas>();
+
+        // 2. 宝箱の中ではなく、Canvas の直下に生成する（Grid Layoutの干渉も防げます）
+        GameObject popupObj = Instantiate(rewardPopupPrefab, parentCanvas.transform);
+
+        // 3. 生成場所を、叩いた宝箱と全く同じ位置（ワールド座標）に合わせる
+        popupObj.transform.position = chest.transform.position;
+
+        // 4. 【超重要】ヒエラルキーの「一番下」に移動させ、全てのUIの「一番手前」に表示させる！
+        popupObj.transform.SetAsLastSibling();
+
+        RewardPopup popup = popupObj.GetComponent<RewardPopup>();
+        if (popup != null) {
+            Sprite icon = reward.isCoin ? coinIconSprite : heartIconSprite;
+            popup.Setup(icon, reward.amount);
         }
     }
 
