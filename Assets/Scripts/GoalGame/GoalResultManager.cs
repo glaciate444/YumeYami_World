@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalResultManager.cs
  * 用途 : リザルト表示、コイン集計演出、セーブデータの保存
- * 修正 : どこかでコインが事前加算されていても、絶対に正常化する安全ロジック
+ * 修正 : 根本原因（フライング加算）解決に伴い、純粋な加算ロジックに修正
  * =================================================== */
 using UnityEngine;
 using TMPro;
@@ -27,11 +27,8 @@ public class GoalResultManager : MonoBehaviour {
 
     void Start() {
         if (GameManager.Instance != null) {
-            // ▼【超安全設計】あらかじめ演出のスタート地点を「正しい元の値」に強制逆算して表示する
-            int currentStageCoins = GameManager.Instance.stageCoins;
-            int currentTotalCoins = GameManager.Instance.totalCoins - currentStageCoins;
-
-            UpdateUI(currentStageCoins, currentTotalCoins);
+            // フライング加算が無くなったので、そのまま素直に表示するだけでOK！
+            UpdateUI(GameManager.Instance.stageCoins, GameManager.Instance.totalCoins);
             StartCoroutine(CoinCountRoutine());
         }
     }
@@ -63,12 +60,8 @@ public class GoalResultManager : MonoBehaviour {
     private IEnumerator CoinCountRoutine() {
         isCounting = true;
 
-        // ▼ 既に加算されてしまっている現状の値（436）を「最終的な正解ゴール」としてロックする
-        int finalTotalCoins = GameManager.Instance.totalCoins; 
-        int currentStageCoins = GameManager.Instance.stageCoins; // 15
-        
-        // 演出のスタート地点は、そのゴールからステージ分を引いた、本来の元の値（421）にする
-        int currentTotalCoins = finalTotalCoins - currentStageCoins; 
+        int currentStageCoins = GameManager.Instance.stageCoins;
+        int currentTotalCoins = GameManager.Instance.totalCoins; // 正しい元の値（例: 421）
 
         yield return new WaitForSeconds(0.5f);
 
@@ -86,7 +79,8 @@ public class GoalResultManager : MonoBehaviour {
             yield return new WaitForSeconds(countSpeed);
         }
 
-        // ▼ スキップされた場合や完了時、最終的な「正しい数値（436）」を強制的に反映
+        // ▼ スキップ時などのため、最終的な正しい値（421 + 15 = 436）を計算して反映
+        int finalTotalCoins = GameManager.Instance.totalCoins + GameManager.Instance.stageCoins;
         UpdateUI(0, finalTotalCoins);
 
         isCounting = false;
@@ -95,7 +89,7 @@ public class GoalResultManager : MonoBehaviour {
             SoundManager.instance.PlaySE(finishSE);
         }
 
-        // 実際のデータを最終的な正しい値（436）で上書き
+        // GameManagerのデータを更新してセーブ！
         GameManager.Instance.totalCoins = finalTotalCoins;
         GameManager.Instance.stageCoins = 0; 
         GameManager.Instance.SaveGame();
@@ -103,7 +97,7 @@ public class GoalResultManager : MonoBehaviour {
 
     private void UpdateUI(int stageCoins, int totalCoins) {
         if (stageCoinText != null) stageCoinText.text = stageCoins.ToString("D3");
-        if (totalCoinText != null) totalCoinText.text = totalCoins.ToString("D3");
+        if (totalCoinText != null) totalCoinText.text = totalCoins.ToString("D6");
     }
 
     private IEnumerator WaitAndTransitionRoutine() {

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 3590056658645048932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.418, z: 0}
+  m_LocalPosition: {x: -0.125, y: -0.604, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 1465669554840156744}
   - component: {fileID: 6953104177480719360}
   - component: {fileID: 2678459818899155860}
+  - component: {fileID: -615644602450905893}
   m_Layer: 11
   m_Name: Trent
   m_TagString: Untagged
@@ -193,6 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 4
   knockbackTime: 0.2
+  isInvincible: 0
   itemPrefab: {fileID: 5257941673775293830, guid: 569e616469bc2a74db0feb82078b732d, type: 3}
   dropChance: 50
   explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
@@ -271,7 +273,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.171875, y: 1.171875}
+    oldSize: {x: 1.5625, y: 1.5625}
     newSize: {x: 1.171875, y: 1.171875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -279,6 +281,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6552305, y: 0.7926667}
   m_EdgeRadius: 0
+--- !u!114 &-615644602450905893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5291400666693794992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
+  damage: 1
+  impact: 5
+  canBeStomped: 0
 --- !u!1 &5525783580952232556
 GameObject:
   m_ObjectHideFlags: 0
