@@ -228,8 +228,8 @@ MonoBehaviour:
   stageCoinText: {fileID: 1920259860}
   totalCoinText: {fileID: 1790035157}
   countSpeed: 0.05
-  countSE: {fileID: 0}
-  finishSE: {fileID: 0}
+  countSE: {fileID: 8300000, guid: 94a12207012b5fa4db40db8f5df129a8, type: 3}
+  finishSE: {fileID: 8300000, guid: ee38f5f6e465775459ffd06c54c390e7, type: 3}
   mapSceneName: MapSelectScene_Level_1
 --- !u!4 &308626381
 Transform:
