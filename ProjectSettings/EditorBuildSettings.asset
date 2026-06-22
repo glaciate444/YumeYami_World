@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/GameOverScene.unity
     guid: 7a110cd38162dec42b831bc5d5cafc3d
   - enabled: 1
-    path: Assets/Scenes/MapSelectScene.unity
+    path: Assets/Scenes/MapSelectScene_Level_1.unity
     guid: c90479d28b7206347b028d89dbc45d1c
   - enabled: 1
     path: Assets/Scenes/MiniGameScene.unity

@@ -10335,6 +10335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 3
   knockbackTime: 0.2
+  isInvincible: 0
   itemPrefab: {fileID: 0}
   dropChance: 50
   explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
@@ -12124,7 +12125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae955b2e98b2c754f9c10e00dc26d4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
-  nextSceneName: MapSelectScene
+  nextSceneName: MiniGameScene
   unlockLevelReward: 2
   waitTime: 2
 --- !u!61 &2112631401
@@ -12531,6 +12532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 3
   knockbackTime: 0.2
+  isInvincible: 0
   itemPrefab: {fileID: 0}
   dropChance: 50
   explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}

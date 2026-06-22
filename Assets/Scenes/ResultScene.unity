@@ -225,9 +225,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e40928d6a187b34eb15408ad4b6715b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalResultManager
-  totalCoinText: {fileID: 0}
-  totalHeartText: {fileID: 0}
-  mapSceneName: MapSelectScene
+  stageCoinText: {fileID: 1920259860}
+  totalCoinText: {fileID: 1790035157}
+  countSpeed: 0.05
+  countSE: {fileID: 0}
+  finishSE: {fileID: 0}
+  mapSceneName: MapSelectScene_Level_1
 --- !u!4 &308626381
 Transform:
   m_ObjectHideFlags: 0
@@ -885,7 +888,7 @@ GameObject:
   - component: {fileID: 1790035158}
   - component: {fileID: 1790035157}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TotalCoinText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1099,7 +1102,7 @@ GameObject:
   - component: {fileID: 1920259861}
   - component: {fileID: 1920259860}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: InsertCoinText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
