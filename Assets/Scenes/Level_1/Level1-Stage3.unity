@@ -1001,7 +1001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae955b2e98b2c754f9c10e00dc26d4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
-  nextSceneName: MapSelectScene
+  nextSceneName: MiniGameScene
   unlockLevelReward: 4
   waitTime: 2
 --- !u!61 &246472027
@@ -1248,7 +1248,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6446186877137493990, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
       propertyPath: currentStageId
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7719382428251555306, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
       propertyPath: m_AnchorMax.x

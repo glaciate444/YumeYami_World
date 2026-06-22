@@ -991,7 +991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae955b2e98b2c754f9c10e00dc26d4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
-  nextSceneName: MapSelectScene
+  nextSceneName: MiniGameScene
   unlockLevelReward: 6
   waitTime: 2
 --- !u!61 &246472027
@@ -1505,7 +1505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6446186877137493990, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
       propertyPath: currentStageId
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7719382428251555306, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -17341,7 +17341,7 @@ GameObject:
   - component: {fileID: 1251889537}
   - component: {fileID: 1251889536}
   m_Layer: 0
-  m_Name: Stage_4_SpecialItem_0
+  m_Name: Stage_5_SpecialItem_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17359,7 +17359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9592eec1c85246d498c6184cd4ecf57b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpecialCollectible
-  stageId: 4
+  stageId: 5
   collectibleId: 0
   collectSE: {fileID: 8300000, guid: ee38f5f6e465775459ffd06c54c390e7, type: 3}
 --- !u!58 &1251889537
@@ -17682,7 +17682,7 @@ GameObject:
   - component: {fileID: 1339123568}
   - component: {fileID: 1339123567}
   m_Layer: 0
-  m_Name: Stage_4_SpecialItem_2
+  m_Name: Stage_5_SpecialItem_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17700,7 +17700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9592eec1c85246d498c6184cd4ecf57b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpecialCollectible
-  stageId: 4
+  stageId: 5
   collectibleId: 2
   collectSE: {fileID: 8300000, guid: ee38f5f6e465775459ffd06c54c390e7, type: 3}
 --- !u!58 &1339123568
@@ -19191,7 +19191,7 @@ GameObject:
   - component: {fileID: 1629899635}
   - component: {fileID: 1629899634}
   m_Layer: 0
-  m_Name: Stage_4_SpecialItem_1
+  m_Name: Stage_5_SpecialItem_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19209,7 +19209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9592eec1c85246d498c6184cd4ecf57b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpecialCollectible
-  stageId: 4
+  stageId: 5
   collectibleId: 1
   collectSE: {fileID: 8300000, guid: ee38f5f6e465775459ffd06c54c390e7, type: 3}
 --- !u!58 &1629899635
