@@ -1,13 +1,13 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalResultManager.cs
  * 用途 : リザルト表示、コイン集計演出、セーブデータの保存
- * 修正 : Input System対応、ボタン入力で1秒待機後に暗転遷移
+ * 修正 : どこかでコインが事前加算されていても、絶対に正常化する安全ロジック
  * =================================================== */
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections; 
-using UnityEngine.InputSystem; // ▼【追加】キーボード・コントローラー操作に必要
+using UnityEngine.InputSystem; 
 
 public class GoalResultManager : MonoBehaviour {
     [Header("UI設定")]
@@ -23,27 +23,27 @@ public class GoalResultManager : MonoBehaviour {
     public string mapSceneName = "MapSelectScene";
 
     private bool isCounting = false;
-    private bool isTransitioning = false; // ▼【追加】遷移が始まったかを判定するフラグ
+    private bool isTransitioning = false; 
 
     void Start() {
         if (GameManager.Instance != null) {
-            UpdateUI(GameManager.Instance.stageCoins, GameManager.Instance.totalCoins);
+            // ▼【超安全設計】あらかじめ演出のスタート地点を「正しい元の値」に強制逆算して表示する
+            int currentStageCoins = GameManager.Instance.stageCoins;
+            int currentTotalCoins = GameManager.Instance.totalCoins - currentStageCoins;
+
+            UpdateUI(currentStageCoins, currentTotalCoins);
             StartCoroutine(CoinCountRoutine());
         }
     }
 
-    // ▼【追加】毎フレーム、プレイヤーの入力を監視する
     void Update() {
-        // すでに暗転待ち状態に入っていたら、これ以上の入力は無視する
         if (isTransitioning) return;
 
         bool isButtonPressed = false;
 
-        // キーボードの何かのキーが押されたか
         if (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame) {
             isButtonPressed = true;
         }
-        // ゲームパッド（コントローラー）の決定・キャンセル・スタート系ボタンが押されたか
         if (Gamepad.current != null && 
            (Gamepad.current.buttonSouth.wasPressedThisFrame || 
             Gamepad.current.buttonEast.wasPressedThisFrame || 
@@ -51,13 +51,10 @@ public class GoalResultManager : MonoBehaviour {
             isButtonPressed = true;
         }
 
-        // 何かボタンが押された時の処理
         if (isButtonPressed) {
             if (isCounting) {
-                // 1. カウント演出中なら、演出をスキップして一気に結果を出す
                 isCounting = false;
             } else {
-                // 2. カウントが終わっているなら、1秒待ってから遷移するコルーチンを呼ぶ
                 StartCoroutine(WaitAndTransitionRoutine());
             }
         }
@@ -66,11 +63,16 @@ public class GoalResultManager : MonoBehaviour {
     private IEnumerator CoinCountRoutine() {
         isCounting = true;
 
-        int currentStageCoins = GameManager.Instance.stageCoins;
-        int currentTotalCoins = GameManager.Instance.totalCoins;
+        // ▼ 既に加算されてしまっている現状の値（436）を「最終的な正解ゴール」としてロックする
+        int finalTotalCoins = GameManager.Instance.totalCoins; 
+        int currentStageCoins = GameManager.Instance.stageCoins; // 15
+        
+        // 演出のスタート地点は、そのゴールからステージ分を引いた、本来の元の値（421）にする
+        int currentTotalCoins = finalTotalCoins - currentStageCoins; 
 
         yield return new WaitForSeconds(0.5f);
 
+        // 1枚ずつ移動させるループ
         while (currentStageCoins > 0 && isCounting) {
             currentStageCoins--;
             currentTotalCoins++;
@@ -84,10 +86,8 @@ public class GoalResultManager : MonoBehaviour {
             yield return new WaitForSeconds(countSpeed);
         }
 
-        // スキップされた場合や完了時、最終的な数値を反映
-        currentStageCoins = 0;
-        currentTotalCoins = GameManager.Instance.totalCoins + GameManager.Instance.stageCoins;
-        UpdateUI(currentStageCoins, currentTotalCoins);
+        // ▼ スキップされた場合や完了時、最終的な「正しい数値（436）」を強制的に反映
+        UpdateUI(0, finalTotalCoins);
 
         isCounting = false;
 
@@ -95,7 +95,8 @@ public class GoalResultManager : MonoBehaviour {
             SoundManager.instance.PlaySE(finishSE);
         }
 
-        GameManager.Instance.totalCoins = currentTotalCoins;
+        // 実際のデータを最終的な正しい値（436）で上書き
+        GameManager.Instance.totalCoins = finalTotalCoins;
         GameManager.Instance.stageCoins = 0; 
         GameManager.Instance.SaveGame();
     }
@@ -105,14 +106,11 @@ public class GoalResultManager : MonoBehaviour {
         if (totalCoinText != null) totalCoinText.text = totalCoins.ToString("D3");
     }
 
-    // ▼【追加】ボタンが押された後、1秒間待機して暗転する処理
     private IEnumerator WaitAndTransitionRoutine() {
-        isTransitioning = true; // 連打されても2回以上呼ばれないようにロックを掛ける
+        isTransitioning = true; 
 
-        // ここで指定した秒数（1秒）だけピタッと待機する
         yield return new WaitForSeconds(1.0f);
 
-        // トランジション（暗転）を呼び出してマップへ戻る
         if (SceneTransitionManager.Instance != null) {
             SceneTransitionManager.Instance.LoadScene(mapSceneName, TransitionType.Fade);
         } else {

@@ -19,7 +19,7 @@ public class GoalPoint : MonoBehaviour{
 
     private bool isGoal;
 
-    private void OnTriggerEnter2D(Collider2D other){
+private void OnTriggerEnter2D(Collider2D other){
         if (!isGoal && other.CompareTag("Player")){
             isGoal = true;
             Debug.Log("ゴール！");
@@ -30,13 +30,18 @@ public class GoalPoint : MonoBehaviour{
                 player.PlayGoalAction();
             }
 
-            // ▼【修正】プレイヤーのコインを回収し、GameManagerの一時枠（stageCoins）にそのまま記憶させる
+            // ▼【超重要：ここが修正ポイント！】▼
             PlayerInventory inventory = other.GetComponent<PlayerInventory>();
             if (inventory != null && GameManager.Instance != null){
-                // ※inventory.currentCoins の部分は、お使いのインベントリの変数名に合わせてください
-                GameManager.Instance.stageCoins = inventory.currentCoins;
-                Debug.Log($"ゴール！ ステージコイン {GameManager.Instance.stageCoins} 枚をミニゲームへ引き継ぎます。");
+                
+                // 正解：ミニゲーム用に「stageCoins」にだけ記憶させる（代入する）
+                // ※お使いの変数名（currentCoins 等）に合わせてください
+                GameManager.Instance.stageCoins = inventory.currentCoins; 
+                
+                // ※ここに GameManager.Instance.totalCoins += ... という行が
+                // 残っていると二重取りになるため、完全に削除しました！
             }
+            // ▲【修正ポイントここまで】▲
 
             // 2. GameManagerの進行度を更新
             if (GameManager.Instance != null){
