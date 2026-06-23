@@ -25,7 +25,12 @@ public class GameManager : MonoBehaviour{
     public int currentLives = 3;       
     public int currentLifePieces = 0;  
 
-    public AudioClip oneUpSE; 
+    public AudioClip oneUpSE;
+
+    // ▼ 変数宣言の場所に追加
+    [Header("ワールド進行データ")]
+    public int unlockedWorldLevel = 1;   // レベル2が解放されたら2になる
+    public int currentWorldNodeNumber = 1; // マップの現在位置記憶用
 
     void Awake(){
         if (Instance == null){
@@ -70,7 +75,11 @@ public class GameManager : MonoBehaviour{
         
         // ▼【追加】現在位置をセーブ
         PlayerPrefs.SetInt("CurrentMapNodeNumber", currentMapNodeNumber);
-        
+
+        // ▼ SaveGame() の中に追加
+        PlayerPrefs.SetInt("UnlockedWorldLevel", unlockedWorldLevel);
+        PlayerPrefs.SetInt("CurrentWorldNodeNumber", currentWorldNodeNumber);
+
         PlayerPrefs.Save(); 
     }
 
@@ -84,6 +93,10 @@ public class GameManager : MonoBehaviour{
         
         // ▼【追加】現在位置をロード
         if (PlayerPrefs.HasKey("CurrentMapNodeNumber")) currentMapNodeNumber = PlayerPrefs.GetInt("CurrentMapNodeNumber");
+
+        // ▼ LoadGame() の中に追加
+        if (PlayerPrefs.HasKey("UnlockedWorldLevel")) unlockedWorldLevel = PlayerPrefs.GetInt("UnlockedWorldLevel");
+        if (PlayerPrefs.HasKey("CurrentWorldNodeNumber")) currentWorldNodeNumber = PlayerPrefs.GetInt("CurrentWorldNodeNumber");
     }
 
     public void ResetData() {
@@ -94,7 +107,11 @@ public class GameManager : MonoBehaviour{
         totalCoins = 0;
         currentLives = 3;
         currentLifePieces = 0;
-        
+
+        // ▼ ResetData() の中に追加
+        unlockedWorldLevel = 1;
+        currentWorldNodeNumber = 1;
+
         // ▼【追加】現在位置も初期化
         currentMapNodeNumber = 1;
     }

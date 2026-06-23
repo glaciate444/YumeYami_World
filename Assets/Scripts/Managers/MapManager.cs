@@ -27,6 +27,9 @@ public class MapManager : MonoBehaviour{
     private bool isMoving = false;
     private MapNode targetNode;
 
+    [Header("ワールドマップ（大マップ）へ戻る設定")]
+    public string worldMapSceneName = "WorldMapScene"; // ← 先ほど作った大マップのシーン名を入れてください
+
     void Start(){
         MapNode[] allNodes = FindObjectsByType<MapNode>(FindObjectsSortMode.None);
         foreach (var node in allNodes){
@@ -102,6 +105,16 @@ public class MapManager : MonoBehaviour{
 
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
+
+        // ▼【新規追加】Xキー、またはEscキーで大マップへ戻る
+        if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame) {
+            if (SceneTransitionManager.Instance != null) {
+                SceneTransitionManager.Instance.LoadScene(worldMapSceneName, TransitionType.Fade);
+            } else {
+                SceneManager.LoadScene(worldMapSceneName);
+            }
+            return; // 戻る時はこれ以下の処理をしない
+        }
 
         MapNode nextNode = null;
 

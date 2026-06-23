@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalPoint.cs
- * Version : Ver0.05
+ * Version : Ver0.06
  * 用途 : ゴール判定とアイリスアウト遷移
- * 修正 : 子オブジェクト（足元センサー等）による接触エラーを完全に防止
+ * 拡張 : ボスステージクリア時に新しいワールドを解放する機能を追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.SceneManagement; 
@@ -10,10 +10,17 @@ using System.Collections;
 
 public class GoalPoint : MonoBehaviour{
     [Header("遷移先シーン名")]
-    public string nextSceneName = "MapSelectScene"; 
+    public string nextSceneName = "MiniGameScene"; 
 
-    [Header("ステージ進行設定")]
+    [Header("ステージ進行設定（通常）")]
     public int unlockLevelReward = 2;
+
+    // ▼【新規追加】ボス用の設定
+    [Header("ワールド進行設定（ボス専用）")]
+    [Tooltip("チェックを入れると、クリア時に新しいワールドが解放されます")]
+    public bool unlocksNewWorld = false;
+    [Tooltip("解放するワールドの番号（レベル2の島を解放するなら 2）")]
+    public int unlockWorldReward = 2;
 
     [Header("演出時間")]
     public float waitTime = 2.0f; 
@@ -23,34 +30,35 @@ public class GoalPoint : MonoBehaviour{
     private void OnTriggerEnter2D(Collider2D other){
         if (!isGoal && other.CompareTag("Player")){
             
-            // ▼【超重要修正】other.GetComponent ではなく、親を含めて検索する ▼
-            // これにより、足元センサーが触れても確実に「プレイヤー本体」を取得できます
             PlayerController player = other.GetComponentInParent<PlayerController>();
             PlayerInventory inventory = other.GetComponentInParent<PlayerInventory>();
 
-            // ※もし「Player」タグが付いているのに本体が見つからない場合は、ただの誤爆なので弾く
             if (player == null) return;
 
             isGoal = true;
             Debug.Log("ゴール！");
 
-            // 1. プレイヤーの操作を奪い、ポーズを取らせる
             player.PlayGoalAction();
 
-            // 2. コインの引き継ぎ（inventory は確実に取得できているので0枚にならない！）
             if (inventory != null && GameManager.Instance != null){
                 GameManager.Instance.stageCoins = inventory.currentCoins;            
             }
 
-            // 3. GameManagerの進行度を更新
             if (GameManager.Instance != null){
+                // 1. 通常のステージ進行度を更新
                 if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){
                     GameManager.Instance.unlockedStageLevel = unlockLevelReward;
                 }
+                
+                // 2. ▼【追加】ボス設定がONなら、ワールド進行度も更新！
+                if (unlocksNewWorld) {
+                    if (GameManager.Instance.unlockedWorldLevel < unlockWorldReward){
+                        GameManager.Instance.unlockedWorldLevel = unlockWorldReward;
+                        Debug.Log($"新ワールド {unlockWorldReward} が解放されました！");
+                    }
+                }
             }
 
-            // 4. 待ち時間＆アイリスアウトをコルーチンで開始
-            // ▼【重要】消えるかもしれない other.transform ではなく、確実に存在する player.transform を渡す！
             StartCoroutine(GoalRoutine(player.transform));
         }
     }
