@@ -1,15 +1,16 @@
 ﻿/* ===================================================
  * スクリプト名 : MapManager.cs
- * Version : Ver0.02
+ * Version : Ver0.04
  * Since : 2026/04/28
- * Update : 2026/04/28
+ * Update : 2026/06/23
  * 用途 : MapManager (マップ管理者): プレイヤーの移動を制御し、
  * 今どのノードにいるのか、次はどこへ移動できるのかを管理します。
+ * 拡張 : GameManagerの記憶からスタート位置を復元する機能を追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // 【追加】UI(Image)を操作するために必要
+using UnityEngine.UI;
 
 public class MapManager : MonoBehaviour{
     [Header("マップ設定")]
@@ -18,10 +19,10 @@ public class MapManager : MonoBehaviour{
     public float moveSpeed = 500f;
 
     [Header("道（ライン）の設定")]
-    public GameObject linePrefab;    // 道になるUI Imageのプレハブ
-    public Transform lineContainer;  // 線をまとめる空オブジェクト
-    public Color lockedLineColor = new Color(0.3f, 0.3f, 0.3f); // 暗いグレー
-    public Color unlockedLineColor = new Color(0.8f, 0.6f, 0.9f); // 病みかわ感のあるパステルパープル
+    public GameObject linePrefab;    
+    public Transform lineContainer;  
+    public Color lockedLineColor = new Color(0.3f, 0.3f, 0.3f); 
+    public Color unlockedLineColor = new Color(0.8f, 0.6f, 0.9f); 
 
     private bool isMoving = false;
     private MapNode targetNode;
@@ -32,15 +33,24 @@ public class MapManager : MonoBehaviour{
             node.SetupNode();
         }
 
-        // ▼【追加】全てのノードの間に自動で線を引く ▼
         DrawAllPaths(allNodes);
+
+        // ▼【超重要追加】GameManagerに記憶された stageNumber から、スタート位置のノードを探す
+        if (GameManager.Instance != null) {
+            int savedNodeNum = GameManager.Instance.currentMapNodeNumber;
+            foreach (var node in allNodes) {
+                // 自分にセットされたLevelDataのstageNumberが、記憶と一致したらそこを現在地にする
+                if (node.myLevelData != null && node.myLevelData.stageNumber == savedNodeNum) {
+                    currentNode = node;
+                    break;
+                }
+            }
+        }
 
         if (currentNode != null && playerIcon != null){
             playerIcon.position = currentNode.transform.position;
         }
     }
-
-    // --- 【追加】線を引くための処理群 ---
 
     private void DrawAllPaths(MapNode[] allNodes){
         if (linePrefab == null || lineContainer == null) return;
@@ -56,10 +66,8 @@ public class MapManager : MonoBehaviour{
     private void DrawLine(MapNode fromNode, MapNode toNode){
         if (fromNode == null || toNode == null) return;
 
-        // 【プロのテクニック】A→B と B→A で2回線を引いてしまわないよう、IDで弾く
         if (fromNode.GetInstanceID() > toNode.GetInstanceID()) return;
 
-        // プレハブを生成し、lineContainer の子オブジェクトにする
         GameObject lineObj = Instantiate(linePrefab, lineContainer, false);
         RectTransform lineRect = lineObj.GetComponent<RectTransform>();
         Image lineImage = lineObj.GetComponent<Image>();
@@ -67,33 +75,24 @@ public class MapManager : MonoBehaviour{
         RectTransform fromRect = fromNode.GetComponent<RectTransform>();
         RectTransform toRect = toNode.GetComponent<RectTransform>();
 
-        // 【超重要】画像のピボット（中心点）を「左端」に強制設定し、伸縮しやすくする
         lineRect.pivot = new Vector2(0, 0.5f);
-
-        // 線の開始位置を fromNode に合わせる
         lineRect.anchoredPosition = fromRect.anchoredPosition;
 
-        // 2点間の距離（長さ）と角度を計算
         Vector2 dir = toRect.anchoredPosition - fromRect.anchoredPosition;
         float distance = dir.magnitude;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        // 計算した長さと角度を適用（太さは 15px に設定）
         lineRect.sizeDelta = new Vector2(distance, 15f);
         lineRect.rotation = Quaternion.Euler(0, 0, angle);
 
-        // 両方のノードが解放されていれば明るい色、そうでなければ暗い色にする
         if (fromNode.IsUnlocked && toNode.IsUnlocked){
             lineImage.color = unlockedLineColor;
         }else{
             lineImage.color = lockedLineColor;
         }
 
-        // 線がノードやプレイヤーの上の重ならないよう、一番奥（一番上）に移動させる
         lineRect.SetAsFirstSibling();
     }
-
-    // -----------------------------------
 
     void Update(){
         if (isMoving){
@@ -118,8 +117,6 @@ public class MapManager : MonoBehaviour{
 
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
             if (currentNode != null && currentNode.myLevelData != null && currentNode.IsUnlocked){
-                // ▼ 【変更】今までの直接ロードから、トランジション付きのロードに変更！ ▼
-                // 第一引数にシーン名、第二引数に LevelData に設定した「始まりの森」などの名前を渡す
                 SceneTransitionManager.Instance.LoadCourse(
                     currentNode.myLevelData.sceneName,
                     currentNode.myLevelData.levelName
@@ -137,6 +134,12 @@ public class MapManager : MonoBehaviour{
             playerIcon.position = targetNode.transform.position;
             currentNode = targetNode;
             isMoving = false;
+
+            // ▼【追加】ノードの移動が終わった瞬間に、GameManagerの記憶を上書きしてセーブする
+            if (GameManager.Instance != null && currentNode.myLevelData != null) {
+                GameManager.Instance.currentMapNodeNumber = currentNode.myLevelData.stageNumber;
+                GameManager.Instance.SaveGame(); // 途中でゲームを落としても現在地を維持するため保存
+            }
         }
     }
 }

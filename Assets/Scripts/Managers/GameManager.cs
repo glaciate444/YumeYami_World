@@ -2,7 +2,7 @@
  * スクリプト名 : GameManager.cs
  * Version : Ver0.04
  * 用途 : シーンを切り替えても絶対に消滅しない、ゲームの総司令塔
- * 拡張 : LifeHUDと連携して、残基UIを自動更新する機能を追加
+ * 拡張 : マップ上の現在位置（ノード番号）を記憶する機能を追加
  * =================================================== */
 using UnityEngine;
 
@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour{
     public int currentMaxSp = 6;
     public int unlockedStageLevel = 1; 
     public int totalCoins = 0;
+
+    // ▼【新規追加】最後にいたマップのノード番号（LevelDataのstageNumberと対応）
+    public int currentMapNodeNumber = 1; 
 
     [Header("ステージで集めたコインの一時保存用（セーブ非対象）")]
     public int stageCoins = 0;
@@ -34,9 +37,6 @@ public class GameManager : MonoBehaviour{
         }
     }
 
-    // ==========================================
-    // 1UPアイテムを取得した時の専用処理
-    // ==========================================
     public void AddLifePiece(int amount) {
         currentLifePieces += amount;
         Debug.Log($"1UPアイテムゲット！ 現在: {currentLifePieces} / 100");
@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour{
             Debug.Log($"1UPしました！ 残基: {currentLives}");
         }
         
-        // ▼【追加】画面内の LifeHUD を探して、UIを最新状態に更新させる ▼
         LifeHUD hud = FindFirstObjectByType<LifeHUD>();
         if (hud != null){
             hud.UpdateHUD();
@@ -68,6 +67,10 @@ public class GameManager : MonoBehaviour{
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
         PlayerPrefs.SetInt("CurrentLives", currentLives);
         PlayerPrefs.SetInt("CurrentLifePieces", currentLifePieces);
+        
+        // ▼【追加】現在位置をセーブ
+        PlayerPrefs.SetInt("CurrentMapNodeNumber", currentMapNodeNumber);
+        
         PlayerPrefs.Save(); 
     }
 
@@ -78,6 +81,9 @@ public class GameManager : MonoBehaviour{
         if (PlayerPrefs.HasKey("TotalCoins")) totalCoins = PlayerPrefs.GetInt("TotalCoins");
         if (PlayerPrefs.HasKey("CurrentLives")) currentLives = PlayerPrefs.GetInt("CurrentLives");
         if (PlayerPrefs.HasKey("CurrentLifePieces")) currentLifePieces = PlayerPrefs.GetInt("CurrentLifePieces");
+        
+        // ▼【追加】現在位置をロード
+        if (PlayerPrefs.HasKey("CurrentMapNodeNumber")) currentMapNodeNumber = PlayerPrefs.GetInt("CurrentMapNodeNumber");
     }
 
     public void ResetData() {
@@ -88,5 +94,8 @@ public class GameManager : MonoBehaviour{
         totalCoins = 0;
         currentLives = 3;
         currentLifePieces = 0;
+        
+        // ▼【追加】現在位置も初期化
+        currentMapNodeNumber = 1;
     }
 }

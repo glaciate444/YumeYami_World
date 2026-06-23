@@ -1,70 +1,67 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalPoint.cs
- * Version : Ver0.04
+ * Version : Ver0.05
  * 用途 : ゴール判定とアイリスアウト遷移
+ * 修正 : 子オブジェクト（足元センサー等）による接触エラーを完全に防止
  * =================================================== */
 using UnityEngine;
 using UnityEngine.SceneManagement; 
-using System.Collections; // コルーチンを使うために追加
+using System.Collections; 
 
 public class GoalPoint : MonoBehaviour{
     [Header("遷移先シーン名")]
-    public string nextSceneName = "MapSelectScene"; // ※後でここを「ミニゲームのScene名」に変更します
+    public string nextSceneName = "MapSelectScene"; 
 
     [Header("ステージ進行設定")]
     public int unlockLevelReward = 2;
 
     [Header("演出時間")]
-    public float waitTime = 2.0f; // ポーズをとってから暗転が始まるまでの「ドヤ顔」の時間
+    public float waitTime = 2.0f; 
 
     private bool isGoal;
 
-private void OnTriggerEnter2D(Collider2D other){
+    private void OnTriggerEnter2D(Collider2D other){
         if (!isGoal && other.CompareTag("Player")){
+            
+            // ▼【超重要修正】other.GetComponent ではなく、親を含めて検索する ▼
+            // これにより、足元センサーが触れても確実に「プレイヤー本体」を取得できます
+            PlayerController player = other.GetComponentInParent<PlayerController>();
+            PlayerInventory inventory = other.GetComponentInParent<PlayerInventory>();
+
+            // ※もし「Player」タグが付いているのに本体が見つからない場合は、ただの誤爆なので弾く
+            if (player == null) return;
+
             isGoal = true;
             Debug.Log("ゴール！");
 
             // 1. プレイヤーの操作を奪い、ポーズを取らせる
-            PlayerController player = other.GetComponent<PlayerController>();
-            if (player != null){
-                player.PlayGoalAction();
-            }
+            player.PlayGoalAction();
 
-            // ▼【超重要：ここが修正ポイント！】▼
-            PlayerInventory inventory = other.GetComponent<PlayerInventory>();
+            // 2. コインの引き継ぎ（inventory は確実に取得できているので0枚にならない！）
             if (inventory != null && GameManager.Instance != null){
-                
-                // 正解：ミニゲーム用に「stageCoins」にだけ記憶させる（代入する）
-                // ※お使いの変数名（currentCoins 等）に合わせてください
-                GameManager.Instance.stageCoins = inventory.currentCoins; 
-                
-                // ※ここに GameManager.Instance.totalCoins += ... という行が
-                // 残っていると二重取りになるため、完全に削除しました！
+                GameManager.Instance.stageCoins = inventory.currentCoins;            
             }
-            // ▲【修正ポイントここまで】▲
 
-            // 2. GameManagerの進行度を更新
+            // 3. GameManagerの進行度を更新
             if (GameManager.Instance != null){
                 if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){
                     GameManager.Instance.unlockedStageLevel = unlockLevelReward;
                 }
             }
 
-            // 3. 待ち時間＆アイリスアウトをコルーチンで開始
-            StartCoroutine(GoalRoutine(other.transform));
+            // 4. 待ち時間＆アイリスアウトをコルーチンで開始
+            // ▼【重要】消えるかもしれない other.transform ではなく、確実に存在する player.transform を渡す！
+            StartCoroutine(GoalRoutine(player.transform));
         }
     }
 
     private IEnumerator GoalRoutine(Transform playerTransform){
-        // ポーズを見せるために指定した時間（2秒）だけ待機
         yield return new WaitForSeconds(waitTime);
 
-        // アイリスアウトのマネージャーを探して起動！
         IrisTransitionManager iris = FindFirstObjectByType<IrisTransitionManager>();
         if (iris != null){
             iris.StartIrisOut(playerTransform, nextSceneName);
         } else {
-            // マネージャーが無ければ保険として普通に遷移
             SceneManager.LoadScene(nextSceneName);
         }
     }
