@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 91
   levelName: Boss Stage
-  sceneName: Level1-Stage7
+  sceneName: Level1-Stage7_Boss
   requiredUnlockLevel: 7
   thumbnail: {fileID: 0}
   description: 
