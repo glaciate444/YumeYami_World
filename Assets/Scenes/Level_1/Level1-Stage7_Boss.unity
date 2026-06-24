@@ -144,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 192749080}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.55, y: 0, z: 0}
+  m_LocalPosition: {x: -0.966, y: -0.107, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1333,7 +1333,7 @@ Transform:
   m_GameObject: {fileID: 999760004}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.705903, y: -2.04, z: -10}
+  m_LocalPosition: {x: -9.51, y: -2.08, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3329,7 +3329,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 10.225113, y: 0}
+  m_Offset: {x: 1.1506438, y: -3.3570294}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -3339,7 +3339,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 21.450226, y: 10}
+  m_Size: {x: 3.3012877, y: 3.285941}
   m_EdgeRadius: 0
 --- !u!4 &1537470674
 Transform:
@@ -3479,6 +3479,7 @@ GameObject:
   - component: {fileID: 1586846650}
   - component: {fileID: 1586846659}
   - component: {fileID: 1586846660}
+  - component: {fileID: 1586846661}
   m_Layer: 11
   m_Name: Boss
   m_TagString: Untagged
@@ -3511,7 +3512,7 @@ Animator:
   m_GameObject: {fileID: 1586846649}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: defc4a19149c1c14abbcecc6591ccad2, type: 2}
+  m_Controller: {fileID: 9100000, guid: 672b6d7c0b0dcda49a8c5cb7b3b971f7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3708,6 +3709,29 @@ MonoBehaviour:
   speed: 4
   radius: 1
   isClockwise: 0
+--- !u!114 &1586846661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586846649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a80528df03ec98848a04fc8dfbafe74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
+  enemyBulletPrefab: {fileID: 9154410134414188960, guid: d6329f18d6372124a98aa0cc5a40ef70, type: 3}
+  firePoint: {fileID: 192749081}
+  fireInterval: 2
+  aimType: 1
+  bulletCount: 1
+  spreadAngle: 15
+  burstInterval: 0
+  angleRandomness: 0
+  positionOffset: {x: 0, y: 0}
+  positionRandomness: {x: 0, y: 0}
+  targetOffset: {x: 0, y: 0.5}
 --- !u!1 &1595878389
 GameObject:
   m_ObjectHideFlags: 0
@@ -8803,11 +8827,11 @@ PrefabInstance:
       objectReference: {fileID: 408552643}
     - target: {fileID: 6306910720730316081, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.705903
+      value: -9.51
       objectReference: {fileID: 0}
     - target: {fileID: 6306910720730316081, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.04
+      value: -2.08
       objectReference: {fileID: 0}
     - target: {fileID: 6306910720730316081, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
       propertyPath: m_LocalPosition.z
