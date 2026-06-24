@@ -3499,9 +3499,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
-  damage: 1
-  impact: 5
-  canBeStomped: 1
+  damage: 2
+  impact: 10
+  canBeStomped: 0
 --- !u!95 &1586846652
 Animator:
   serializedVersion: 7

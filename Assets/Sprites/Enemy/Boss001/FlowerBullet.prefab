@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   speed: 15
-  damage: 2
+  damage: 1
   impact: 5
   lifeTime: 2
   ignoreTag: Enemy
