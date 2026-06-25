@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalPoint.cs
- * Version : Ver0.06
+ * Version : Ver0.07
  * 用途 : ゴール判定とアイリスアウト遷移
- * 拡張 : ボスステージクリア時に新しいワールドを解放する機能を追加
+ * 拡張 : 外部（ボスなど）から強制的にゴール処理を呼び出せるように修正
  * =================================================== */
 using UnityEngine;
 using UnityEngine.SceneManagement; 
@@ -15,11 +15,8 @@ public class GoalPoint : MonoBehaviour{
     [Header("ステージ進行設定（通常）")]
     public int unlockLevelReward = 2;
 
-    // ▼【新規追加】ボス用の設定
     [Header("ワールド進行設定（ボス専用）")]
-    [Tooltip("チェックを入れると、クリア時に新しいワールドが解放されます")]
     public bool unlocksNewWorld = false;
-    [Tooltip("解放するワールドの番号（レベル2の島を解放するなら 2）")]
     public int unlockWorldReward = 2;
 
     [Header("演出時間")]
@@ -27,40 +24,49 @@ public class GoalPoint : MonoBehaviour{
 
     private bool isGoal;
 
+    // 通常の「触れたらゴール」の処理
     private void OnTriggerEnter2D(Collider2D other){
         if (!isGoal && other.CompareTag("Player")){
-            
-            PlayerController player = other.GetComponentInParent<PlayerController>();
-            PlayerInventory inventory = other.GetComponentInParent<PlayerInventory>();
-
-            if (player == null) return;
-
-            isGoal = true;
-            Debug.Log("ゴール！");
-
-            player.PlayGoalAction();
-
-            if (inventory != null && GameManager.Instance != null){
-                GameManager.Instance.stageCoins = inventory.currentCoins;            
-            }
-
-            if (GameManager.Instance != null){
-                // 1. 通常のステージ進行度を更新
-                if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){
-                    GameManager.Instance.unlockedStageLevel = unlockLevelReward;
-                }
-                
-                // 2. ▼【追加】ボス設定がONなら、ワールド進行度も更新！
-                if (unlocksNewWorld) {
-                    if (GameManager.Instance.unlockedWorldLevel < unlockWorldReward){
-                        GameManager.Instance.unlockedWorldLevel = unlockWorldReward;
-                        Debug.Log($"新ワールド {unlockWorldReward} が解放されました！");
-                    }
-                }
-            }
-
-            StartCoroutine(GoalRoutine(player.transform));
+            TriggerGoal(other.gameObject); // 下のメソッドにパスする
         }
+    }
+
+    // ▼【新規追加】ボス撃破時など、外部から自動でゴール処理をスタートさせるメソッド
+    public void TriggerGoal(GameObject playerObject) {
+        if (isGoal) return;
+
+        PlayerController player = playerObject.GetComponentInParent<PlayerController>();
+        PlayerInventory inventory = playerObject.GetComponentInParent<PlayerInventory>();
+
+        if (player == null) return;
+
+        isGoal = true;
+        Debug.Log("ゴール処理開始！");
+
+        // 1. プレイヤーにポーズを取らせる
+        player.PlayGoalAction();
+
+        // 2. コイン引き継ぎ
+        if (inventory != null && GameManager.Instance != null){
+            GameManager.Instance.stageCoins = inventory.currentCoins;            
+        }
+
+        // 3. 進行度とワールド解放
+        if (GameManager.Instance != null){
+            if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){
+                GameManager.Instance.unlockedStageLevel = unlockLevelReward;
+            }
+            
+            if (unlocksNewWorld) {
+                if (GameManager.Instance.unlockedWorldLevel < unlockWorldReward){
+                    GameManager.Instance.unlockedWorldLevel = unlockWorldReward;
+                    Debug.Log($"新ワールド {unlockWorldReward} が解放されました！");
+                }
+            }
+        }
+
+        // 4. アイリスアウト開始
+        StartCoroutine(GoalRoutine(player.transform));
     }
 
     private IEnumerator GoalRoutine(Transform playerTransform){

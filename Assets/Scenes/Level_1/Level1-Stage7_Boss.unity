@@ -259,7 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
   unlockLevelReward: 6
-  unlocksNewWorld: 0
+  unlocksNewWorld: 1
   unlockWorldReward: 2
   waitTime: 2
 --- !u!61 &246472027
@@ -269,7 +269,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 246472025}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -376,7 +376,7 @@ Transform:
   m_GameObject: {fileID: 246472025}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 249.48, y: 8.49, z: 0}
+  m_LocalPosition: {x: -14.29, y: -2.46, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3544,7 +3544,13 @@ MonoBehaviour:
   entranceBlocker: {fileID: 1154109922}
   entranceBlockerR: {fileID: 868255459}
   bossCameraObj: {fileID: 230658882}
+  stageGoalPoint: {fileID: 246472026}
   deathParticlePrefab: {fileID: 3024573372393446192, guid: b44f3877ea4c5bc48b1d77eda1883bad, type: 3}
+  phase1Turrets:
+  - {fileID: 1586846661}
+  phase2Turrets:
+  - {fileID: 1586846661}
+  phase2Threshold: 0.5
 --- !u!50 &1586846655
 Rigidbody2D:
   serializedVersion: 5
