@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : BossHoverMove.cs
  * 用途 : ボス専用のサイン波（波打ち）ホバリング移動
- * 修正 : スプライトのデフォルトの向き（右向き/左向き）に対応
+ * 修正 : エディタの初期状態に依存せず、FirePointを必ず正面に配置する絶対値計算を追加
  * =================================================== */
 using UnityEngine;
 
@@ -15,22 +15,20 @@ public class BossHoverMove : MonoBehaviour {
     public float verticalRange = 1.0f;   
 
     [Header("向き（スプライト反転）の設定")]
-    [Tooltip("【重要】ボスの元の画像が『右向き』の場合はチェックを入れてください")]
-    public bool isDefaultFacingRight = true; // ▼ これを追加しました！
-
-    [Tooltip("【プレイヤー注視】チェックを入れると、常にプレイヤーのいる方を向きます")]
+    public bool isDefaultFacingRight = true; 
     public bool alwaysLookAtPlayer = false;
-
-    [Tooltip("【向き固定】チェックを入れると、移動方向に関係なく向きを固定します")]
     public bool pinDirection = false;
-    
-    [Tooltip("固定時の反転状態（チェックを入れるとFlipXがTrueになります）")]
     public bool initialFlipX = false;
 
+    [Header("子オブジェクトの連動設定")]
+    public Transform firePoint;
+
     private Vector3 startPos;
-    private int direction = -1; // -1:左向き, 1:右向き
+    private int direction = -1; 
     private SpriteRenderer spriteRenderer;
     private Transform playerTransform;
+
+    private Vector3 initialFirePointLocalPos; 
 
     void Start() {
         startPos = transform.position;
@@ -43,6 +41,10 @@ public class BossHoverMove : MonoBehaviour {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) {
             playerTransform = player.transform;
+        }
+
+        if (firePoint != null) {
+            initialFirePointLocalPos = firePoint.localPosition;
         }
     }
 
@@ -64,27 +66,34 @@ public class BossHoverMove : MonoBehaviour {
 
         // 2. 向きの制御ロジック
         if (spriteRenderer != null) {
+            bool shouldFlip = false; 
+
             if (alwaysLookAtPlayer && playerTransform != null) {
-                // プレイヤーが自分より右側にいるか
                 bool isPlayerOnRight = playerTransform.position.x > transform.position.x;
-                
-                // ▼【修正】元の画像が右向きか左向きかで、反転（FlipX）の計算を逆にする
-                if (isDefaultFacingRight) {
-                    spriteRenderer.flipX = !isPlayerOnRight; // 元が右向きなら、右にいる時は反転しない
-                } else {
-                    spriteRenderer.flipX = isPlayerOnRight;  // 元が左向きなら、右にいる時に反転する
-                }
+                shouldFlip = isDefaultFacingRight ? !isPlayerOnRight : isPlayerOnRight;
             } 
             else if (pinDirection) {
-                spriteRenderer.flipX = initialFlipX;
+                shouldFlip = initialFlipX;
             } 
             else {
-                // 進行方向に向くモードも、元の向きに合わせて計算
-                if (isDefaultFacingRight) {
-                    spriteRenderer.flipX = (direction == -1); // 左に進む時に反転
-                } else {
-                    spriteRenderer.flipX = (direction == 1);  // 右に進む時に反転
-                }
+                shouldFlip = isDefaultFacingRight ? (direction == -1) : (direction == 1);
+            }
+
+            // ▼ 画像の反転を適用
+            spriteRenderer.flipX = shouldFlip;
+
+            // ▼【超安全修正】FirePointの位置を「見た目の向き」に合わせて強制的に修正する
+            if (firePoint != null) {
+                // ① 現在「見た目上」右を向いているかどうかの判定
+                bool isVisuallyFacingRight = isDefaultFacingRight ? !shouldFlip : shouldFlip;
+
+                // ② X座標の「絶対値（中心からの距離）」だけを取得する（マイナスを無効化）
+                float absoluteX = Mathf.Abs(initialFirePointLocalPos.x);
+
+                // ③ 見た目が右向きならプラス（右側）、左向きならマイナス（左側）に強制セット！
+                float currentFirePointX = isVisuallyFacingRight ? absoluteX : -absoluteX;
+                
+                firePoint.localPosition = new Vector3(currentFirePointX, initialFirePointLocalPos.y, initialFirePointLocalPos.z);
             }
         }
     }
