@@ -261,8 +261,8 @@ TextureImporter:
       name: cakechip_01_6
       rect:
         serializedVersion: 2
-        x: 0
-        y: 32
+        x: 96
+        y: 48
         width: 16
         height: 16
       alignment: 0
@@ -283,8 +283,8 @@ TextureImporter:
       name: cakechip_01_7
       rect:
         serializedVersion: 2
-        x: 16
-        y: 32
+        x: 112
+        y: 48
         width: 16
         height: 16
       alignment: 0
@@ -305,7 +305,7 @@ TextureImporter:
       name: cakechip_01_8
       rect:
         serializedVersion: 2
-        x: 32
+        x: 0
         y: 32
         width: 16
         height: 16
@@ -327,7 +327,7 @@ TextureImporter:
       name: cakechip_01_9
       rect:
         serializedVersion: 2
-        x: 48
+        x: 16
         y: 32
         width: 16
         height: 16
@@ -349,7 +349,7 @@ TextureImporter:
       name: cakechip_01_10
       rect:
         serializedVersion: 2
-        x: 64
+        x: 32
         y: 32
         width: 16
         height: 16
@@ -371,7 +371,7 @@ TextureImporter:
       name: cakechip_01_11
       rect:
         serializedVersion: 2
-        x: 80
+        x: 48
         y: 32
         width: 16
         height: 16
@@ -393,8 +393,8 @@ TextureImporter:
       name: cakechip_01_12
       rect:
         serializedVersion: 2
-        x: 0
-        y: 16
+        x: 64
+        y: 32
         width: 16
         height: 16
       alignment: 0
@@ -415,8 +415,8 @@ TextureImporter:
       name: cakechip_01_13
       rect:
         serializedVersion: 2
-        x: 16
-        y: 16
+        x: 80
+        y: 32
         width: 16
         height: 16
       alignment: 0
@@ -437,8 +437,8 @@ TextureImporter:
       name: cakechip_01_14
       rect:
         serializedVersion: 2
-        x: 32
-        y: 16
+        x: 96
+        y: 32
         width: 16
         height: 16
       alignment: 0
@@ -459,8 +459,8 @@ TextureImporter:
       name: cakechip_01_15
       rect:
         serializedVersion: 2
-        x: 48
-        y: 16
+        x: 112
+        y: 32
         width: 16
         height: 16
       alignment: 0
@@ -481,7 +481,7 @@ TextureImporter:
       name: cakechip_01_16
       rect:
         serializedVersion: 2
-        x: 64
+        x: 0
         y: 16
         width: 16
         height: 16
@@ -503,7 +503,7 @@ TextureImporter:
       name: cakechip_01_17
       rect:
         serializedVersion: 2
-        x: 80
+        x: 16
         y: 16
         width: 16
         height: 16
@@ -525,8 +525,8 @@ TextureImporter:
       name: cakechip_01_18
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 32
+        y: 16
         width: 16
         height: 16
       alignment: 0
@@ -547,8 +547,8 @@ TextureImporter:
       name: cakechip_01_19
       rect:
         serializedVersion: 2
-        x: 16
-        y: 0
+        x: 48
+        y: 16
         width: 16
         height: 16
       alignment: 0
@@ -569,8 +569,8 @@ TextureImporter:
       name: cakechip_01_20
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
+        x: 64
+        y: 16
         width: 16
         height: 16
       alignment: 0
@@ -591,8 +591,8 @@ TextureImporter:
       name: cakechip_01_21
       rect:
         serializedVersion: 2
-        x: 48
-        y: 0
+        x: 80
+        y: 16
         width: 16
         height: 16
       alignment: 0
@@ -613,8 +613,8 @@ TextureImporter:
       name: cakechip_01_22
       rect:
         serializedVersion: 2
-        x: 64
-        y: 0
+        x: 96
+        y: 16
         width: 16
         height: 16
       alignment: 0
@@ -635,8 +635,8 @@ TextureImporter:
       name: cakechip_01_23
       rect:
         serializedVersion: 2
-        x: 80
-        y: 0
+        x: 112
+        y: 16
         width: 16
         height: 16
       alignment: 0
@@ -649,6 +649,182 @@ TextureImporter:
       bones: []
       spriteID: fb317ad70e9efa943885a50ce63b4569
       internalID: -272719030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9a83477970c74a49b522f665db02f35
+      internalID: -1642029237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_25
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4dce64fc5d7bb244db4e5aa8216527fe
+      internalID: -661996942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_26
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc59579b3a6227c4b8eb89e3c1341b7d
+      internalID: 1369433641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_27
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18ef3f0b61f47264396c1d2f272f55f6
+      internalID: 358676398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_28
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63543473aba59e8479d16e9ef5916d47
+      internalID: 345157784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_29
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac2cf2c521e4210419f7fb5c9346b438
+      internalID: 560557620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_30
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0d3b6c803d2ff0409d64ff779293bf0
+      internalID: 1588486737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cakechip_01_31
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bfa1bea8b066d2469d6f45f0a216318
+      internalID: -968282927
       vertices: []
       indices: 
       edges: []
@@ -686,7 +862,15 @@ TextureImporter:
       cakechip_01_21: -1506928415
       cakechip_01_22: -1394175723
       cakechip_01_23: -272719030
+      cakechip_01_24: -1642029237
+      cakechip_01_25: -661996942
+      cakechip_01_26: 1369433641
+      cakechip_01_27: 358676398
+      cakechip_01_28: 345157784
+      cakechip_01_29: 560557620
       cakechip_01_3: 1474913861
+      cakechip_01_30: 1588486737
+      cakechip_01_31: -968282927
       cakechip_01_4: 533040268
       cakechip_01_5: 1056769112
       cakechip_01_6: -1422080943
