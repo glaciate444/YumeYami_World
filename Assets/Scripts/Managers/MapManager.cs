@@ -128,8 +128,17 @@ public class MapManager : MonoBehaviour{
             isMoving = true;
         }
 
+        // ▼【修正箇所】MapManager.cs の Update() 内の下の方 ▼
+
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
             if (currentNode != null && currentNode.myLevelData != null && currentNode.IsUnlocked){
+                
+                // ▼【新規追加】ステージに入る直前に、今いるマップのシーン名をGameManagerに記憶させる！
+                if (GameManager.Instance != null) {
+                    GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
+                }
+
+                // トランジション付きのロード
                 SceneTransitionManager.Instance.LoadCourse(
                     currentNode.myLevelData.sceneName,
                     currentNode.myLevelData.levelName

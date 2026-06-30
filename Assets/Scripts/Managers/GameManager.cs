@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour{
     public int unlockedWorldLevel = 1;   // レベル2が解放されたら2になる
     public int currentWorldNodeNumber = 1; // マップの現在位置記憶用
 
+    [Header("マップ遷移用")]
+    public string returnMapSceneName = ""; // ← これを追加！
+
     void Awake(){
         if (Instance == null){
             Instance = this;

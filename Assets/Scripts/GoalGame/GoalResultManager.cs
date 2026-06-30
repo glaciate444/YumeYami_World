@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalResultManager.cs
  * 用途 : リザルト表示、コイン集計演出、セーブデータの保存
- * 修正 : 根本原因（フライング加算）解決に伴い、純粋な加算ロジックに修正
+ * 拡張 : GameManagerの記憶を頼りに、元の小マップへ正しく帰還する機能を追加
  * =================================================== */
 using UnityEngine;
 using TMPro;
@@ -19,15 +19,15 @@ public class GoalResultManager : MonoBehaviour {
     public AudioClip countSE;        
     public AudioClip finishSE;       
 
-    [Header("遷移先")]
-    public string mapSceneName = "MapSelectScene";
+    [Header("遷移先（予備）")]
+    [Tooltip("記憶がない場合の予備の帰り道")]
+    public string fallbackMapSceneName = "MapSelectScene";
 
     private bool isCounting = false;
     private bool isTransitioning = false; 
 
     void Start() {
         if (GameManager.Instance != null) {
-            // フライング加算が無くなったので、そのまま素直に表示するだけでOK！
             UpdateUI(GameManager.Instance.stageCoins, GameManager.Instance.totalCoins);
             StartCoroutine(CoinCountRoutine());
         }
@@ -61,11 +61,10 @@ public class GoalResultManager : MonoBehaviour {
         isCounting = true;
 
         int currentStageCoins = GameManager.Instance.stageCoins;
-        int currentTotalCoins = GameManager.Instance.totalCoins; // 正しい元の値（例: 421）
+        int currentTotalCoins = GameManager.Instance.totalCoins; 
 
         yield return new WaitForSeconds(0.5f);
 
-        // 1枚ずつ移動させるループ
         while (currentStageCoins > 0 && isCounting) {
             currentStageCoins--;
             currentTotalCoins++;
@@ -79,7 +78,6 @@ public class GoalResultManager : MonoBehaviour {
             yield return new WaitForSeconds(countSpeed);
         }
 
-        // ▼ スキップ時などのため、最終的な正しい値（421 + 15 = 436）を計算して反映
         int finalTotalCoins = GameManager.Instance.totalCoins + GameManager.Instance.stageCoins;
         UpdateUI(0, finalTotalCoins);
 
@@ -89,7 +87,6 @@ public class GoalResultManager : MonoBehaviour {
             SoundManager.instance.PlaySE(finishSE);
         }
 
-        // GameManagerのデータを更新してセーブ！
         GameManager.Instance.totalCoins = finalTotalCoins;
         GameManager.Instance.stageCoins = 0; 
         GameManager.Instance.SaveGame();
@@ -105,10 +102,19 @@ public class GoalResultManager : MonoBehaviour {
 
         yield return new WaitForSeconds(1.0f);
 
-        if (SceneTransitionManager.Instance != null) {
-            SceneTransitionManager.Instance.LoadScene(mapSceneName, TransitionType.Fade);
+        // ▼【変更】GameManagerの記憶から帰り道を探す！
+        string nextScene = fallbackMapSceneName; 
+        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.returnMapSceneName)) {
+            nextScene = GameManager.Instance.returnMapSceneName;
+            Debug.Log($"記憶された小マップ [{nextScene}] へ帰還します！");
         } else {
-            SceneManager.LoadScene(mapSceneName);
+            Debug.LogWarning("帰り道の記憶がなかったため、予備のシーンへ遷移します。");
+        }
+
+        if (SceneTransitionManager.Instance != null) {
+            SceneTransitionManager.Instance.LoadScene(nextScene, TransitionType.Fade);
+        } else {
+            SceneManager.LoadScene(nextScene);
         }
     }
 }
