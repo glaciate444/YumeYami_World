@@ -180,6 +180,8 @@ public class Boss : MonoBehaviour, IDamageable {
                 entranceBlockerR.SetActive(false);
             }
             if (bossCameraObj != null) bossCameraObj.SetActive(false);
+
+            Destroy(gameObject, 0.5f); // 0.5秒後（爆発が見えた後）に消滅させる
         } 
         // ▼【新規追加】ステージボスの場合は、自動でゴール処理へ！
         else if (bossType == BossType.StageBoss) {
