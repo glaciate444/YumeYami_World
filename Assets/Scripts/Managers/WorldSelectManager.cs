@@ -1,10 +1,11 @@
 ﻿/* ===================================================
  * スクリプト名 : WorldSelectManager.cs
- * Version : Ver0.01
- * 用途 : ワールド選択画面を動かすマネージャースクリプト
+ * 用途 : 大マップ（ワールド選択）のカーソル移動とシーン遷移
+ * 拡張 : 決定ボタンの連打バグを防ぐフラグを追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class WorldSelectManager : MonoBehaviour {
     [Header("設定")]
@@ -14,6 +15,9 @@ public class WorldSelectManager : MonoBehaviour {
 
     private bool isMoving = false;
     private WorldNode targetNode;
+
+    // ▼【新規追加】シーン遷移が始まったら true にして入力の連打を防ぐ
+    private bool isStartingWorld = false;
 
     void Start() {
         WorldNode[] allNodes = FindObjectsByType<WorldNode>(FindObjectsSortMode.None);
@@ -38,6 +42,9 @@ public class WorldSelectManager : MonoBehaviour {
     }
 
     void Update() {
+        // ▼【新規追加】すでに画面遷移が始まっていたら、これ以下の処理（キー入力）を一切無視する！
+        if (isStartingWorld) return;
+
         if (isMoving) {
             MovePlayerIcon();
             return;
@@ -61,8 +68,15 @@ public class WorldSelectManager : MonoBehaviour {
         // 決定ボタンで、そのレベルの小マップ（MapSelectScene_Level〇）へ遷移！
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame) {
             if (currentNode != null && currentNode.myWorldData != null && currentNode.IsUnlocked) {
+                
+                // ▼【新規追加】ワールドに入ることが確定したら、フラグをONにして連打をロックする！
+                isStartingWorld = true;
+
                 if (SceneTransitionManager.Instance != null) {
+                    // ※今はFadeにしていますが、後で新しいトランジションタイプを追加した際も安全です
                     SceneTransitionManager.Instance.LoadScene(currentNode.myWorldData.sceneName, TransitionType.Fade);
+                } else {
+                    SceneManager.LoadScene(currentNode.myWorldData.sceneName);
                 }
             }
         }

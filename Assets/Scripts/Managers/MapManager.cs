@@ -1,11 +1,11 @@
 ﻿/* ===================================================
  * スクリプト名 : MapManager.cs
- * Version : Ver0.04
+ * Version : Ver0.05
  * Since : 2026/04/28
- * Update : 2026/06/23
+ * Update : 2026/07/02
  * 用途 : MapManager (マップ管理者): プレイヤーの移動を制御し、
  * 今どのノードにいるのか、次はどこへ移動できるのかを管理します。
- * 拡張 : GameManagerの記憶からスタート位置を復元する機能を追加
+ * 拡張 : 決定ボタンの連打バグを防ぐフラグを追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -27,8 +27,11 @@ public class MapManager : MonoBehaviour{
     private bool isMoving = false;
     private MapNode targetNode;
 
+    // ▼【新規追加】シーン遷移が始まったら true にして入力の連打を防ぐ
+    private bool isStartingCourse = false; 
+
     [Header("ワールドマップ（大マップ）へ戻る設定")]
-    public string worldMapSceneName = "WorldMapScene"; // ← 先ほど作った大マップのシーン名を入れてください
+    public string worldMapSceneName = "WorldMapScene"; 
 
     void Start(){
         MapNode[] allNodes = FindObjectsByType<MapNode>(FindObjectsSortMode.None);
@@ -38,11 +41,9 @@ public class MapManager : MonoBehaviour{
 
         DrawAllPaths(allNodes);
 
-        // ▼【超重要追加】GameManagerに記憶された stageNumber から、スタート位置のノードを探す
         if (GameManager.Instance != null) {
             int savedNodeNum = GameManager.Instance.currentMapNodeNumber;
             foreach (var node in allNodes) {
-                // 自分にセットされたLevelDataのstageNumberが、記憶と一致したらそこを現在地にする
                 if (node.myLevelData != null && node.myLevelData.stageNumber == savedNodeNum) {
                     currentNode = node;
                     break;
@@ -68,13 +69,11 @@ public class MapManager : MonoBehaviour{
 
     private void DrawLine(MapNode fromNode, MapNode toNode){
         if (fromNode == null || toNode == null) return;
-
         if (fromNode.GetInstanceID() > toNode.GetInstanceID()) return;
 
         GameObject lineObj = Instantiate(linePrefab, lineContainer, false);
         RectTransform lineRect = lineObj.GetComponent<RectTransform>();
         Image lineImage = lineObj.GetComponent<Image>();
-
         RectTransform fromRect = fromNode.GetComponent<RectTransform>();
         RectTransform toRect = toNode.GetComponent<RectTransform>();
 
@@ -98,6 +97,9 @@ public class MapManager : MonoBehaviour{
     }
 
     void Update(){
+        // ▼【新規追加】すでに画面遷移が始まっていたら、これ以下の処理（キー入力）を一切無視する！
+        if (isStartingCourse) return;
+
         if (isMoving){
             MovePlayerIcon();
             return;
@@ -106,14 +108,15 @@ public class MapManager : MonoBehaviour{
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // ▼【新規追加】Xキー、またはEscキーで大マップへ戻る
+        // ▼ キャンセルキーでの戻る処理（ここでも連打防止のロックをかける）
         if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame) {
+            isStartingCourse = true; // ← ここでロック！
             if (SceneTransitionManager.Instance != null) {
                 SceneTransitionManager.Instance.LoadScene(worldMapSceneName, TransitionType.Fade);
             } else {
                 SceneManager.LoadScene(worldMapSceneName);
             }
-            return; // 戻る時はこれ以下の処理をしない
+            return; 
         }
 
         MapNode nextNode = null;
@@ -128,17 +131,17 @@ public class MapManager : MonoBehaviour{
             isMoving = true;
         }
 
-        // ▼【修正箇所】MapManager.cs の Update() 内の下の方 ▼
-
+        // ▼ 決定ボタンの処理
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
             if (currentNode != null && currentNode.myLevelData != null && currentNode.IsUnlocked){
                 
-                // ▼【新規追加】ステージに入る直前に、今いるマップのシーン名をGameManagerに記憶させる！
+                // ▼【新規追加】コースに入ることが確定したら、フラグをONにして連打をロックする！
+                isStartingCourse = true;
+
                 if (GameManager.Instance != null) {
                     GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
                 }
 
-                // トランジション付きのロード
                 SceneTransitionManager.Instance.LoadCourse(
                     currentNode.myLevelData.sceneName,
                     currentNode.myLevelData.levelName
@@ -157,10 +160,9 @@ public class MapManager : MonoBehaviour{
             currentNode = targetNode;
             isMoving = false;
 
-            // ▼【追加】ノードの移動が終わった瞬間に、GameManagerの記憶を上書きしてセーブする
             if (GameManager.Instance != null && currentNode.myLevelData != null) {
                 GameManager.Instance.currentMapNodeNumber = currentNode.myLevelData.stageNumber;
-                GameManager.Instance.SaveGame(); // 途中でゲームを落としても現在地を維持するため保存
+                GameManager.Instance.SaveGame(); 
             }
         }
     }
