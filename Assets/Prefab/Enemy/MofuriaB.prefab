@@ -208,9 +208,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 2
   knockbackTime: 0.2
+  isInvincible: 0
   itemPrefab: {fileID: 0}
   dropChance: 50
-  explosionEffectPrefab: {fileID: 8286972500862344658, guid: b55a336658df46d4b8fe79342bdd23c8, type: 3}
+  explosionEffectPrefab: {fileID: 3024573372393446192, guid: 3a693705d862477439e9ee7354379755, type: 3}
+  deathJumpForce: 5
+  deathSpinSpeed: 1000
 --- !u!50 &7856985850571322692
 Rigidbody2D:
   serializedVersion: 5
