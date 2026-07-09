@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : RollingHazard.cs
  * 用途 : 物理演算で転がり、プレイヤーを狙う障害物
- * 更新 : 敵を巻き込んで一撃で倒す（轢き潰す）処理を追加
+ * 更新 : 木箱などのオブジェクトにも特大ダメージ(9999)を与えるよう修正
  * =================================================== */
 using UnityEngine;
 
@@ -37,7 +37,6 @@ public class RollingHazard : MonoBehaviour{
         Destroy(gameObject, lifeTime);
     }
 
-    // ▼【追加・修正】物理的にぶつかる「直前」に検知するセンサー処理
     private void OnTriggerEnter2D(Collider2D other){
         IDamageable target = other.GetComponent<IDamageable>();
         
@@ -48,16 +47,15 @@ public class RollingHazard : MonoBehaviour{
                 knockbackDir.y = Mathf.Max(knockbackDir.y, 0.5f); 
                 target.TakeDamage(damage, knockbackDir);
             }
-            // 2. ▼【新規追加】敵（Enemy）だった場合（HP問わず即死させる！）
+            // 2. 敵（Enemy）だった場合（HP問わず即死させる！）
             else if (other.GetComponent<Enemy>() != null) {
                 Vector2 dir = (other.transform.position - transform.position).normalized;
-                // 残りHPを問わず確実に倒すため、特大ダメージ「9999」を与えて轢き潰す
                 target.TakeDamage(9999, dir);
             }
-            // 3. 木箱など、その他の場合（設定された通常のダメージ）
+            // 3. ▼【修正】木箱など、その他の場合（大玉専用の 9999 ダメージを与えて粉砕する！）
             else {
                 Vector2 dir = (other.transform.position - transform.position).normalized;
-                target.TakeDamage(damage, dir);
+                target.TakeDamage(9999, dir);
             }
         }
     }

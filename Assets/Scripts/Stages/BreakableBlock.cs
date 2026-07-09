@@ -1,10 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : BreakableBlock.cs
- * Version : Ver0.03
- * Since : 2026/04/06
- * Update : 2026/05/05
- * 用途 : 破壊できるオブジェクト、木箱(Box Collider 2D)、ブロックなど(Tilemap Collider 2D)
- * 更新 : 木箱を踏むと破壊できるか設定
+ * 用途 : 破壊できるオブジェクト
+ * 更新 : 鉄の箱でも、大玉(特大ダメージ)なら壊れる設定を追加
  * =================================================== */
 using UnityEngine;
 
@@ -13,43 +10,42 @@ public class BreakableBlock : MonoBehaviour, IDamageable{
     [Tooltip("チェックを入れると、攻撃や踏みつけを受けても絶対に壊れない「鉄の箱」になります")]
     public bool isIndestructible = false;
 
+    // ▼【新規追加】大玉ギミック用
+    [Tooltip("チェックを入れると、鉄の箱であっても大玉(特大ダメージ)が当たった時だけ壊れます")]
+    public bool canBreakByHazard = false;
+
     [Header("ドロップ設定")]
-    [Tooltip("壊した時に出すアイテム（ドロップ用コインのプレハブなど）")]
     public GameObject dropItemPrefab;
 
     [Header("エフェクト設定")]
-    [Tooltip("壊れた時の破片パーティクル")]
     public GameObject breakParticlePrefab;
 
-    // 叩かれたら無条件で壊れる
     public void TakeDamage(int damage, Vector2 knockbackDirection){
-        // ▼【追加】壊れない設定（鉄の箱）なら、ここで処理を止めて何もしない
+        // ▼【修正】壊れない設定（鉄の箱）の時の判定
         if (isIndestructible){
-            return;
+            // 大玉で壊せる設定がON かつ、ダメージが9999(大玉クラス)の場合は特別に壊す！
+            if (canBreakByHazard && damage >= 9999) {
+                // ガードを突破して下の破壊処理へ進む
+            } else {
+                return; // 通常の攻撃ならここで処理を止める
+            }
         }
 
-        // 1. パーティクルを生成（設定されていれば）
+        // 1. パーティクルを生成
         if (breakParticlePrefab != null){
-            // 木箱と同じ位置にパーティクルを発生させる
             Instantiate(breakParticlePrefab, transform.position, Quaternion.identity);
         }
 
-        // 2. アイテムをドロップ（設定されていれば）
+        // 2. アイテムをドロップ
         if (dropItemPrefab != null){
-            // 【修正1】1～5を出したい場合、最大値は「6」にします（整数の Random.Range は最大値を含まないため）
             int randomInt = Random.Range(1, 6);
-            Debug.Log($"生成数 = {randomInt}");
-
             for (int i = 0; i < randomInt; i++){
-                // 【修正2】生成位置（XとY）にほんの少しだけランダムなズレ（オフセット）を加える
                 Vector3 randomOffset = new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(0f, 0.3f), 0f);
-
-                // 元の位置にズレを足して生成する
                 Instantiate(dropItemPrefab, transform.position + randomOffset, Quaternion.identity);
             }
         }
 
-        // 3. 自分自身（木箱）をシーンから消去
+        // 3. 自分自身を消去
         Destroy(gameObject);
     }
 }
