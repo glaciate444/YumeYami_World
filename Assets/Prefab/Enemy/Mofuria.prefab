@@ -314,5 +314,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75298aa14076a04b8c3054f1917e291, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyActivator
-  activationDistance: 12
+  activationDistance: 20
   resetPositionWhenFar: 1

@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : RollingHazard.cs
  * 用途 : 物理演算で転がり、プレイヤーを狙う障害物
- * 更新 : 破壊時の減速を防ぐための「バンパー（Trigger）センサー」に対応
+ * 更新 : 敵を巻き込んで一撃で倒す（轢き潰す）処理を追加
  * =================================================== */
 using UnityEngine;
 
@@ -37,29 +37,32 @@ public class RollingHazard : MonoBehaviour{
         Destroy(gameObject, lifeTime);
     }
 
-    // ▼【追加】物理的にぶつかる「直前」に検知するセンサー処理
+    // ▼【追加・修正】物理的にぶつかる「直前」に検知するセンサー処理
     private void OnTriggerEnter2D(Collider2D other){
         IDamageable target = other.GetComponent<IDamageable>();
         
         if (target != null){
-            // 1. プレイヤーだった場合
+            // 1. プレイヤーだった場合（設定された通常のダメージ）
             if (other.CompareTag("Player")){
                 Vector2 knockbackDir = (other.transform.position - transform.position).normalized;
                 knockbackDir.y = Mathf.Max(knockbackDir.y, 0.5f); 
                 target.TakeDamage(damage, knockbackDir);
             }
-            // 2. 木箱や敵だった場合
+            // 2. ▼【新規追加】敵（Enemy）だった場合（HP問わず即死させる！）
+            else if (other.GetComponent<Enemy>() != null) {
+                Vector2 dir = (other.transform.position - transform.position).normalized;
+                // 残りHPを問わず確実に倒すため、特大ダメージ「9999」を与えて轢き潰す
+                target.TakeDamage(9999, dir);
+            }
+            // 3. 木箱など、その他の場合（設定された通常のダメージ）
             else {
-                // 物理エンジンがブレーキをかける「前」に、センサーが触れた瞬間に破壊する！
                 Vector2 dir = (other.transform.position - transform.position).normalized;
                 target.TakeDamage(damage, dir);
             }
         }
     }
 
-    // ▼【変更】通常の物理的な激突（地面や壁へのバウンドなど）
     private void OnCollisionEnter2D(Collision2D other){
-        // ダメージ処理は OnTriggerEnter2D に引っ越したため、ここでは「音を鳴らすだけ」にします
         if (other.relativeVelocity.magnitude > impactThreshold){
             if (SoundManager.instance != null && impactSE != null){
                 SoundManager.instance.PlaySE(impactSE);
