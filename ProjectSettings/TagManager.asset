@@ -28,8 +28,8 @@ TagManager:
   - Ladder
   - Hazard
   - ScreenWall
-  - 
-  - 
+  - PlayerOnlyBlock
+  - EnemyOnlyBlock
   - 
   - 
   - 
