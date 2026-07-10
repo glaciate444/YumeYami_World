@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : Boss.cs
  * 用途 : ボスのステータス管理、HPバー連動、登場演出、撃破演出
- * 拡張 : ステージボス撃破時の自動ゴール遷移を追加
+ * 拡張 : あらゆる移動スクリプトと砲台を全自動で検知して待機させる処理を追加
  * =================================================== */
 using System.Collections;
 using TMPro;
@@ -28,15 +28,14 @@ public class Boss : MonoBehaviour, IDamageable {
     public GameObject entranceBlockerR;
     public GameObject bossCameraObj;
 
-    // ▼【新規追加】ステージボス用の設定
     [Header("ステージボス用設定")]
-    [Tooltip("ボス撃破時に自動でクリア扱いにするためのGoalPointをセットしてください")]
     public GoalPoint stageGoalPoint;
 
     [Header("撃破エフェクト設定")]
     public GameObject deathParticlePrefab;
 
     [Header("攻撃パターン（フェーズ）設定")]
+    [Tooltip("【重要】戦闘開始時に起動する砲台をここにセットしてください")]
     public EnemyTurret[] phase1Turrets;
     public EnemyTurret[] phase2Turrets;
     [Range(0.1f, 0.9f)] public float phase2Threshold = 0.5f;
@@ -55,8 +54,15 @@ public class Boss : MonoBehaviour, IDamageable {
 
     void Start() {
         if (bossHpSlider != null) bossHpSlider.gameObject.SetActive(false);
-        SetTurretsEnabled(phase1Turrets, false);
-        SetTurretsEnabled(phase2Turrets, false);
+
+        // ▼【修正1】インスペクターの設定に関わらず、子オブジェクトにある砲台を「全て」強制停止する！
+        EnemyTurret[] allTurrets = GetComponentsInChildren<EnemyTurret>();
+        foreach(var t in allTurrets) {
+            t.enabled = false;
+        }
+
+        // ▼【修正2】戦闘開始前は、移動を強制停止する
+        SetMovementScriptsEnabled(false);
     }
 
     public void StartBossBattle() {
@@ -87,7 +93,28 @@ public class Boss : MonoBehaviour, IDamageable {
         isBattleStarted = true;
         isPhase2 = false;
 
+        // ▼ 戦闘開始！Phase1に登録された砲台だけをONにする
         SetTurretsEnabled(phase1Turrets, true);
+
+        // ▼【修正3】戦闘開始と同時に移動を再開する
+        SetMovementScriptsEnabled(true);
+    }
+
+    // ==========================================
+    // ▼【新規追加】代表的な移動スクリプトをまとめてON/OFFする便利メソッド
+    // ==========================================
+    private void SetMovementScriptsEnabled(bool isEnabled) {
+        // 妖精用の空中移動
+        MonoBehaviour hover = GetComponent("BossHoverMove") as MonoBehaviour;
+        if (hover != null) hover.enabled = isEnabled;
+
+        // カボチャなどの地上徘徊用
+        MonoBehaviour patrol = GetComponent("EnemyPatrol") as MonoBehaviour;
+        if (patrol != null) patrol.enabled = isEnabled;
+
+        // その他の汎用移動用
+        MonoBehaviour move = GetComponent("EnemyMovement") as MonoBehaviour;
+        if (move != null) move.enabled = isEnabled;
     }
 
     public void TakeDamage(int damage, Vector2 knockbackDirection) {
@@ -111,7 +138,6 @@ public class Boss : MonoBehaviour, IDamageable {
 
     private void EnterPhase2() {
         isPhase2 = true;
-        Debug.Log($"{bossName} の攻撃パターンが変化した！");
         SetTurretsEnabled(phase1Turrets, false);
         SetTurretsEnabled(phase2Turrets, true);
     }
@@ -139,14 +165,12 @@ public class Boss : MonoBehaviour, IDamageable {
 
         SetTurretsEnabled(phase1Turrets, false);
         SetTurretsEnabled(phase2Turrets, false);
+        SetMovementScriptsEnabled(false);
 
         StartCoroutine(DieRoutine());
     }
 
     private IEnumerator DieRoutine() {
-        BossHoverMove hoverMove = GetComponent<BossHoverMove>();
-        if (hoverMove != null) hoverMove.enabled = false;
-
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
         foreach(Collider2D col in colliders) {
             if (col.isTrigger) col.enabled = false;
@@ -175,26 +199,17 @@ public class Boss : MonoBehaviour, IDamageable {
         }
 
         if (bossType == BossType.RoomGuarder) {
-            if (entranceBlocker != null) {
-                entranceBlocker.SetActive(false);
-                entranceBlockerR.SetActive(false);
-            }
+            if (entranceBlocker != null) entranceBlocker.SetActive(false);
+            if (entranceBlockerR != null) entranceBlockerR.SetActive(false);
             if (bossCameraObj != null) bossCameraObj.SetActive(false);
 
-            Destroy(gameObject, 0.5f); // 0.5秒後（爆発が見えた後）に消滅させる
+            Destroy(gameObject, 0.5f); 
         } 
-        // ▼【新規追加】ステージボスの場合は、自動でゴール処理へ！
         else if (bossType == BossType.StageBoss) {
-            
-            // 爆発の余韻（ドヤ顔待ち）を少し設ける
             yield return new WaitForSeconds(2.0f); 
-
             if (stageGoalPoint != null) {
-                // プレイヤーを探して、GoalPointのクリア処理を強制実行させる
                 GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-                if (playerObj != null) {
-                    stageGoalPoint.TriggerGoal(playerObj);
-                }
+                if (playerObj != null) stageGoalPoint.TriggerGoal(playerObj);
             }
         }
     }

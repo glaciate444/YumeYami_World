@@ -1877,6 +1877,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &231813874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 231813875}
+  m_Layer: 11
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &231813875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231813874}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6666667, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1586846657}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &246472025
 GameObject:
   m_ObjectHideFlags: 0
@@ -36438,6 +36469,7 @@ GameObject:
   - component: {fileID: 1586846653}
   - component: {fileID: 1586846652}
   - component: {fileID: 1586846650}
+  - component: {fileID: 1586846658}
   m_Layer: 11
   m_Name: RoomG_Enemy
   m_TagString: Untagged
@@ -36470,7 +36502,7 @@ Animator:
   m_GameObject: {fileID: 1586846649}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 50bf9d2854325474e97903e6121b3e3b, type: 2}
+  m_Controller: {fileID: 9100000, guid: 3393c480d3179274ebab0ac4998593d5, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -36540,7 +36572,8 @@ MonoBehaviour:
   bossCameraObj: {fileID: 230658882}
   stageGoalPoint: {fileID: 0}
   deathParticlePrefab: {fileID: 0}
-  phase1Turrets: []
+  phase1Turrets:
+  - {fileID: 1586846658}
   phase2Turrets: []
   phase2Threshold: 0.5
 --- !u!50 &1586846655
@@ -36558,7 +36591,7 @@ Rigidbody2D:
   m_Mass: 50
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -36619,7 +36652,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: e46e603dbd168cd41b90670c7128baf4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 47fe556082deb424e8af828494654b86, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -36638,14 +36671,38 @@ Transform:
   m_GameObject: {fileID: 1586846649}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 122.91, y: 15.6, z: 0}
+  m_LocalPosition: {x: 122.91, y: 17.6, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1865571985}
   - {fileID: 2017693990}
+  - {fileID: 231813875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1586846658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586846649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a80528df03ec98848a04fc8dfbafe74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
+  enemyBulletPrefab: {fileID: 7814645704091411752, guid: bb9ebfd7ab01cce4b9f18c488b6b5443, type: 3}
+  firePoint: {fileID: 231813875}
+  fireInterval: 2
+  aimType: 1
+  bulletCount: 2
+  spreadAngle: 30
+  burstInterval: 0
+  angleRandomness: 0
+  positionOffset: {x: 0, y: 0}
+  positionRandomness: {x: 0, y: 0}
+  targetOffset: {x: 0, y: 0.5}
 --- !u!1001 &1588621606
 PrefabInstance:
   m_ObjectHideFlags: 0

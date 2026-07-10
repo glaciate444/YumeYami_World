@@ -29039,7 +29039,8 @@ MonoBehaviour:
   bossCameraObj: {fileID: 230658882}
   stageGoalPoint: {fileID: 0}
   deathParticlePrefab: {fileID: 3024573372393446192, guid: 3a693705d862477439e9ee7354379755, type: 3}
-  phase1Turrets: []
+  phase1Turrets:
+  - {fileID: 1586846661}
   phase2Turrets: []
   phase2Threshold: 0.5
 --- !u!50 &1586846655

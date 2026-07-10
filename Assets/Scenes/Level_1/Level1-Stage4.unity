@@ -1034,6 +1034,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
   unlockLevelReward: 5
+  unlocksNewWorld: 0
+  unlockWorldReward: 2
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:
@@ -15504,6 +15506,12 @@ MonoBehaviour:
   entranceBlocker: {fileID: 1154109922}
   entranceBlockerR: {fileID: 868255459}
   bossCameraObj: {fileID: 230658882}
+  stageGoalPoint: {fileID: 0}
+  deathParticlePrefab: {fileID: 0}
+  phase1Turrets:
+  - {fileID: 1586846658}
+  phase2Turrets: []
+  phase2Threshold: 0.5
 --- !u!50 &1586846655
 Rigidbody2D:
   serializedVersion: 5
