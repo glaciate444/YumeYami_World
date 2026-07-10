@@ -1,18 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class FallingPlatform : MonoBehaviour{
     public enum PlatformType { SimpleFall, TimedMoveAndFall }
 
-    [Header("ƒ‚[ƒhİ’è")]
+    [Header("ãƒ¢ãƒ¼ãƒ‰è¨­å®š")]
     public PlatformType type = PlatformType.SimpleFall;
 
-    [Header("‹¤’Êİ’è")]
-    public float fallDelay = 1.0f; // æ‚Á‚Ä‚©‚ç‰½•bŒã‚Éi‚Ü‚½‚Í0‚É‚È‚Á‚Ä‚©‚çj—‚¿‚é‚©
+    [Header("å…±é€šè¨­å®š")]
+    public float fallDelay = 1.0f; // ä¹—ã£ã¦ã‹ã‚‰ä½•ç§’å¾Œã«ï¼ˆã¾ãŸã¯0ã«ãªã£ã¦ã‹ã‚‰ï¼‰è½ã¡ã‚‹ã‹
 
-    [Header("303ƒ‚[ƒhê—piˆÚ“®j")]
-    public float moveSpeedX = 5f;  // ‰¡‚É“®‚­‘¬“xiƒ}ƒCƒiƒX‚Å¶‚Öj
+    [Header("303ãƒ¢ãƒ¼ãƒ‰å°‚ç”¨ï¼ˆç§»å‹•ï¼‰")]
+    public float moveSpeedX = 5f;  // æ¨ªã«å‹•ãé€Ÿåº¦ï¼ˆãƒã‚¤ãƒŠã‚¹ã§å·¦ã¸ï¼‰
 
     private Rigidbody2D rb;
     private bool isTriggered = false;
@@ -21,20 +21,20 @@ public class FallingPlatform : MonoBehaviour{
     void Start(){
         rb = GetComponent<Rigidbody2D>();
 
-        // Å‰‚Í•¨—‚Ì‰e‹¿‚ğó‚¯‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¨‚­
+        // æœ€åˆã¯ç‰©ç†ã®å½±éŸ¿ã‚’å—ã‘ãªã„ã‚ˆã†ã«ã—ã¦ãŠã
         rb.bodyType = RigidbodyType2D.Kinematic;
 
         timer = fallDelay;
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
-        // ƒvƒŒƒCƒ„[‚ªuã‚©‚çvæ‚Á‚½‚¾‚¯ì“®‚³‚¹‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã€Œä¸Šã‹ã‚‰ã€ä¹—ã£ãŸæ™‚ã ã‘ä½œå‹•ã•ã›ã‚‹
         if (collision.gameObject.CompareTag("Player") && !isTriggered){
-            // ‘«Œ³‚ª©•ª‚æ‚èã‚É‚ ‚é‚©ˆê‰ƒ`ƒFƒbƒN
+            // è¶³å…ƒãŒè‡ªåˆ†ã‚ˆã‚Šä¸Šã«ã‚ã‚‹ã‹ä¸€å¿œãƒã‚§ãƒƒã‚¯
             if (collision.transform.position.y > transform.position.y){
                 isTriggered = true;
 
-                // 302i‚·‚®—‚¿‚éƒ^ƒCƒvj‚Ìê‡‚ÍA­‚µ‘Ò‚Á‚Ä‚©‚ç•¨—‚ğON‚É‚·‚é
+                // 302ï¼ˆã™ãè½ã¡ã‚‹ã‚¿ã‚¤ãƒ—ï¼‰ã®å ´åˆã¯ã€å°‘ã—å¾…ã£ã¦ã‹ã‚‰ç‰©ç†ã‚’ONã«ã™ã‚‹
                 if (type == PlatformType.SimpleFall){
                     Invoke("StartFalling", fallDelay);
                 }
@@ -45,44 +45,44 @@ public class FallingPlatform : MonoBehaviour{
     void Update(){
         if (!isTriggered) return;
 
-        // 303ƒ‚[ƒhFƒJƒEƒ“ƒgƒ_ƒEƒ“‚µ‚È‚ª‚ç‰¡ˆÚ“®
+        // 303ãƒ¢ãƒ¼ãƒ‰ï¼šã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã—ãªãŒã‚‰æ¨ªç§»å‹•
         if (type == PlatformType.TimedMoveAndFall){
             timer -= Time.deltaTime;
 
             if (timer > 0){
-                // ‰¡‚ÉƒXƒ‰ƒCƒhˆÚ“®iKinematic‚Ì‚Ü‚ÜˆÚ“®‚³‚¹‚éj
+                // æ¨ªã«ã‚¹ãƒ©ã‚¤ãƒ‰ç§»å‹•ï¼ˆKinematicã®ã¾ã¾ç§»å‹•ã•ã›ã‚‹ï¼‰
                 rb.linearVelocity = new Vector2(moveSpeedX, 0);
             }else{
-                // ŠÔØ‚êF•¨—iDynamicj‚ÉØ‚è‘Ö‚¦‚Ä—‰ºŠJn
+                // æ™‚é–“åˆ‡ã‚Œï¼šç‰©ç†ï¼ˆDynamicï¼‰ã«åˆ‡ã‚Šæ›¿ãˆã¦è½ä¸‹é–‹å§‹
                 StartFalling();
             }
         }
     }
 
     private void StartFalling(){
-        // ¥yd—vE’Ç‰Áz—‰ºŠJn‚ÉAƒvƒŒƒCƒ„[‚ğƒŠƒtƒg‚©‚ç‹­§“I‚Éˆø‚«”‚ª‚·I
-        // ‚±‚ê‚ª‚È‚¢‚ÆA—¼•û‚Ìd—ÍŒvZ‚ªŒ–‰Ü‚µ‚ÄƒvƒŒƒCƒ„[‚ª“ä‚ÌƒoƒEƒ“ƒh‚ğ‹N‚±‚µ‚Ü‚·B
+        // â–¼ã€é‡è¦ãƒ»è¿½åŠ ã€‘è½ä¸‹é–‹å§‹æ™‚ã«ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ãƒªãƒ•ãƒˆã‹ã‚‰å¼·åˆ¶çš„ã«å¼•ãå‰¥ãŒã™ï¼
+        // ã“ã‚ŒãŒãªã„ã¨ã€ä¸¡æ–¹ã®é‡åŠ›è¨ˆç®—ãŒå–§å˜©ã—ã¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¬ã®ãƒã‚¦ãƒ³ãƒ‰ã‚’èµ·ã“ã—ã¾ã™ã€‚
         transform.DetachChildren();
 
-        // •¨—iDynamicj‚ÉØ‚è‘Ö‚¦‚Ä—‰ºŠJn
+        // ç‰©ç†ï¼ˆDynamicï¼‰ã«åˆ‡ã‚Šæ›¿ãˆã¦è½ä¸‹é–‹å§‹
         rb.bodyType = RigidbodyType2D.Dynamic;
 
-        // ¥yd—vE’Ç‰ÁzƒvƒŒƒCƒ„[‚Ì‘«Œ³‚©‚çƒXƒ€[ƒY‚É—£‚ê‚é‚æ‚¤A‰‘¬‚ğ‰ºŒü‚«‚É­‚µ‚Â‚¯‚é
+        // â–¼ã€é‡è¦ãƒ»è¿½åŠ ã€‘ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¶³å…ƒã‹ã‚‰ã‚¹ãƒ ãƒ¼ã‚ºã«é›¢ã‚Œã‚‹ã‚ˆã†ã€åˆé€Ÿã‚’ä¸‹å‘ãã«å°‘ã—ã¤ã‘ã‚‹
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, -2f);
 
         Destroy(gameObject, 3f);
     }
 
-    // ƒvƒŒƒCƒ„[‚ğ°‚Æˆê‚É“®‚©‚·‚½‚ß‚Ìˆ—
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’åºŠã¨ä¸€ç·’ã«å‹•ã‹ã™ãŸã‚ã®å‡¦ç†
     private void OnCollisionStay2D(Collision2D collision){
-        // —‰º’†iDynamicj‚Ì‚ÍeqŠÖŒW‚ğì‚ç‚È‚¢
+        // è½ä¸‹ä¸­ï¼ˆDynamicï¼‰ã®æ™‚ã¯è¦ªå­é–¢ä¿‚ã‚’ä½œã‚‰ãªã„
         if (rb.bodyType == RigidbodyType2D.Dynamic) return;
 
         if (collision.gameObject.CompareTag("Player")){
-            // eqŠÖŒW‚É‚æ‚éc‚ÌƒYƒŒ–h~
+            // è¦ªå­é–¢ä¿‚ã«ã‚ˆã‚‹ç¸¦ã®ã‚ºãƒ¬é˜²æ­¢
             collision.transform.SetParent(transform);
 
-            // ¥y’Ç‰Áz‰¡ˆÚ“®‚µ‚Ä‚¢‚éê‡AƒvƒŒƒCƒ„[‚É©•ª‚Ì‘¬“x‚ğƒRƒs[‚µ‚Ä“n‚· ¥
+            // â–¼ã€è¿½åŠ ã€‘æ¨ªç§»å‹•ã—ã¦ã„ã‚‹å ´åˆã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è‡ªåˆ†ã®é€Ÿåº¦ã‚’ã‚³ãƒ”ãƒ¼ã—ã¦æ¸¡ã™ â–¼
             if (type == PlatformType.TimedMoveAndFall){
                 PlayerController pc = collision.gameObject.GetComponent<PlayerController>();
                 if (pc != null){
@@ -94,7 +94,7 @@ public class FallingPlatform : MonoBehaviour{
 
     private void OnCollisionExit2D(Collision2D collision){
         if (collision.gameObject.CompareTag("Player")){
-            // °‚©‚ç—£‚ê‚½‚çeqŠÖŒW‚ğ‰ğÁ‚·‚é
+            // åºŠã‹ã‚‰é›¢ã‚ŒãŸã‚‰è¦ªå­é–¢ä¿‚ã‚’è§£æ¶ˆã™ã‚‹
             collision.transform.SetParent(null);
         }
     }
