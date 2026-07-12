@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro; // ▼【新規追加】TextMeshProを扱うために必要
 
 public class MapManager : MonoBehaviour{
     [Header("マップ設定")]
@@ -31,7 +32,17 @@ public class MapManager : MonoBehaviour{
     private bool isStartingCourse = false; 
 
     [Header("ワールドマップ（大マップ）へ戻る設定")]
-    public string worldMapSceneName = "WorldMapScene"; 
+    public string worldMapSceneName = "WorldMapScene";
+
+    [Header("UI表示設定")]
+    public TextMeshProUGUI stageNameText; // 「1-1: AAAAA」などのステージ名表示用
+    public TextMeshProUGUI livesText;     // 残機表示用
+    public Image[] medalImages;           // メダルのアイコン画像（インスペクターで3つセットする）
+
+    [Tooltip("取得済みのメダルの色（デフォルトは白）")]
+    public Color gotMedalColor = Color.white;
+    [Tooltip("未取得のメダルの色（デフォルトは半透明の黒など）")]
+    public Color notGotMedalColor = new Color(0, 0, 0, 0.5f);
 
     void Start(){
         MapNode[] allNodes = FindObjectsByType<MapNode>(FindObjectsSortMode.None);
@@ -54,6 +65,9 @@ public class MapManager : MonoBehaviour{
         if (currentNode != null && playerIcon != null){
             playerIcon.position = currentNode.transform.position;
         }
+
+        // ▼【新規追加】ゲーム開始時にUIを初期状態に更新する
+        UpdateMapUI();
     }
 
     private void DrawAllPaths(MapNode[] allNodes){
@@ -163,6 +177,49 @@ public class MapManager : MonoBehaviour{
             if (GameManager.Instance != null && currentNode.myLevelData != null) {
                 GameManager.Instance.currentMapNodeNumber = currentNode.myLevelData.stageNumber;
                 GameManager.Instance.SaveGame(); 
+            }
+        }
+        UpdateMapUI();
+    }
+    // ▼▼▼ ここから新規追加 ▼▼▼
+    /// <summary>
+    /// 現在のノード情報やGameManagerのデータを元に、UIを最新状態に更新します
+    /// </summary>
+    private void UpdateMapUI(){
+        // 1. 残機の更新
+        if (livesText != null && GameManager.Instance != null){
+            // "00" のように2桁フォーマットで表示
+            livesText.text = GameManager.Instance.currentLives.ToString("D2");
+        }
+
+        // 2. ステージ名とメダルの更新
+        if (currentNode != null && currentNode.myLevelData != null){
+
+            // レベル名をそのままテキストへ挿入
+            // （※LevelData側の「levelName」に "1-1: AAAAA" と直接記入している前提です）
+            if (stageNameText != null){
+                stageNameText.text = currentNode.myLevelData.levelName;
+            }
+
+            // メダルの取得状況を判定して色を変更する
+            for (int i = 0; i < medalImages.Length; i++){
+                if (medalImages[i] != null){
+                    // SpecialCollectible.cs で保存されているキーと同じ文字列を作る
+                    string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}";
+
+                    // 1なら取得済み、0なら未取得
+                    bool isGot = PlayerPrefs.GetInt(saveKey, 0) == 1;
+
+                    medalImages[i].color = isGot ? gotMedalColor : notGotMedalColor;
+                }
+            }
+        }else{
+            // ステージデータを持たない「通過点」に止まった場合の処理
+            if (stageNameText != null) stageNameText.text = ""; // 名前を空にする
+
+            // メダルを透明にして見えなくする
+            for (int i = 0; i < medalImages.Length; i++){
+                if (medalImages[i] != null) medalImages[i].color = Color.clear;
             }
         }
     }
