@@ -15,6 +15,6 @@ MonoBehaviour:
   stageNumber: 11
   levelName: No.11
   sceneName: Level2-Stage5
-  requiredUnlockLevel: 12
+  requiredUnlockLevel: 11
   thumbnail: {fileID: 0}
   description: 
