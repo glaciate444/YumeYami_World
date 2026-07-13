@@ -131,6 +131,14 @@ public class PlayerController : MonoBehaviour{
         inputActions.Player.Attack.performed += context => {
             if (canAttack) StartCoroutine(AttackRoutine());
         };
+
+        // ポーズ処理
+        inputActions.Player.Pause.performed += context => {
+            // シーン内に PauseManager が存在する場合のみポーズを切り替える
+            if (PauseManager.Instance != null){
+                PauseManager.Instance.TogglePause();
+            }
+        };
     }
 
     private void OnEnable() => inputActions.Enable();
