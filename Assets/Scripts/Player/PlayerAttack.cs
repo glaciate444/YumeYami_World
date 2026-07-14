@@ -1,19 +1,25 @@
 ﻿using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour{
+    [Header("基礎攻撃力（素手）")]
     public int attackPower = 1;
 
-    // Is Triggerのコライダーが何かに触れた時
+    // ▼ 新しくSOの枠を追加
+    [Header("現在の装備（赤枠）")]
+    public ItemInventoryData currentWeaponEquip;
+
     private void OnTriggerEnter2D(Collider2D other){
-        // 触れた相手が IDamageable (ダメージを受けられる性質) を持っているか確認
         IDamageable target = other.GetComponent<IDamageable>();
 
         if (target != null){
-            // 自分（プレイヤー）から見て、敵がどっちの方向にいるか計算
-            Vector2 knockbackDir = (other.transform.position - transform.parent.position).normalized;
+            // ▼ 最終的な攻撃力を計算（基礎 ＋ 装備）
+            int finalAttackPower = attackPower;
+            if (currentWeaponEquip != null){
+                finalAttackPower += currentWeaponEquip.attackPower;
+            }
 
-            // 相手にダメージとノックバック方向を渡す
-            target.TakeDamage(attackPower, knockbackDir);
+            Vector2 knockbackDir = (other.transform.position - transform.parent.position).normalized;
+            target.TakeDamage(finalAttackPower, knockbackDir);
         }
     }
 }

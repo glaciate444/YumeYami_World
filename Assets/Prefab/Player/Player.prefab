@@ -245,6 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   attackPower: 2
+  currentWeaponEquip: {fileID: 11400000, guid: 5ba1e1dd035d8ca4197fca6928d8cadb, type: 2}
 --- !u!1 &4218694174269193068
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,8 +400,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 896
-  dashSpeed: 15
-  dashDuration: 0.3
+  currentSubActionEquip: {fileID: 11400000, guid: a2608a6f698695348b674bebba7a2f5c, type: 2}
   dashCooldown: 0.5
   maxDashCharges: 3
   currentDashCharges: 0
@@ -455,11 +455,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3eaf42d28be497468287a5b1bfffe03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShoot
-  projectilePrefab: {fileID: 7814645704091411752, guid: e704d82bafe403a45afcd32cae93de6f, type: 3}
+  currentSpecialEquip: {fileID: 11400000, guid: 1fd6c59795ac474488a4afce6a5c9b59, type: 2}
   firePoint: {fileID: 4631295528471901909}
   maxSp: 6
   currentSp: 6
-  spCost: 1
   spSlider: {fileID: 0}
   spText: {fileID: 0}
 --- !u!70 &1249696312333318633

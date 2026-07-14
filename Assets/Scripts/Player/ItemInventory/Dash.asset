@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b59943249f032346958a8326fcaedb0, type: 3}
+  m_Name: Dash
+  m_EditorClassIdentifier: Assembly-CSharp::ItemInventoryData
+  itemName: Dash
+  description: 
+  icon: {fileID: 0}
+  category: 1
+  subActionType: 1
+  itemId: 31
+  attackPower: 0
+  spCost: 0
+  actionSpeed: 15
+  actionDuration: 0.2
+  actionPrefab: {fileID: 7814645704091411752, guid: e704d82bafe403a45afcd32cae93de6f, type: 3}

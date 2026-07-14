@@ -4,14 +4,14 @@ using UnityEngine.UI; // SPゲージ用
 using TMPro;
 
 public class PlayerShoot : MonoBehaviour{
-    [Header("射撃設定")]
-    public GameObject projectilePrefab; // さきほど作ったBulletプレハブを入れる
-    public Transform firePoint;         // 弾が出る位置（銃口）
+    // ▼ 新しくSOの枠を追加
+    [Header("現在の装備（青枠）")]
+    public ItemInventoryData currentSpecialEquip;
+    public Transform firePoint;
 
     [Header("SP設定")]
     public int maxSp = 6;
     public int currentSp;
-    public int spCost = 1;              // 1発あたりの消費SP
     public Slider spSlider;             // キャンバスに作ったSPゲージ
     public TMP_Text spText;
 
@@ -43,27 +43,27 @@ public class PlayerShoot : MonoBehaviour{
         Debug.Log($"SPを {amount} 回復しました。現在：{currentSp}");
     }
     private void Shoot(){
-        // SPが足りているかチェック
-        if (currentSp >= spCost){
-            currentSp -= spCost;
+        // 装備がない、またはプレハブが設定されていない場合は何もしない
+        if (currentSpecialEquip == null || currentSpecialEquip.actionPrefab == null) return;
+
+        // SOから消費SPを取得
+        int cost = currentSpecialEquip.spCost;
+
+        if (currentSp >= cost){
+            currentSp -= cost;
             UpdateUI();
 
-            // 弾を生成
-            GameObject bullet = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+            // ▼ SOからプレハブを取得して生成するように変更
+            GameObject bullet = Instantiate(currentSpecialEquip.actionPrefab, firePoint.position, firePoint.rotation);
 
-            // プレイヤーが向いている方向（スケールのX）を取得
             float facingDirection = Mathf.Sign(transform.localScale.x);
             Vector2 shootDir = new Vector2(facingDirection, 0);
 
-            // 弾に方向を渡して飛ばす
             bullet.GetComponent<Bullet>().Initialize(shootDir);
 
-            // ←【追加3】アニメーションの Shoot トリガーを引く
             if (anim != null) anim.SetTrigger("Shoot");
-        }
-        else{
+        }else{
             Debug.Log("SP不足で撃てない！");
-            // ここで「ブブッ」という音を鳴らしたり、SPゲージを赤く点滅させたりします
         }
     }
 

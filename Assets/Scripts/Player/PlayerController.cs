@@ -1,10 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.08
+ * Version : Ver0.10
  * Since : 2026/04/01
- * Update : 2026/06/02
+ * Update : 2026/07/15
  * 用途 : プレイヤー制御
- * 更新 : ゴール時の動き
+ * 更新 : 装備関連
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -27,8 +27,9 @@ public class PlayerController : MonoBehaviour{
     public LayerMask groundLayer;
 
     [Header("ダッシュ設定")]
-    public float dashSpeed = 15f;      // ダッシュ中の速度
-    public float dashDuration = 0.2f;  // ダッシュしている時間
+    public ItemInventoryData currentSubActionEquip;
+    //public float dashSpeed = 15f;      // ダッシュ中の速度
+    //public float dashDuration = 0.2f;  // ダッシュしている時間
     public float dashCooldown = 0.5f;  // 次のダッシュができるまでの時間
     public int maxDashCharges = 3;     // ダッシュの最大ストック数
     public int currentDashCharges;     // 現在のストック数
@@ -125,7 +126,10 @@ public class PlayerController : MonoBehaviour{
         // --- 追加：ダッシュと攻撃 ---
         // ▼【変更】ダッシュ実行の条件に「チャージが残っているか」を追加
         inputActions.Player.Dash.performed += context => {
-            if (canDash && currentDashCharges > 0) StartCoroutine(DashRoutine());
+            // ポーズ中ではなく、かつ緑枠に何かが装備されている場合のみ実行
+            if (Time.timeScale > 0 && currentSubActionEquip != null){
+                ExecuteSubAction();
+            }
         };
 
         inputActions.Player.Attack.performed += context => {
@@ -321,14 +325,48 @@ public class PlayerController : MonoBehaviour{
         }
     }
 
+    /// <summary>
+    /// 緑枠（Xキー）に装備されているアイテムの種類を判定し、対応するアクションを実行する
+    /// </summary>
+    private void ExecuteSubAction(){
+        // 共通のスタミナ（現在のダッシュチャージ）が残っているかチェック
+        // ※ガードやヒップドロップでもこのチャージを消費する想定です
+        if (currentDashCharges <= 0){
+            Debug.Log("チャージ不足でアクションが発動できない！");
+            return;
+        }
+
+        // 装備アイテムの SubActionType に応じて処理を分ける
+        switch (currentSubActionEquip.subActionType){
+            case SubActionType.Dash:
+                if (canDash) StartCoroutine(DashRoutine());
+                break;
+
+            case SubActionType.Guard:
+                // TODO: ガード処理の実装（今はテスト用のログだけ）
+                Debug.Log("ガード発動！");
+                break;
+
+            case SubActionType.HipDrop:
+                // TODO: ヒップドロップ処理の実装
+                Debug.Log("ヒップドロップ発動！");
+                break;
+
+            case SubActionType.None:
+            default:
+                break;
+        }
+    }
+
     // ==========================================
     // コルーチン（時間経過処理）
     // ==========================================
     private IEnumerator DashRoutine(){
+        // 装備がない場合は発動しない
+        if (currentSubActionEquip == null) yield break;
+
         canDash = false;
         isDashing = true;
-
-        // ▼【追加】チャージを1消費してUIを更新
         currentDashCharges--;
         UpdateDashUI();
 
@@ -336,9 +374,12 @@ public class PlayerController : MonoBehaviour{
         rb.gravityScale = 0f;
 
         float facingDirection = Mathf.Sign(transform.localScale.x);
-        rb.linearVelocity = new Vector2(facingDirection * dashSpeed, 0f);
 
-        yield return new WaitForSeconds(dashDuration);
+        // ▼ SOの値を使うように変更
+        rb.linearVelocity = new Vector2(facingDirection * currentSubActionEquip.actionSpeed, 0f);
+
+        // ▼ SOの値を使うように変更
+        yield return new WaitForSeconds(currentSubActionEquip.actionDuration);
 
         rb.gravityScale = originalGravity;
         isDashing = false;
