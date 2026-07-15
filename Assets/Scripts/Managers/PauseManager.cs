@@ -1,4 +1,12 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : PauseManager.cs
+ * Version : Ver0.02
+ * Since : 2026/07/13
+ * Update : 2026/07/14
+ * 用途 : ポーズ画面
+ * 更新 : パーソナルデータ追加
+ * =================================================== */
+using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro; // ▼【追加】TextMeshProを扱うために必要
 
