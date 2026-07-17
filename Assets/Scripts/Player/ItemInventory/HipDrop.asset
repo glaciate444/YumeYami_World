@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemInventoryData
   itemName: HipDrop
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 7d280c903135be2488d403fe3bc4d1d7, type: 3}
   category: 1
   subActionType: 3
   itemId: 12
