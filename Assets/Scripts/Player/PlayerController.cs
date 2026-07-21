@@ -214,6 +214,12 @@ public class PlayerController : MonoBehaviour{
             coyoteTimeCounter -= Time.deltaTime; // 【追加】空中にいる間はタイマーを減らす
         }
 
+        // ヒップドロップ中は、猛烈な落下速度によってFallアニメーションに
+        // 強制上書き（横取り）されるのを防ぐため、数値を0に偽装する
+        if (isHipDropping){
+            currentVelY = 0f;
+        }
+
         // フィルターを通した綺麗な数値をAnimatorに渡す
         anim.SetFloat("velocityY", currentVelY);
 
