@@ -465,16 +465,16 @@ public class PlayerController : MonoBehaviour{
         rb.gravityScale = 0f;
         rb.linearVelocity = Vector2.zero;
 
-        if (anim != null) anim.SetTrigger("HipDrop"); // ※アニメーターにTriggerを追加してください
+        if (anim != null) anim.SetTrigger("HipDrop");
 
         yield return new WaitForSeconds(0.2f); // 0.2秒タメる
 
         // 2. 急降下開始
         if (hipDropHitbox != null) hipDropHitbox.SetActive(true);
 
-        // SOから落下速度（actionSpeed）を取得
         float dropSpeed = currentSubActionEquip.actionSpeed > 0 ? currentSubActionEquip.actionSpeed : 20f;
-        rb.linearVelocity = new Vector2(0f, -dropSpeed);
+
+        // ▼ 修正：ここにあった rb.linearVelocity = ... を削除し、下のwhileループの中に移動します
 
         // 3. 地面に着くまで待機
         float safetyTimer = 0f;
@@ -482,8 +482,13 @@ public class PlayerController : MonoBehaviour{
             safetyTimer += Time.deltaTime;
             if (safetyTimer > 3.0f) break; // 3秒経っても着地しなければ強制終了
 
+            // ▼【超重要】物理衝突で速度が0にされて宙に浮くのを防ぐため、毎フレーム下向きに強制する！
+            rb.linearVelocity = new Vector2(0f, -dropSpeed);
+
             if (isKnockback){
-                // ...（既存のノックバックキャンセル処理）
+                if (hipDropHitbox != null) hipDropHitbox.SetActive(false);
+                rb.gravityScale = originalGravity;
+                isHipDropping = false;
                 yield break;
             }
             yield return null;
@@ -494,9 +499,6 @@ public class PlayerController : MonoBehaviour{
         rb.gravityScale = originalGravity;
         rb.linearVelocity = Vector2.zero; // 着地時の滑りを防止
 
-        // （ここにドスン！という効果音や、カメラを揺らす処理を入れると気持ちよくなります）
-
-        // 着地後のスキ（硬直時間）
         yield return new WaitForSeconds(0.2f);
 
         isHipDropping = false;
