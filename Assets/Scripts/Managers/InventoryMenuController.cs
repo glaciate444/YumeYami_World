@@ -175,6 +175,11 @@ public class InventoryMenuController : MonoBehaviour {
                 Debug.Log("どちらのパッシブ枠に装備するか選択してください。");
                 break;
         }
+        EquipHUD hud = FindFirstObjectByType<EquipHUD>();
+        if (hud != null){
+            hud.UpdateHUD();
+        }
+
     }
 
     // パッシブ枠のA・Bどちらに装備するか確定した時の処理

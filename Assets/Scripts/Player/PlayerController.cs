@@ -47,6 +47,10 @@ public class PlayerController : MonoBehaviour{
     [Header("ダッシュUI連携")]
     public TMP_Text dashText; // ※アイコンにする場合は後でImageの配列等に変更可能です
 
+    [Header("ヒップドロップ設定")]
+    public GameObject hipDropHitbox; // ヒップドロップ中にONにする判定
+    [HideInInspector] public bool isHipDropping = false; // 外から参照できるようにする
+
     [Header("攻撃設定")]
     public GameObject attackHitbox;    // 攻撃判定用の小オブジェクト
     public float attackDuration = 0.1f; // 攻撃判定が出ている時間
@@ -233,8 +237,8 @@ public class PlayerController : MonoBehaviour{
     }
 
     void FixedUpdate(){
-        // ダッシュ中は通常の移動処理を行わない（ダッシュの速度で上書きされているため）
-        if (isDashing) return;
+        // ダッシュ中またはヒップドロップ中は通常の移動処理を行わない
+        if (isDashing || isHipDropping) return;
         // ノックバック中は、InputSystemによる移動入力を無視する
         if (isKnockback) return;
 
@@ -282,7 +286,7 @@ public class PlayerController : MonoBehaviour{
 
     private void Jump(){
         // 【変更】isGrounded ではなく coyoteTimeCounter が 0 より大きいかで判定する
-        if (coyoteTimeCounter > 0f && !isDashing){
+        if (coyoteTimeCounter > 0f && !isDashing && !isHipDropping){
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
             // ▼ 音を鳴らす（安全装置付き）
@@ -348,8 +352,10 @@ public class PlayerController : MonoBehaviour{
                 break;
 
             case SubActionType.HipDrop:
-                // TODO: ヒップドロップ処理の実装
-                Debug.Log("ヒップドロップ発動！");
+                // ▼ 空中（ジャンプ・落下中）かつ、ヒップドロップ中でない時のみ発動
+                if (!isGrounded && !isHipDropping){
+                    StartCoroutine(HipDropRoutine());
+                }
                 break;
 
             case SubActionType.None:
@@ -441,6 +447,52 @@ public class PlayerController : MonoBehaviour{
             isNearLadder = false;
             isClimbing = false; // 梯子から離れたら強制的に登り状態を解除
         }
+    }
+
+    private IEnumerator HipDropRoutine(){
+        isHipDropping = true;
+        currentDashCharges--;
+        UpdateDashUI();
+
+        // 1. 空中で一瞬止まる（タメ動作）
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        rb.linearVelocity = Vector2.zero;
+
+        if (anim != null) anim.SetTrigger("HipDrop"); // ※アニメーターにTriggerを追加してください
+
+        yield return new WaitForSeconds(0.2f); // 0.2秒タメる
+
+        // 2. 急降下開始
+        if (hipDropHitbox != null) hipDropHitbox.SetActive(true);
+
+        // SOから落下速度（actionSpeed）を取得
+        float dropSpeed = currentSubActionEquip.actionSpeed > 0 ? currentSubActionEquip.actionSpeed : 20f;
+        rb.linearVelocity = new Vector2(0f, -dropSpeed);
+
+        // 3. 地面に着くまで待機
+        while (!isGrounded){
+            // もし落下中に敵に当たってダメージを受け、ノックバックしたら強制キャンセル[cite: 12]
+            if (isKnockback){
+                if (hipDropHitbox != null) hipDropHitbox.SetActive(false);
+                rb.gravityScale = originalGravity;
+                isHipDropping = false;
+                yield break;
+            }
+            yield return null;
+        }
+
+        // 4. 着地時の処理
+        if (hipDropHitbox != null) hipDropHitbox.SetActive(false);
+        rb.gravityScale = originalGravity;
+        rb.linearVelocity = Vector2.zero; // 着地時の滑りを防止
+
+        // （ここにドスン！という効果音や、カメラを揺らす処理を入れると気持ちよくなります）
+
+        // 着地後のスキ（硬直時間）
+        yield return new WaitForSeconds(0.2f);
+
+        isHipDropping = false;
     }
     // ==========================================
     // ▼ここから追加：ゴール時の演出用メソッド▼

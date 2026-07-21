@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerStomp.cs
- * Version : Ver0.03
+ * Version : Ver0.04
  * 用途 : プレイヤーが敵を踏みつけた処理
- * 更新内容 : 浮遊する敵にも確実に対応できる「位置関係」判定への進化
+ * 更新内容 : ヒップドロップ動作競合防止
  * =================================================== */
 using UnityEngine;
 
@@ -21,6 +21,9 @@ public class PlayerStomp : MonoBehaviour{
     }
 
     private void OnTriggerEnter2D(Collider2D other){
+        PlayerController pc = GetComponentInParent<PlayerController>();
+        if (pc != null && pc.isHipDropping) return; // ヒップドロップ中は通常の踏みつけを無効化
+
         IDamageable target = other.GetComponent<IDamageable>();
 
         if (target != null && !other.CompareTag("Player")){

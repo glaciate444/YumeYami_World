@@ -20,6 +20,6 @@ MonoBehaviour:
   itemId: 12
   attackPower: 4
   spCost: 0
-  actionSpeed: 0
+  actionSpeed: 25
   actionDuration: 0
   actionPrefab: {fileID: 0}
