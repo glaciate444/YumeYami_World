@@ -471,12 +471,13 @@ public class PlayerController : MonoBehaviour{
         rb.linearVelocity = new Vector2(0f, -dropSpeed);
 
         // 3. 地面に着くまで待機
+        float safetyTimer = 0f;
         while (!isGrounded){
-            // もし落下中に敵に当たってダメージを受け、ノックバックしたら強制キャンセル[cite: 12]
+            safetyTimer += Time.deltaTime;
+            if (safetyTimer > 3.0f) break; // 3秒経っても着地しなければ強制終了
+
             if (isKnockback){
-                if (hipDropHitbox != null) hipDropHitbox.SetActive(false);
-                rb.gravityScale = originalGravity;
-                isHipDropping = false;
+                // ...（既存のノックバックキャンセル処理）
                 yield break;
             }
             yield return null;

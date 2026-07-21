@@ -35,6 +35,11 @@ public class InventoryMenuController : MonoBehaviour {
     public RectTransform passiveSlotA_Rect;
     public RectTransform passiveSlotB_Rect;
 
+    [Header("コース退出UI用カーソル座標")]
+    public RectTransform stageExitRect; // 「STAGE EXIT」の座標
+    public RectTransform dialogYesRect; // ダイアログの「はい」の座標
+    public RectTransform dialogNoRect;  // ダイアログの「いいえ」の座標
+
     [Header("現在の状態（デバッグ用）")]
     public int currentRowIndex = 0;
     public int currentColIndex = 0;
@@ -43,6 +48,10 @@ public class InventoryMenuController : MonoBehaviour {
     // ▼ パッシブ選択モード用の変数
     private bool isSelectingPassive = false;
     private int selectedPassiveIndex = 0; // 0: PassiveA, 1: PassiveB
+
+    private bool isFocusingStageExit = false; // カーソルが「STAGE EXIT」にあるか
+    private bool isExitDialogOpen = false;    // ダイアログが開いているか
+    private bool isYesSelected = false;       // ダイアログ内で「はい」を選んでいるか
 
     private void OnEnable(){
         isActive = true;
@@ -59,82 +68,133 @@ public class InventoryMenuController : MonoBehaviour {
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // ▼▼▼ 新規追加：パッシブスロットの選択モード中の処理 ▼▼▼
+        // ====================================================
+        // 状態1：コース退出ダイアログが開いている時の操作
+        // ====================================================
+        if (isExitDialogOpen){
+            // 左右で「はい / いいえ」の切り替え
+            if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
+                keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame){
+                isYesSelected = !isYesSelected;
+                cursorRect.position = isYesSelected ? dialogYesRect.position : dialogNoRect.position;
+            }
+
+            // 決定ボタン
+            if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
+                if (isYesSelected){
+                    PauseManager.Instance.ConfirmExitCourse(); // 退出実行
+                }else{
+                    CancelExitDialog(); // 退出キャンセル
+                }
+            }
+            // キャンセルボタン
+            else if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame){
+                CancelExitDialog();
+            }
+            return; // ダイアログ操作中は他の処理をしない
+        }
+
+        // ====================================================
+        // 状態2：パッシブ枠を選択している時の操作
+        // ====================================================
         if (isSelectingPassive){
-            // 左右キーでA枠とB枠を行き来する
             if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
                 keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame){
                 selectedPassiveIndex = (selectedPassiveIndex == 0) ? 1 : 0;
-                // カーソルをパッシブ枠へ移動
                 cursorRect.position = (selectedPassiveIndex == 0) ? passiveSlotA_Rect.position : passiveSlotB_Rect.position;
             }
 
-            // 決定ボタンで装備確定
             if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
                 ConfirmEquipPassive();
-            }
-            // キャンセルボタン（XキーやEsc等）で選択を解除して左のリストに戻る
-            else if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame){
+            }else if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame){
                 isSelectingPassive = false;
-                UpdateCursorPosition(); // カーソルを左側のリストに戻す
+                UpdateCursorPosition();
             }
-            return; // 選択モード中は、これ以下のリスト移動処理を行わない
+            return;
         }
 
-        bool moved = false;
+        // ====================================================
+        // 状態3：「STAGE EXIT」にカーソルが合っている時の操作
+        // ====================================================
+        if (isFocusingStageExit){
+            // 上を押すとインベントリの一番下の行に戻る
+            if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame){
+                isFocusingStageExit = false;
+                currentRowIndex = inventoryRows.Length - 1;
+                UpdateCursorPosition();
+            }
+            // 下を押すとループしてインベントリの一番上に戻る
+            else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
+                isFocusingStageExit = false;
+                currentRowIndex = 0;
+                UpdateCursorPosition();
+            }
 
-        // 現在の行のスロット数を取得（横移動のループや制限に使う）
+            // 決定ボタンでダイアログを開く
+            if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
+                isExitDialogOpen = true;
+                isYesSelected = false; // 誤爆防止のため、最初は「いいえ」に合わせておく
+                PauseManager.Instance.OpenExitDialog();
+                cursorRect.position = dialogNoRect.position;
+            }
+            return;
+        }
+
+        // ====================================================
+        // 状態4：通常のインベントリ移動操作
+        // ====================================================
+        bool moved = false;
         int currentRowLength = inventoryRows[currentRowIndex].slots.Length;
 
-        // 【右移動】
         if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame){
             currentColIndex++;
-            // 右端を超えたら左端にループ
             if (currentColIndex >= currentRowLength) currentColIndex = 0;
             moved = true;
-        }
-        // 【左移動】
-        else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame){
+        }else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame){
             currentColIndex--;
-            // 左端を超えたら右端にループ
             if (currentColIndex < 0) currentColIndex = currentRowLength - 1;
             moved = true;
-        }
-        // 【下移動】
-        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
+        }else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
             currentRowIndex++;
-            // 一番下の行を超えたら一番上の行にループ
-            if (currentRowIndex >= inventoryRows.Length) currentRowIndex = 0;
-            moved = true;
-        }
-        // 【上移動】
-        else if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame){
+            // 一番下の行から更に下に行こうとしたら「STAGE EXIT」へフォーカスを移す
+            if (currentRowIndex >= inventoryRows.Length){
+                isFocusingStageExit = true;
+                cursorRect.position = stageExitRect.position;
+            }else{
+                moved = true;
+            }
+        }else if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame){
             currentRowIndex--;
-            // 一番上の行を超えたら一番下の行にループ
-            if (currentRowIndex < 0) currentRowIndex = inventoryRows.Length - 1;
-            moved = true;
+            // 一番上の行から更に上に行こうとしたら「STAGE EXIT」へフォーカスを移す
+            if (currentRowIndex < 0)
+            {
+                isFocusingStageExit = true;
+                cursorRect.position = stageExitRect.position;
+            }else{
+                moved = true;
+            }
         }
 
-        // ▼ 行を上下に移動した際の補正処理（重要）
-        // 例：5個ある行の右端から、3個しかない行へ上下移動した時に、存在しない4・5番目を参照してエラーになるのを防ぐ
         if (moved){
             int newRowLength = inventoryRows[currentRowIndex].slots.Length;
-            if (currentColIndex >= newRowLength){
-                currentColIndex = newRowLength - 1;
-            }
-
+            if (currentColIndex >= newRowLength) currentColIndex = newRowLength - 1;
             UpdateCursorPosition();
         }
 
-        // ▼ 決定ボタン（例としてZキーやEnterキー）で装備する処理の予約
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
             EquipSelectedItem();
         }
     }
 
+    // ダイアログをキャンセルした時の共通処理
+    private void CancelExitDialog(){
+        isExitDialogOpen = false;
+        PauseManager.Instance.CloseExitDialog();
+        cursorRect.position = stageExitRect.position; // カーソルを「STAGE EXIT」に戻す
+    }
+
     private void UpdateCursorPosition(){
         if (cursorRect != null && inventoryRows.Length > currentRowIndex && inventoryRows[currentRowIndex].slots.Length > currentColIndex){
-            // InventoryItemSlot の Transform（RectTransform）を取得して位置を合わせる
             InventoryItemSlot targetSlot = inventoryRows[currentRowIndex].slots[currentColIndex];
             if (targetSlot != null){
                 cursorRect.position = targetSlot.transform.position;
@@ -142,66 +202,46 @@ public class InventoryMenuController : MonoBehaviour {
         }
     }
 
-    // ▼▼▼ 新規追加・修正：装備の反映処理 ▼▼▼
     private void EquipSelectedItem(){
+        // ... (以前と同じ処理)
         InventoryItemSlot selectedSlot = inventoryRows[currentRowIndex].slots[currentColIndex];
         ItemInventoryData selectedItem = selectedSlot.itemData;
-
-        // 空枠（アイテムデータが入っていない）を選んだ場合は何もしない
         if (selectedItem == null) return;
 
-        // プレイヤーのスクリプトを取得（シーンに確実に存在するものとする）
         PlayerController pc = FindFirstObjectByType<PlayerController>();
         PlayerShoot ps = FindFirstObjectByType<PlayerShoot>();
 
         switch (selectedItem.category){
-            case ItemCategory.SubAction: // 緑枠（X）
+            case ItemCategory.SubAction:
                 if (pc != null) pc.currentSubActionEquip = selectedItem;
                 if (equipIconSubAction != null) equipIconSubAction.sprite = selectedItem.icon;
-                Debug.Log($"{selectedItem.itemName} をサブアクション(X)に装備しました。");
                 break;
-
-            case ItemCategory.Special: // 青枠（C）
+            case ItemCategory.Special:
                 if (ps != null) ps.currentSpecialEquip = selectedItem;
                 if (equipIconSpecial != null) equipIconSpecial.sprite = selectedItem.icon;
-                Debug.Log($"{selectedItem.itemName} をスペシャル(C)に装備しました。");
                 break;
-
-            case ItemCategory.Passive: // 黄色枠
-                // すぐに装備せず、右側のパッシブ枠選択モードに移行する
+            case ItemCategory.Passive:
                 isSelectingPassive = true;
                 selectedPassiveIndex = 0;
-                cursorRect.position = passiveSlotA_Rect.position; // カーソルを右側のA枠に飛ばす
-                Debug.Log("どちらのパッシブ枠に装備するか選択してください。");
+                cursorRect.position = passiveSlotA_Rect.position;
                 break;
         }
-        EquipHUD hud = FindFirstObjectByType<EquipHUD>();
-        if (hud != null){
-            hud.UpdateHUD();
-        }
 
+        EquipHUD hud = FindFirstObjectByType<EquipHUD>();
+        if (hud != null) hud.UpdateHUD();
     }
 
-    // パッシブ枠のA・Bどちらに装備するか確定した時の処理
     private void ConfirmEquipPassive(){
+        // ... (以前と同じ処理)
         InventoryItemSlot selectedSlot = inventoryRows[currentRowIndex].slots[currentColIndex];
         ItemInventoryData selectedItem = selectedSlot.itemData;
 
-        // プレイヤーへの反映（パッシブ用変数がPlayerControllerにある想定）
-        // ※ PlayerController側に public ItemInventoryData currentPassiveA; 等を追加してください
-        PlayerController pc = FindFirstObjectByType<PlayerController>();
-
-        if (selectedPassiveIndex == 0){// Passive A
-            // if (pc != null) pc.currentPassiveA = selectedItem; 
+        if (selectedPassiveIndex == 0){
             if (equipIconPassiveA != null) equipIconPassiveA.sprite = selectedItem.icon;
-            Debug.Log($"{selectedItem.itemName} を パッシブA に装備しました。");
-        }else{ // Passive B
-            // if (pc != null) pc.currentPassiveB = selectedItem;
+        }else{
             if (equipIconPassiveB != null) equipIconPassiveB.sprite = selectedItem.icon;
-            Debug.Log($"{selectedItem.itemName} を パッシブB に装備しました。");
         }
 
-        // 選択モードを終了し、カーソルを左のリストに戻す
         isSelectingPassive = false;
         UpdateCursorPosition();
     }

@@ -16,7 +16,9 @@ public class PauseManager : MonoBehaviour {
     [Header("UI参照")]
     public GameObject menuPanel;
 
-    // ▼▼▼ ここから新規追加 ▼▼▼
+    [Header("コース退出確認用")]
+    public GameObject exitDialogPanel;
+
     [Header("ステータスUI参照")]
     public TextMeshProUGUI hpCurrentText; // HPの現在値
     public TextMeshProUGUI hpMaxText;     // HPの最大値
@@ -26,7 +28,6 @@ public class PauseManager : MonoBehaviour {
     public TextMeshProUGUI apStompText;   // 踏みつけ攻撃力
     public TextMeshProUGUI jpText;        // ジャンプ力
     public TextMeshProUGUI dpText;        // 移動速度
-    // ▲▲▲ ここまで新規追加 ▲▲▲
 
     private bool isPaused = false;
 
@@ -35,6 +36,8 @@ public class PauseManager : MonoBehaviour {
         else Destroy(gameObject);
 
         if (menuPanel != null) menuPanel.SetActive(false);
+        // ▼【追加】開始時はダイアログを確実に消しておく
+        if (exitDialogPanel != null) exitDialogPanel.SetActive(false);
     }
 
     public void TogglePause(){
@@ -44,7 +47,12 @@ public class PauseManager : MonoBehaviour {
             menuPanel.SetActive(isPaused);
         }
 
-        // ▼【追加】ポーズ画面が開かれた瞬間にプレイヤーのデータを取得・更新する
+        // ▼ポーズを閉じた時は、ダイアログも強制的に閉じる
+        if (!isPaused && exitDialogPanel != null){
+            exitDialogPanel.SetActive(false);
+        }
+
+        // ▼ポーズ画面が開かれた瞬間にプレイヤーのデータを取得・更新する
         if (isPaused){
             UpdatePersonalData();
         }
@@ -52,11 +60,52 @@ public class PauseManager : MonoBehaviour {
         Time.timeScale = isPaused ? 0f : 1f;
     }
 
+    // ===============================================
+    // ▼▼▼ ここからコース退出用の新規メソッド追加 ▼▼▼
+    // ===============================================
+
+    /// <summary>
+    /// 「STAGE EXIT」ボタンを押したときに呼ばれる（ダイアログを開く）
+    /// </summary>
+    public void OpenExitDialog(){
+        if (exitDialogPanel != null) exitDialogPanel.SetActive(true);
+    }
+
+    /// <summary>
+    /// ダイアログで「いいえ」を押したときに呼ばれる（ダイアログを閉じる）
+    /// </summary>
+    public void CloseExitDialog(){
+        if (exitDialogPanel != null) exitDialogPanel.SetActive(false);
+    }
+
+    /// <summary>
+    /// ダイアログで「はい」を押したときに呼ばれる（マップへ戻る）
+    /// </summary>
+    public void ConfirmExitCourse(){
+        // 1. 時間停止（ポーズ）を解除する
+        Time.timeScale = 1f;
+        isPaused = false;
+
+        // 2. GameManagerから「元いたマップのシーン名」を取得してロードする
+        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.returnMapSceneName)){
+            // SceneTransitionManagerを使って、フェードアウトしながらマップへ戻る
+            if (SceneTransitionManager.Instance != null){
+                SceneTransitionManager.Instance.LoadScene(GameManager.Instance.returnMapSceneName, TransitionType.Fade);
+            }else{
+                UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.returnMapSceneName);
+            }
+        }else{
+            // ※GameManagerが無いテストプレイ時などの保険
+            Debug.LogWarning("マップのシーン名が記録されていません。仮のマップへ遷移するか、処理を中断します。");
+            // UnityEngine.SceneManagement.SceneManager.LoadScene("MapScene"); // ← テスト用マップ名を入れることも可能です
+        }
+    }
+
     // ▼▼▼ ここから新規メソッド追加 ▼▼▼
     /// <summary>
     /// プレイヤーから各スクリプトを取得し、UIのテキストを最新の数値に書き換えます
     /// </summary>
- // ▼▼▼ 修正版の UpdatePersonalData メソッド ▼▼▼
+    // ▼▼▼ 修正版の UpdatePersonalData メソッド ▼▼▼
     private void UpdatePersonalData(){
         // タグ検索ではなく、シーン内に確実に存在する PlayerController を直接探し出します。
         PlayerController controller = FindFirstObjectByType<PlayerController>();
