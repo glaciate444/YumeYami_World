@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 804faf4a7c9906b43ade9beaa2f3f645, type: 3}
   category: 2
   subActionType: 0
-  itemId: 11
+  itemId: 21
   attackPower: 1
   spCost: 1
   actionSpeed: 0

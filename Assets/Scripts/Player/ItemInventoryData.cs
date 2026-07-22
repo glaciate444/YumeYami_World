@@ -12,7 +12,8 @@ public enum SubActionType{
     None,      // なし
     Dash,      // ダッシュ
     Guard,     // ガード（予定）
-    HipDrop    // ヒップドロップ（予定）
+    HipDrop,   // ヒップドロップ
+    SlowFall   // ゆっくり降下
 }
 
 [CreateAssetMenu(fileName = "NewInventoryItem", menuName = "GameData/ItemInventoryData")]

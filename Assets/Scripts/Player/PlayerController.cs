@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour{
     [Header("ヒップドロップ設定")]
     public GameObject hipDropHitbox; // ヒップドロップ中にONにする判定
     [HideInInspector] public bool isHipDropping = false; // 外から参照できるようにする
+    
+    [HideInInspector] public bool isSlowFallingActive = false; //ゆっくり降下
 
     [Header("攻撃設定")]
     public GameObject attackHitbox;    // 攻撃判定用の小オブジェクト
@@ -90,9 +92,7 @@ public class PlayerController : MonoBehaviour{
     [Header("効果音")]
     public AudioClip jumpSE; // ← ここに追加
 
-    // PlayerController.cs に追加・修正
-    [HideInInspector]
-    public bool isKnockback; // 外から操作できるように public または [HideInInspector]
+    [HideInInspector] public bool isKnockback; // 外から操作できるように public または [HideInInspector]
 
     // 動く床から受け取る速度
     [HideInInspector]
@@ -209,6 +209,9 @@ public class PlayerController : MonoBehaviour{
         if (isGrounded){
             currentVelY = 0f; // Y方向の揺れを無視
             coyoteTimeCounter = coyoteTime; // 【追加】タイマーを最大値に保つ
+
+            // 着地したらゆっくり降下を解除
+            isSlowFallingActive = false;
         }else{
             if (Mathf.Abs(currentVelY) < 0.05f) currentVelY = 0f; // 極小ノイズ対策
             coyoteTimeCounter -= Time.deltaTime; // 【追加】空中にいる間はタイマーを減らす
@@ -264,19 +267,23 @@ public class PlayerController : MonoBehaviour{
         }
 
         // ▼【変更】壁ずり落ち中の落下速度制限 ▼
+        float currentVelocityY = rb.linearVelocity.y;
+
         if (isWallSliding){
-            // Y軸の落下速度を -wallSlidingSpeed (-2fなど) でストップさせ、ゆっくり落ちるようにする
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
-        }else{
-            // 1. 通常の移動の処理
-            rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+            // 壁ずり落ち中
+            currentVelocityY = Mathf.Clamp(currentVelocityY, -wallSlidingSpeed, float.MaxValue);
+        }
+        else if (isSlowFallingActive && currentVelocityY < 0){
+            // ゆっくり降下中 かつ 落下している時（上昇中は邪魔しない）
+            // SOから落下速度を取得（未設定ならデフォルトの 2f にする）
+            float slowFallSpeed = currentSubActionEquip.actionSpeed > 0 ? currentSubActionEquip.actionSpeed : 2f;
+            currentVelocityY = Mathf.Clamp(currentVelocityY, -slowFallSpeed, float.MaxValue);
         }
 
-        // 1. 移動の処理
-        // 【ver0.04変更後】自分の移動速度に、床の速度（platformVelocity.x）を足し合わせる！
-        rb.linearVelocity = new Vector2((moveInput.x * moveSpeed) + platformVelocity.x, rb.linearVelocity.y);
+        // 1. 移動の処理（X軸は入力＋動く床、Y軸は上で計算した速度を適用）
+        rb.linearVelocity = new Vector2((moveInput.x * moveSpeed) + platformVelocity.x, currentVelocityY);
 
-        // 【超重要】足し終わったらゼロに戻す（床から降りた瞬間にピタッと止まるようにするため）
+        // 【超重要】足し終わったらゼロに戻す
         platformVelocity = Vector2.zero;
 
         // 2. 坂道滑り落ち防止（摩擦の切り替え）
@@ -361,6 +368,15 @@ public class PlayerController : MonoBehaviour{
                 // ▼ 空中（ジャンプ・落下中）かつ、ヒップドロップ中でない時のみ発動
                 if (!isGrounded && !isHipDropping){
                     StartCoroutine(HipDropRoutine());
+                }
+                break;
+
+            case SubActionType.SlowFall:
+                // すでに発動中でなければチャージを消費してフラグをONにする
+                if (!isSlowFallingActive){
+                    currentDashCharges--;
+                    UpdateDashUI();
+                    isSlowFallingActive = true;
                 }
                 break;
 
