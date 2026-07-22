@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ea9bf2f5cede7e44e89e6e7c9035e492
+guid: f7990662a15f1d340a2116a69d994d7a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7949831557799742714
-    second: fireball 1_0
+      213: 8857910255517096789
+    second: Cakefly_fly_02_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 192
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fireball 1_0
+      name: Cakefly_fly_02_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 13
-        width: 280
-        height: 220
+        x: 5
+        y: 10
+        width: 337
+        height: 307
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: afc08da8ea9735e60800000000000000
-      internalID: 7949831557799742714
+      spriteID: 55bd268327e9dea70800000000000000
+      internalID: 8857910255517096789
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      fireball 1_0: 7949831557799742714
+      Cakefly_fly_02_0: 8857910255517096789
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
