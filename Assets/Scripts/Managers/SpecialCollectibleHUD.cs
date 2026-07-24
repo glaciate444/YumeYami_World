@@ -1,67 +1,67 @@
-/* ===================================================
- * �X�N���v�g�� : SpecialCollectibleHUD.cs
+﻿/* ===================================================
+ * スクリプト名 : SpecialCollectibleHUD.cs
  * Version : Ver0.01
  * Since : 2026/05/26
  * Update : 2026/05/26
- * �p�r : ���ʂȎ��W�A�C�e���̎擾�󋵂�UI�ɕ\������
+ * 用途 : 特別な収集アイテムの取得状況をUIに表示する
  * =================================================== */
 using UnityEngine;
-using UnityEngine.UI; // UI�𑀍삷�邽�߂ɕK�{
+using UnityEngine.UI; // UIを操作するために必須
 
 public class SpecialCollectibleHUD : MonoBehaviour{
-    [Header("�ݒ�")]
-    [Tooltip("���݂̃X�e�[�W�ԍ�")]
+    [Header("設定")]
+    [Tooltip("現在のステージ番号")]
     public int currentStageId = 1;
 
-    [Tooltip("���̃X�e�[�W�ɔz�u�����A�C�e���̐��i3�Ȃ�A4�ڈȍ~��UI�͎����ŏ����܂��j")]
+    [Tooltip("このステージに配置したアイテムの数（3なら、4個目以降のUIは自動で消えます）")]
     public int totalCollectiblesInStage = 3;
 
-    [Tooltip("��ʂɕ��ׂ�UI�摜�iImage�j�������珇�ɃZ�b�g���Ă�������")]
+    [Tooltip("画面に並べたUI画像（Image）を左から順にセットしてください")]
     public Image[] collectibleIcons;
 
-    [Header("�����ڂ̐ݒ�i�����������j")]
-    public Color uncollectedColor = new Color(1f, 1f, 1f, 0.3f); // ���擾�i�������j
-    public Color collectedColor = new Color(1f, 1f, 1f, 1f);     // �擾�ς݁i��������j
+    [Header("見た目の設定（半透明方式）")]
+    public Color uncollectedColor = new Color(1f, 1f, 1f, 0.3f); // 未取得（半透明）
+    public Color collectedColor = new Color(1f, 1f, 1f, 1f);     // 取得済み（くっきり）
 
-    /* * �������u�����v�ł͂Ȃ��u���擾�p�̃O���[�̕ʂ̉摜�v�ɍ����ւ������ꍇ�́A
-     * �ȉ��̕ϐ��̃R�����g�A�E�g���O���AUpdateHUD�̒��g�����������Ă��������B
+    /* * ※もし「透明」ではなく「未取得用のグレーの別の画像」に差し替えたい場合は、
+     * 以下の変数のコメントアウトを外し、UpdateHUDの中身を書き換えてください。
      * public Sprite uncollectedSprite;
      * public Sprite collectedSprite;
      */
 
     void Start(){
-        // �V�[���J�n���ɃZ�[�u�f�[�^���m�F����UI���X�V����
+        // シーン開始時にセーブデータを確認してUIを更新する
         UpdateHUD();
     }
 
-    // �� �擾�󋵂��m�F����UI�̌����ڂ�؂�ւ��郁�\�b�h ��
+    // ▼ 取得状況を確認してUIの見た目を切り替えるメソッド ▼
     public void UpdateHUD(){
-        int collectedCount = 0; // �� ���݂����W�܂��������J�E���g����p
+        int collectedCount = 0; // ▼ 現在いくつ集まったかをカウントする用
 
         for (int i = 0; i < collectibleIcons.Length; i++){
-            // ���y�ǉ��z�X�e�[�W�̑�����葽��UI�g�́A��\���ɂ��Ĕ�����X�L�b�v����
+            // ▼【追加】ステージの総数より多いUI枠は、非表示にして判定もスキップする
             if (i >= totalCollectiblesInStage){
                 collectibleIcons[i].gameObject.SetActive(false);
-                continue; // ����ȍ~�̏����͂����A���� i �֐i��
+                continue; // これ以降の処理はせず、次の i へ進む
             }
 
-            // �g���g�͕\����ON�ɂ���
+            // 使う枠は表示をONにする
             collectibleIcons[i].gameObject.SetActive(true);
 
-            // �Z�[�u�f�[�^���m�F
+            // セーブデータを確認
             string saveKey = $"Stage_{currentStageId}_SpecialItem_{i}";
             if (PlayerPrefs.GetInt(saveKey, 0) == 1){
                 collectibleIcons[i].color = collectedColor;
-                collectedCount++; // �擾�ς݂Ȃ�J�E���g�A�b�v
+                collectedCount++; // 取得済みならカウントアップ
             }else{
                 collectibleIcons[i].color = uncollectedColor;
             }
         }
 
-        // ���y���p�p�z�����S���W�߂��������ǂ����̔���i�f�o�b�O�p�j
+        // ▼【応用用】もし全部集めきったかどうかの判定（デバッグ用）
         if (totalCollectiblesInStage > 0 && collectedCount == totalCollectiblesInStage){
-            Debug.Log($"�X�e�[�W {currentStageId} �̃X�y�V�����A�C�e�����R���v���[�g�I");
-            // �i����قǁA�����Ɂu1UP�v��u�R���v���[�g�t���O�̕ۑ��v��ǉ��ł��܂��j
+            Debug.Log($"ステージ {currentStageId} のスペシャルアイテムをコンプリート！");
+            // （※後ほど、ここに「1UP」や「コンプリートフラグの保存」を追加できます）
         }
     }
 }

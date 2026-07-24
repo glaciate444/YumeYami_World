@@ -1,21 +1,21 @@
-/* ===================================================
- * ƒXƒNƒŠƒvƒg–¼ : WorldNode.cs
+ï»¿/* ===================================================
+ * ã‚¹ã‚¯ãƒªãƒ—ãƒˆå : WorldNode.cs
  * Version : Ver0.01
- * —p“r : ŠeƒŒƒxƒ‹‚Ì“ü‚èŒû‚Æ‚È‚éƒAƒCƒRƒ“—p‚ÌƒXƒNƒŠƒvƒg‚Å‚·B
+ * ç”¨é€” : å„ãƒ¬ãƒ™ãƒ«ã®å…¥ã‚Šå£ã¨ãªã‚‹ã‚¢ã‚¤ã‚³ãƒ³ç”¨ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§ã™ã€‚
  * =================================================== */
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WorldNode : MonoBehaviour {
-    [Header("ƒ[ƒ‹ƒhİ’è")]
+    [Header("ãƒ¯ãƒ¼ãƒ«ãƒ‰è¨­å®š")]
     public WorldData myWorldData; 
 
-    [Header("UIİ’è")]
+    [Header("UIè¨­å®š")]
     public Image nodeImage;       
     public Color lockedColor = Color.gray;   
     public Color unlockedColor = Color.white;
 
-    [Header("—×Úƒm[ƒh")]
+    [Header("éš£æ¥ãƒãƒ¼ãƒ‰")]
     public WorldNode upNode;
     public WorldNode downNode;
     public WorldNode leftNode;

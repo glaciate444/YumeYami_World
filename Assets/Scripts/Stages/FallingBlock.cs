@@ -1,11 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class FallingBlock : MonoBehaviour {
-    [Header("‚¿‚­‚íƒuƒƒbƒNİ’è")]
-    public float fallDelay = 1.0f;        // æ‚Á‚Ä‚©‚ç—‚¿‚é‚Ü‚Å‚ÌŠÔ
-    public float shakeAmount = 0.05f;     // k‚¦‚é•iX²‚ÌƒuƒŒj
-    public float initialFallSpeed = -2f;  // —‰º‚Ì‰‘¬
+    [Header("ã¡ãã‚ãƒ–ãƒ­ãƒƒã‚¯è¨­å®š")]
+    public float fallDelay = 1.0f;        // ä¹—ã£ã¦ã‹ã‚‰è½ã¡ã‚‹ã¾ã§ã®æ™‚é–“
+    public float shakeAmount = 0.05f;     // éœ‡ãˆã‚‹å¹…ï¼ˆXè»¸ã®ãƒ–ãƒ¬ï¼‰
+    public float initialFallSpeed = -2f;  // è½ä¸‹æ™‚ã®åˆé€Ÿ
 
     private Rigidbody2D rb;
     private Vector3 initialPosition;
@@ -16,35 +16,33 @@ public class FallingBlock : MonoBehaviour {
     void Start(){
         rb = GetComponent<Rigidbody2D>();
 
-        // —‰º‚Ü‚Å‚Í•¨—‰‰Z‚ğ–³Œø‰»
+        // è½ä¸‹ã¾ã§ã¯ç‰©ç†æ¼”ç®—ã‚’ç„¡åŠ¹åŒ–
         rb.bodyType = RigidbodyType2D.Kinematic;
 
-        // Œ³‚ÌˆÊ’u‚ğ‹L‰¯ik‚¦‚½Œã‚É–ß‚·‚½‚ßj
+        // å…ƒã®ä½ç½®ã‚’è¨˜æ†¶ï¼ˆéœ‡ãˆãŸå¾Œã«æˆ»ã™ãŸã‚ï¼‰
         initialPosition = transform.position;
     }
 
     void Update(){
         if (isFalling) return;
 
-        if (isPlayerOn)
-        {
-            // æ‚Á‚Ä‚¢‚éŠÔ‚Íƒ^ƒCƒ}[‚ği‚ß‚é
+        if (isPlayerOn){
+            // ä¹—ã£ã¦ã„ã‚‹é–“ã¯ã‚¿ã‚¤ãƒãƒ¼ã‚’é€²ã‚ã‚‹
             currentTimer += Time.deltaTime;
 
-            // ƒuƒ‹ƒuƒ‹k‚¦‚é‰‰oiŒ³‚ÌˆÊ’u‚ğŠî€‚É¶‰E‚Öƒ‰ƒ“ƒ_ƒ€‚ÉƒYƒ‰‚·j
+            // ãƒ–ãƒ«ãƒ–ãƒ«éœ‡ãˆã‚‹æ¼”å‡ºï¼ˆå…ƒã®ä½ç½®ã‚’åŸºæº–ã«å·¦å³ã¸ãƒ©ãƒ³ãƒ€ãƒ ã«ã‚ºãƒ©ã™ï¼‰
             transform.position = initialPosition + new Vector3(
                 Random.Range(-shakeAmount, shakeAmount),
                 0f,
                 0f
             );
 
-            // ƒ^ƒCƒ}[‚ªŒÀŠE‚ğ’´‚¦‚½‚ç—‰ºŠJn
-            if (currentTimer >= fallDelay)
-            {
+            // ã‚¿ã‚¤ãƒãƒ¼ãŒé™ç•Œã‚’è¶…ãˆãŸã‚‰è½ä¸‹é–‹å§‹
+            if (currentTimer >= fallDelay){
                 StartFalling();
             }
         }else if (currentTimer > 0f){
-            // —‚¿‚é‘O‚É~‚è‚½ê‡Aƒ^ƒCƒ}[‚ÆˆÊ’u‚ğƒŠƒZƒbƒg‚·‚éid—vj
+            // è½ã¡ã‚‹å‰ã«é™ã‚ŠãŸå ´åˆã€ã‚¿ã‚¤ãƒãƒ¼ã¨ä½ç½®ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ï¼ˆé‡è¦ï¼‰
             currentTimer = 0f;
             transform.position = initialPosition;
         }
@@ -55,28 +53,25 @@ public class FallingBlock : MonoBehaviour {
     }
 
     private void OnCollisionStay2D(Collision2D collision){
-        // í‚Éæ‚è‘±‚¯‚Ä‚¢‚é‚©ƒ`ƒFƒbƒN
+        // å¸¸ã«ä¹—ã‚Šç¶šã‘ã¦ã„ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
         CheckPlayerStand(collision);
     }
 
     private void OnCollisionExit2D(Collision2D collision){
         if (isFalling) return;
 
-        if (collision.gameObject.CompareTag("Player"))
-        {
+        if (collision.gameObject.CompareTag("Player")){
             isPlayerOn = false;
         }
     }
 
-    // ƒvƒŒƒCƒ„[‚ªã‚©‚çæ‚Á‚Ä‚¢‚é‚©‚ğ”»’è‚·‚é‹¤’Êˆ—
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸Šã‹ã‚‰ä¹—ã£ã¦ã„ã‚‹ã‹ã‚’åˆ¤å®šã™ã‚‹å…±é€šå‡¦ç†
     private void CheckPlayerStand(Collision2D collision){
         if (isFalling) return;
 
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            // ƒvƒŒƒCƒ„[‚Ì‘«Œ³‚ªAƒuƒƒbƒN‚Ì’†S‚æ‚èã‚É‚ ‚é‚©
-            if (collision.transform.position.y > transform.position.y)
-            {
+        if (collision.gameObject.CompareTag("Player")){
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¶³å…ƒãŒã€ãƒ–ãƒ­ãƒƒã‚¯ã®ä¸­å¿ƒã‚ˆã‚Šä¸Šã«ã‚ã‚‹ã‹
+            if (collision.transform.position.y > transform.position.y){
                 isPlayerOn = true;
             }
         }
@@ -86,19 +81,19 @@ public class FallingBlock : MonoBehaviour {
         isFalling = true;
         isPlayerOn = false;
 
-        // k‚¦‚É‚æ‚éƒYƒŒ‚ğ^‚Á’¼‚®‚É’¼‚·
+        // éœ‡ãˆã«ã‚ˆã‚‹ã‚ºãƒ¬ã‚’çœŸã£ç›´ãã«ç›´ã™
         transform.position = initialPosition;
 
-        // ƒvƒŒƒCƒ„[‚ğeqŠÖŒW‚©‚çˆø‚«”‚ª‚·iŠù‘¶‚Ì’mŒ©‚ğ—¬—pj
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦ªå­é–¢ä¿‚ã‹ã‚‰å¼•ãå‰¥ãŒã™ï¼ˆæ—¢å­˜ã®çŸ¥è¦‹ã‚’æµç”¨ï¼‰
         transform.DetachChildren();
 
-        // •¨—‰‰Z‚ğON‚É‚µ‚Ä—‰º‚³‚¹‚é
+        // ç‰©ç†æ¼”ç®—ã‚’ONã«ã—ã¦è½ä¸‹ã•ã›ã‚‹
         rb.bodyType = RigidbodyType2D.Dynamic;
 
-        // ƒXƒ€[ƒY‚É—£‚ê‚é‚æ‚¤‚É­‚µ‰ºŒü‚«‚Ì‰‘¬‚ğ‚Â‚¯‚é
+        // ã‚¹ãƒ ãƒ¼ã‚ºã«é›¢ã‚Œã‚‹ã‚ˆã†ã«å°‘ã—ä¸‹å‘ãã®åˆé€Ÿã‚’ã¤ã‘ã‚‹
         rb.linearVelocity = new Vector2(0f, initialFallSpeed);
 
-        // 3•bŒã‚ÉƒIƒuƒWƒFƒNƒg‚ğÁ‹
+        // 3ç§’å¾Œã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¶ˆå»
         Destroy(gameObject, 3f);
     }
 }
