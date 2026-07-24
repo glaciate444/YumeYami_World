@@ -22,6 +22,7 @@ public class EnemyTurret : MonoBehaviour{
     public GameObject enemyBulletPrefab;
     public Transform firePoint;
     public float fireInterval = 2f;
+    public bool notRotateAngle = false; // 回転させない
 
     [Header("発射フォーメーション")]
     public AimType aimType = AimType.AimAtPlayer;
@@ -103,6 +104,8 @@ private IEnumerator ShootRoutine(){
         }
 
         for (int i = 0; i < bulletCount; i++){
+            
+
             float offsetAngle = 0f;
             if (bulletCount > 1) {
                 offsetAngle = (i - (bulletCount - 1) / 2f) * spreadAngle;
@@ -118,7 +121,10 @@ private IEnumerator ShootRoutine(){
             GameObject bullet = Instantiate(enemyBulletPrefab, finalPos, Quaternion.identity);
 
             float angle = Mathf.Atan2(finalDir.y, finalDir.x) * Mathf.Rad2Deg;
-            bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
+            //回転させない場合
+            if (!notRotateAngle){
+                bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
 
             Bullet b = bullet.GetComponent<Bullet>();
             if (b != null) b.Initialize(finalDir);

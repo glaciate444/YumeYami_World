@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 538496124420485961}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.89, y: 0.73, z: 0}
+  m_LocalPosition: {x: -2, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 5460601881785191328}
   - component: {fileID: 6596479763683969579}
   - component: {fileID: 5656465299672264860}
+  - component: {fileID: 2570645113841519235}
   m_Layer: 11
   m_Name: YellowMagic
   m_TagString: Untagged
@@ -64,7 +65,7 @@ Transform:
   m_GameObject: {fileID: 3196240716712053886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.6399503, y: -2.4651096, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -189,10 +190,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a80528df03ec98848a04fc8dfbafe74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
-  enemyBulletPrefab: {fileID: 0}
-  firePoint: {fileID: 0}
-  fireInterval: 2
-  aimType: 1
+  enemyBulletPrefab: {fileID: 7814645704091411752, guid: ab9b976b3e4c5fc43a47122b89ced3ea, type: 3}
+  firePoint: {fileID: 8189761134105076708}
+  fireInterval: 3
+  notRotateAngle: 1
+  aimType: 4
   bulletCount: 1
   spreadAngle: 15
   burstInterval: 0
@@ -287,3 +289,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2570645113841519235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196240716712053886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f06a8fe70ffb6c4d95de379ce019746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFacePlayer
+  isFacingRightDefault: 0

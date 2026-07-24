@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1544744014443426231}
   - component: {fileID: 2520179473267952812}
   - component: {fileID: 8644891928970565161}
+  - component: {fileID: 4044796122242900788}
   - component: {fileID: 5382326903708877659}
   - component: {fileID: 7587009235645555821}
   - component: {fileID: 8852134983423741830}
@@ -184,6 +185,19 @@ CapsuleCollider2D:
   m_Offset: {x: 0.1, y: 0}
   m_Size: {x: 0.81151533, y: 1.2211307}
   m_Direction: 0
+--- !u!114 &4044796122242900788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4743028728278434382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f06a8fe70ffb6c4d95de379ce019746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFacePlayer
+  isFacingRightDefault: 0
 --- !u!114 &5382326903708877659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +250,7 @@ MonoBehaviour:
   enemyBulletPrefab: {fileID: 7814645704091411752, guid: bb9ebfd7ab01cce4b9f18c488b6b5443, type: 3}
   firePoint: {fileID: 5466242431524282105}
   fireInterval: 2
+  notRotateAngle: 0
   aimType: 1
   bulletCount: 1
   spreadAngle: 15

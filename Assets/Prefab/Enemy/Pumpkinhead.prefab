@@ -215,6 +215,7 @@ MonoBehaviour:
   enemyBulletPrefab: {fileID: 7814645704091411752, guid: bb9ebfd7ab01cce4b9f18c488b6b5443, type: 3}
   firePoint: {fileID: 671209341015616988}
   fireInterval: 2
+  notRotateAngle: 0
   aimType: 0
   bulletCount: 1
   spreadAngle: 15
@@ -335,7 +336,7 @@ Transform:
   m_GameObject: {fileID: 7654050292954708805}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3, y: -0.63, z: 0}
+  m_LocalPosition: {x: -0.3, y: -0.845, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
