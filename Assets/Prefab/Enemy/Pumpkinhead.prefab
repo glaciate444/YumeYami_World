@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 1573966539874849645}
   - component: {fileID: 4411745125591479238}
   - component: {fileID: 1287458540792503765}
+  - component: {fileID: 8016273082186607965}
   m_Layer: 11
   m_Name: Pumpkinhead
   m_TagString: Untagged
@@ -280,6 +281,21 @@ CapsuleCollider2D:
   m_Offset: {x: -0.03507012, y: -0.037262082}
   m_Size: {x: 0.7106713, y: 1.0965681}
   m_Direction: 0
+--- !u!114 &8016273082186607965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2635963018645577934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
+  damage: 1
+  impact: 5
+  canBeStomped: 1
 --- !u!1 &5360839889362789168
 GameObject:
   m_ObjectHideFlags: 0
