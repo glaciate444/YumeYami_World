@@ -633,9 +633,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b65e33297f72936429137080a5750e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingBlock
+  actionType: 1
   fallDelay: 1
   shakeAmount: 0.05
   initialFallSpeed: -2
+  meltDuration: 0.2
+  doesRespawn: 0
+  respawnTime: 3
 --- !u!50 &186608210
 Rigidbody2D:
   serializedVersion: 5
@@ -3351,9 +3355,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b65e33297f72936429137080a5750e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingBlock
+  actionType: 0
   fallDelay: 1
   shakeAmount: 0.05
   initialFallSpeed: -2
+  meltDuration: 0.2
+  doesRespawn: 1
+  respawnTime: 3
 --- !u!50 &1359609943
 Rigidbody2D:
   serializedVersion: 5
