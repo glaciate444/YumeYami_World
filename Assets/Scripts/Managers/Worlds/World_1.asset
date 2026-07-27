@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
   worldNumber: 1
   worldName: Pastel Forest
-  sceneName: MapSelectScene_Level_1
+  sceneName: LevelOpeningScene_1
   requiredWorldLevel: 1

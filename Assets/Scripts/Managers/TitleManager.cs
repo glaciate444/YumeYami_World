@@ -134,7 +134,7 @@ public class TitleManager : MonoBehaviour{
                 PlayerPrefs.DeleteAll();
                 PlayerPrefs.Save();
 
-                SceneTransitionManager.Instance.LoadScene("WorldMapScene"); //まだレベル選択がないので仮にレベル1をマップ画面に飛ばす
+                SceneTransitionManager.Instance.LoadScene("OpeningScene"); //まだレベル選択がないので仮にレベル1をマップ画面に飛ばす
                 break;
             case 1: case 2: case 3: case 4: 
                 Debug.Log($"セーブデータ {currentIndex} をロードします！");
