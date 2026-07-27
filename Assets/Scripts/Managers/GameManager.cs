@@ -118,4 +118,18 @@ public class GameManager : MonoBehaviour{
         // ▼【追加】現在位置も初期化
         currentMapNodeNumber = 1;
     }
+
+    // ワールドマップでレベル1のマスを選択した時の処理
+    public void OnSelectLevel1(){
+        // GameManagerの進行度を見て、未クリア（初めて）ならストーリーへ
+        if (GameManager.Instance.unlockedStageLevel == 1)
+        {
+            SceneTransitionManager.Instance.LoadScene("LevelOpeningScene");
+        }
+        else
+        {
+            // すでにクリア済み（2回目以降）なら直接ステージマップへ
+            SceneTransitionManager.Instance.LoadScene("MapSelectScene_Level_1");
+        }
+    }
 }
