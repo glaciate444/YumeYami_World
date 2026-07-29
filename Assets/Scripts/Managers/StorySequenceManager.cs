@@ -2,6 +2,11 @@
  * スクリプト名 : StorySequenceManager.cs
  * 用途 : 寸劇と会話テキストを連動させるストーリー進行管理
  * =================================================== */
+/* ===================================================
+ * スクリプト名 : StorySequenceManager.cs
+ * 用途 : 寸劇と会話テキストを連動させるストーリー進行管理
+ * 拡張 : キャラクターの座標移動機能をサポート
+ * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -9,7 +14,6 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
-// ▼ 1ページ分のデータを定義するクラス
 [System.Serializable]
 public class StoryPage {
     [Header("会話テキスト")]
@@ -22,6 +26,16 @@ public class StoryPage {
     public Animator targetAnimator;
     [Tooltip("再生したいTrigger名（例: Jump, Walk など）")]
     public string animationTrigger;
+
+    // ▼▼▼ 新規追加：移動システム ▼▼▼
+    [Header("移動連動（任意）")]
+    [Tooltip("移動させたいキャラクターを指定")]
+    public Transform targetToMove;
+    [Tooltip("移動先の目標地点（空のGameObject等）を指定")]
+    public Transform moveDestination;
+    [Tooltip("移動にかかる時間（秒）")]
+    public float moveDuration = 1.0f;
+    // ▲▲▲ 新規追加ここまで ▲▲▲
 }
 
 public class StorySequenceManager : MonoBehaviour {
@@ -33,7 +47,7 @@ public class StorySequenceManager : MonoBehaviour {
     public TextMeshProUGUI messageText;
 
     [Header("テキスト表示設定")]
-    public float typingSpeed = 0.05f; // 1文字表示される間隔（秒）
+    public float typingSpeed = 0.05f;
 
     [Header("遷移先設定")]
     public string nextSceneName = "MapSelectScene_Level1";
@@ -46,34 +60,26 @@ public class StorySequenceManager : MonoBehaviour {
     private Coroutine typingCoroutine;
 
     void Start(){
-        // 最初のページを表示開始
         if (pages.Count > 0){
             PlayPage(currentPageIndex);
-        }else{
-            Debug.LogWarning("ストーリーのページが設定されていません。");
         }
     }
 
     void Update(){
         if (isFinished) return;
-
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // 決定ボタン（ZキーやEnter）での進行
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
             if (isTyping){
-                // 文字送り中の場合は、スキップして全文を即座に表示する
                 if (typingCoroutine != null) StopCoroutine(typingCoroutine);
                 messageText.text = pages[currentPageIndex].message;
                 isTyping = false;
             }else{
-                // 文字表示が完了している場合は、次のページへ
                 NextPage();
             }
         }
 
-        // Xキーでストーリー自体をスキップ
         if (keyboard.xKey.wasPressedThisFrame){
             EndStory();
         }
@@ -82,18 +88,45 @@ public class StorySequenceManager : MonoBehaviour {
     private void PlayPage(int index){
         StoryPage page = pages[index];
 
-        // 名前テキストの更新（空欄なら名前枠を非表示にするなどの処理も可能）
         if (speakerNameText != null) speakerNameText.text = page.speakerName;
 
-        // アニメーションの再生指示があれば実行
         if (page.targetAnimator != null && !string.IsNullOrEmpty(page.animationTrigger)){
             page.targetAnimator.SetTrigger(page.animationTrigger);
         }
 
-        // タイプライター演出の開始
+        // ▼▼▼ 新規追加：移動指示があればコルーチンを開始 ▼▼▼
+        if (page.targetToMove != null && page.moveDestination != null){
+            StartCoroutine(MoveCharacterRoutine(page.targetToMove, page.moveDestination, page.moveDuration));
+        }
+        // ▲▲▲ 新規追加ここまで ▲▲▲
+
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeText(page.message));
     }
+
+    // ▼▼▼ 新規追加：滑らかに移動させるコルーチン ▼▼▼
+    private IEnumerator MoveCharacterRoutine(Transform target, Transform dest, float duration){
+        Vector3 startPos = target.position;
+        Vector3 endPos = dest.position;
+        float time = 0;
+
+        // 念のため、0秒が指定された場合は即座にワープさせる
+        if (duration <= 0f){
+            target.position = endPos;
+            yield break;
+        }
+
+        while (time < duration){
+            time += Time.deltaTime;
+            // Lerp関数を使って、現在地から目的地まで時間経過に合わせて滑らかに移動させる
+            target.position = Vector3.Lerp(startPos, endPos, time / duration);
+            yield return null; // 次のフレームまで待つ
+        }
+
+        // 最後に数値をピッタリ合わせる
+        target.position = endPos;
+    }
+    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     private IEnumerator TypeText(string text){
         isTyping = true;
@@ -109,14 +142,8 @@ public class StorySequenceManager : MonoBehaviour {
 
     private void NextPage(){
         currentPageIndex++;
-
-        if (currentPageIndex < pages.Count){
-            // 次のページがあるなら再生
-            PlayPage(currentPageIndex);
-        }else{
-            // 全ページ終了したらシーン遷移
-            EndStory();
-        }
+        if (currentPageIndex < pages.Count) PlayPage(currentPageIndex);
+        else EndStory();
     }
 
     public void EndStory(){
@@ -134,5 +161,6 @@ public class StorySequenceManager : MonoBehaviour {
         }else{
             SceneManager.LoadScene(nextSceneName);
         }
+
     }
 }
