@@ -1,15 +1,12 @@
 /* ===================================================
  * スクリプト名 : StorySequenceManager.cs
  * 用途 : 寸劇と会話テキストを連動させるストーリー進行管理
- * =================================================== */
-/* ===================================================
- * スクリプト名 : StorySequenceManager.cs
- * 用途 : 寸劇と会話テキストを連動させるストーリー進行管理
- * 拡張 : キャラクターの座標移動機能をサポート
+ * 拡張 : 一枚絵（スチル）の切り替え機能をサポート
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI; // ▼ Imageを使うために追加
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,21 +18,20 @@ public class StoryPage {
     [TextArea(2, 4)]
     public string message;
 
+    // ▼▼▼ 新規追加：一枚絵の連動 ▼▼▼
+    [Header("一枚絵連動（任意）")]
+    [Tooltip("このページで表示したい一枚絵（空欄なら前の絵を維持）")]
+    public Sprite cgSprite;
+    // ▲▲▲ 新規追加ここまで ▲▲▲
+
     [Header("アニメーション連動（任意）")]
-    [Tooltip("動かしたいキャラクターのAnimatorを指定")]
     public Animator targetAnimator;
-    [Tooltip("再生したいTrigger名（例: Jump, Walk など）")]
     public string animationTrigger;
 
-    // ▼▼▼ 新規追加：移動システム ▼▼▼
     [Header("移動連動（任意）")]
-    [Tooltip("移動させたいキャラクターを指定")]
     public Transform targetToMove;
-    [Tooltip("移動先の目標地点（空のGameObject等）を指定")]
     public Transform moveDestination;
-    [Tooltip("移動にかかる時間（秒）")]
     public float moveDuration = 1.0f;
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 }
 
 public class StorySequenceManager : MonoBehaviour {
@@ -45,6 +41,12 @@ public class StorySequenceManager : MonoBehaviour {
     [Header("UI参照")]
     public TextMeshProUGUI speakerNameText;
     public TextMeshProUGUI messageText;
+
+    // ▼▼▼ 新規追加：一枚絵を表示する枠 ▼▼▼
+    [Header("一枚絵表示用のUI")]
+    [Tooltip("Canvas内に作った StoryImage をアサインしてください")]
+    public Image storyImageUI;
+    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("テキスト表示設定")]
     public float typingSpeed = 0.05f;
@@ -90,27 +92,39 @@ public class StorySequenceManager : MonoBehaviour {
 
         if (speakerNameText != null) speakerNameText.text = page.speakerName;
 
+        // ▼▼▼ 新規追加：一枚絵の切り替え処理 ▼▼▼
+        if (storyImageUI != null){
+            if (page.cgSprite != null){
+                // 新しい画像が設定されていれば、それを表示して透明度を100%にする
+                storyImageUI.sprite = page.cgSprite;
+                storyImageUI.color = Color.white;
+            }else if (storyImageUI.sprite == null){
+                // 画像が設定されておらず、元々の画像も無い場合は透明（見えない状態）にしておく
+                storyImageUI.color = Color.clear;
+            }
+            // ※page.cgSprite が空欄で、すでに何かの画像が表示されている場合は、前のページの画像をそのまま引き継ぎます。
+        }
+        // ▲▲▲ 新規追加ここまで ▲▲▲
+
+        // アニメーション指示
         if (page.targetAnimator != null && !string.IsNullOrEmpty(page.animationTrigger)){
             page.targetAnimator.SetTrigger(page.animationTrigger);
         }
 
-        // ▼▼▼ 新規追加：移動指示があればコルーチンを開始 ▼▼▼
+        // 移動指示
         if (page.targetToMove != null && page.moveDestination != null){
             StartCoroutine(MoveCharacterRoutine(page.targetToMove, page.moveDestination, page.moveDuration));
         }
-        // ▲▲▲ 新規追加ここまで ▲▲▲
 
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeText(page.message));
     }
 
-    // ▼▼▼ 新規追加：滑らかに移動させるコルーチン ▼▼▼
     private IEnumerator MoveCharacterRoutine(Transform target, Transform dest, float duration){
         Vector3 startPos = target.position;
         Vector3 endPos = dest.position;
         float time = 0;
 
-        // 念のため、0秒が指定された場合は即座にワープさせる
         if (duration <= 0f){
             target.position = endPos;
             yield break;
@@ -118,15 +132,12 @@ public class StorySequenceManager : MonoBehaviour {
 
         while (time < duration){
             time += Time.deltaTime;
-            // Lerp関数を使って、現在地から目的地まで時間経過に合わせて滑らかに移動させる
             target.position = Vector3.Lerp(startPos, endPos, time / duration);
-            yield return null; // 次のフレームまで待つ
+            yield return null;
         }
 
-        // 最後に数値をピッタリ合わせる
         target.position = endPos;
     }
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     private IEnumerator TypeText(string text){
         isTyping = true;
@@ -161,6 +172,5 @@ public class StorySequenceManager : MonoBehaviour {
         }else{
             SceneManager.LoadScene(nextSceneName);
         }
-
     }
 }
