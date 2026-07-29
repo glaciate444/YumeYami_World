@@ -19,41 +19,33 @@ public class WorldSelectManager : MonoBehaviour {
     // シーン遷移が始まったら true にして入力の連打を防ぐ
     private bool isStartingWorld = false;
 
-    void Start()
-    {
+    void Start(){
         WorldNode[] allNodes = FindObjectsByType<WorldNode>(FindObjectsSortMode.None);
-        foreach (var node in allNodes)
-        {
+        foreach (var node in allNodes){
             node.SetupNode();
         }
 
         // GameManagerの記憶からスタート位置を復元
-        if (GameManager.Instance != null)
-        {
+        if (GameManager.Instance != null){
             int savedNodeNum = GameManager.Instance.currentWorldNodeNumber;
-            foreach (var node in allNodes)
-            {
-                if (node.myWorldData != null && node.myWorldData.worldNumber == savedNodeNum)
-                {
+            foreach (var node in allNodes){
+                if (node.myWorldData != null && node.myWorldData.worldNumber == savedNodeNum){
                     currentNode = node;
                     break;
                 }
             }
         }
 
-        if (currentNode != null && playerIcon != null)
-        {
+        if (currentNode != null && playerIcon != null){
             playerIcon.position = currentNode.transform.position;
         }
     }
 
-    void Update()
-    {
+    void Update(){
         // すでに画面遷移が始まっていたら、これ以下の処理（キー入力）を一切無視する！
         if (isStartingWorld) return;
 
-        if (isMoving)
-        {
+        if (isMoving){
             MovePlayerIcon();
             return;
         }
@@ -68,17 +60,14 @@ public class WorldSelectManager : MonoBehaviour {
         else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame) nextNode = currentNode.leftNode;
         else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame) nextNode = currentNode.rightNode;
 
-        if (nextNode != null && nextNode.IsUnlocked)
-        {
+        if (nextNode != null && nextNode.IsUnlocked){
             targetNode = nextNode;
             isMoving = true;
         }
 
         // 決定ボタンで遷移！
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
-        {
-            if (currentNode != null && currentNode.myWorldData != null && currentNode.IsUnlocked)
-            {
+        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
+            if (currentNode != null && currentNode.myWorldData != null && currentNode.IsUnlocked){
 
                 // ワールドに入ることが確定したら、フラグをONにして連打をロックする！
                 isStartingWorld = true;
@@ -93,18 +82,14 @@ public class WorldSelectManager : MonoBehaviour {
                 string sceneToLoad = targetWorld.sceneName; // デフォルトは直接マップへ遷移
 
                 // 2. 「未読」かつ「ストーリーシーン名が設定されている」場合はストーリーシーンへ上書き
-                if (!isStoryWatched && !string.IsNullOrEmpty(targetWorld.storySceneName))
-                {
+                if (!isStoryWatched && !string.IsNullOrEmpty(targetWorld.storySceneName)){
                     sceneToLoad = targetWorld.storySceneName;
                 }
 
                 // ロード実行
-                if (SceneTransitionManager.Instance != null)
-                {
+                if (SceneTransitionManager.Instance != null){
                     SceneTransitionManager.Instance.LoadScene(sceneToLoad, TransitionType.Fade);
-                }
-                else
-                {
+                }else{
                     SceneManager.LoadScene(sceneToLoad);
                 }
                 // ▲▲▲ 修正ここまで ▲▲▲
@@ -112,20 +97,17 @@ public class WorldSelectManager : MonoBehaviour {
         }
     }
 
-    private void MovePlayerIcon()
-    {
+    private void MovePlayerIcon(){
         if (playerIcon == null || targetNode == null) return;
 
         playerIcon.position = Vector3.MoveTowards(playerIcon.position, targetNode.transform.position, moveSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(playerIcon.position, targetNode.transform.position) < 0.01f)
-        {
+        if (Vector3.Distance(playerIcon.position, targetNode.transform.position) < 0.01f){
             playerIcon.position = targetNode.transform.position;
             currentNode = targetNode;
             isMoving = false;
 
-            if (GameManager.Instance != null && currentNode.myWorldData != null)
-            {
+            if (GameManager.Instance != null && currentNode.myWorldData != null){
                 GameManager.Instance.currentWorldNodeNumber = currentNode.myWorldData.worldNumber;
                 GameManager.Instance.SaveGame();
             }
