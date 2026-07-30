@@ -1,10 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.10
+ * Version : Ver0.12
  * Since : 2026/04/01
- * Update : 2026/07/15
+ * Update : 2026/07/30
  * 用途 : プレイヤー制御
- * 更新 : 装備関連
+ * 更新 : 大砲に入った際の動き
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -77,6 +77,12 @@ public class PlayerController : MonoBehaviour{
     private bool isNearLadder;    // 梯子に触れているか
     private bool isClimbing;      // 今実際に登っているか
     private float defaultGravity; // 元の重力を記憶しておく用
+
+    [Header("大砲ギミック設定")]
+    [HideInInspector] public bool isInsideCannon = false; // 大砲の中にいるか
+    [HideInInspector] public bool isCannonFlying = false; // 大砲から発射されて飛んでいる最中か
+    // ▼ 追加：大砲の待機ポイントを記憶しておく用
+    [HideInInspector] public Transform cannonWaitPoint;
 
     private bool isWallTouch;
     private bool isWallSliding;
@@ -153,6 +159,18 @@ public class PlayerController : MonoBehaviour{
     private void OnDisable() => inputActions.Disable();
 
     void Update(){
+        // 大砲の中にいる間は、毎フレーム強制的にWaitPointへ座標を固定する ▼▼▼
+        if (isInsideCannon){
+            if (cannonWaitPoint != null){
+                transform.position = cannonWaitPoint.position;
+            }
+            // 中で方向キーを押されても、絶対に歩行アニメーションを再生させない
+            if (anim != null){
+                anim.SetBool("isWalking", false);
+            }
+            return; // ここで return するため、これより下の移動入力処理は一切呼ばれない
+        }
+
         // ダッシュ中は他の行動（向きの反転や接地判定）を一時停止
         if (isDashing) return;
 
@@ -212,14 +230,22 @@ public class PlayerController : MonoBehaviour{
 
             // 着地したらゆっくり降下を解除
             isSlowFallingActive = false;
+
+            // ▼ 追加：着地したら大砲の飛行状態を解除して元に戻す
+            if (isCannonFlying){
+                // Y軸の速度がほぼゼロ以下（つまり落下し始めた、または本当に地面に着いた時）だけ解除する
+                if (rb.linearVelocity.y <= 0.1f){
+                    isCannonFlying = false;
+                    if (anim != null) anim.SetBool("isCannonFlying", false);
+                }
+            }
         }else{
             if (Mathf.Abs(currentVelY) < 0.05f) currentVelY = 0f; // 極小ノイズ対策
             coyoteTimeCounter -= Time.deltaTime; // 【追加】空中にいる間はタイマーを減らす
         }
 
-        // ヒップドロップ中は、猛烈な落下速度によってFallアニメーションに
-        // 強制上書き（横取り）されるのを防ぐため、数値を0に偽装する
-        if (isHipDropping){
+        // ヒップドロップ中に加え、大砲で飛んでいる間も数値を0に偽装する ▼▼▼
+        if (isHipDropping || isCannonFlying){
             currentVelY = 0f;
         }
 
@@ -267,21 +293,21 @@ public class PlayerController : MonoBehaviour{
         }
 
         // ▼【変更】壁ずり落ち中の落下速度制限 ▼
+        // ▼▼▼ 新規追加・修正：大砲の中にいる時、または飛んでいる最中は、一切の自前移動処理を行わない ▼▼▼
+        if (isInsideCannon || isCannonFlying) return;
+        // ▲▲▲ 修正ここまで ▲▲▲
+
         float currentVelocityY = rb.linearVelocity.y;
 
         if (isWallSliding){
-            // 壁ずり落ち中
             currentVelocityY = Mathf.Clamp(currentVelocityY, -wallSlidingSpeed, float.MaxValue);
-        }
-        else if (isSlowFallingActive && currentVelocityY < 0){
-            // ゆっくり降下中 かつ 落下している時（上昇中は邪魔しない）
-            // SOから落下速度を取得（未設定ならデフォルトの 2f にする）
+        }else if (isSlowFallingActive && currentVelocityY < 0){
             float slowFallSpeed = currentSubActionEquip.actionSpeed > 0 ? currentSubActionEquip.actionSpeed : 2f;
             currentVelocityY = Mathf.Clamp(currentVelocityY, -slowFallSpeed, float.MaxValue);
         }
 
-        // 1. 移動の処理（X軸は入力＋動く床、Y軸は上で計算した速度を適用）
         rb.linearVelocity = new Vector2((moveInput.x * moveSpeed) + platformVelocity.x, currentVelocityY);
+        platformVelocity = Vector2.zero;
 
         // 【超重要】足し終わったらゼロに戻す
         platformVelocity = Vector2.zero;
@@ -519,9 +545,7 @@ public class PlayerController : MonoBehaviour{
 
         isHipDropping = false;
     }
-    // ==========================================
-    // ▼ここから追加：ゴール時の演出用メソッド▼
-    // ==========================================
+    // ゴール時の演出用メソッド▼
     public void PlayGoalAction(){
         // 1. キーボードやゲームパッドの入力を完全にシャットアウトする
         inputActions.Disable();
@@ -536,5 +560,43 @@ public class PlayerController : MonoBehaviour{
         // ▼「Goal」という名前のTriggerをAnimatorに追加すれば、ここで専用ポーズを再生できます！
         // （ポーズのアニメーションを作成したら、以下のコメントアウトを外してください）
         // anim.SetTrigger("Goal"); 
+    }
+
+    // 大砲に格納された瞬間の処理
+    public void EnterCannon(Transform waitPoint){
+        isInsideCannon = true;
+        cannonWaitPoint = waitPoint; // 待機ポイントを記憶
+
+        rb.linearVelocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+
+        // ▼ 追加：壁や地面に弾き出されるのを防ぐため、物理エンジンの計算から一時的に消す！
+        rb.simulated = false;
+
+        // ▼▼▼ 新規追加：入った瞬間に歩行アニメーションを強制ストップ ▼▼▼
+        if (anim != null){
+            anim.SetBool("isWalking", false);
+        }
+    }
+
+    // 大砲から発射された瞬間の処理
+    public void FireFromCannon(Vector2 force){
+        isInsideCannon = false;
+        isCannonFlying = true;
+        cannonWaitPoint = null;
+
+        // ▼ 追加：物理エンジンに復帰させる
+        rb.simulated = true;
+
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.linearVelocity = force;
+
+        if (anim != null) anim.SetBool("isCannonFlying", true);
+
+        // ▼ 追加：飛んでいく方向（X軸の力）を見て、自動的に左右を振り向かせる
+        if (Mathf.Abs(force.x) > 0.1f){
+            float facingDir = Mathf.Sign(force.x); // 右なら1、左なら-1になる
+            transform.localScale = new Vector3(facingDir, transform.localScale.y, transform.localScale.z);
+        }
     }
 }
