@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour{
     [Header("ヒップドロップ設定")]
     public GameObject hipDropHitbox; // ヒップドロップ中にONにする判定
     [HideInInspector] public bool isHipDropping = false; // 外から参照できるようにする
-    
     [HideInInspector] public bool isSlowFallingActive = false; //ゆっくり降下
 
     [Header("攻撃設定")]
@@ -83,6 +82,7 @@ public class PlayerController : MonoBehaviour{
     [HideInInspector] public bool isCannonFlying = false; // 大砲から発射されて飛んでいる最中か
     // ▼ 追加：大砲の待機ポイントを記憶しておく用
     [HideInInspector] public Transform cannonWaitPoint;
+    [HideInInspector] public Vector2 savedFlyingVelocity; // 飛んでいる最中の勢いを記憶する用
 
     private bool isWallTouch;
     private bool isWallSliding;
@@ -293,9 +293,13 @@ public class PlayerController : MonoBehaviour{
         }
 
         // ▼【変更】壁ずり落ち中の落下速度制限 ▼
-        // ▼▼▼ 新規追加・修正：大砲の中にいる時、または飛んでいる最中は、一切の自前移動処理を行わない ▼▼▼
-        if (isInsideCannon || isCannonFlying) return;
-        // ▲▲▲ 修正ここまで ▲▲▲
+        if (isInsideCannon) return;
+
+        if (isCannonFlying){
+            // ブロックにぶつかって勢いが消される前に、毎フレーム「現在の飛んでいる勢い」を記憶しておく
+            savedFlyingVelocity = rb.linearVelocity;
+            return;
+        }
 
         float currentVelocityY = rb.linearVelocity.y;
 
@@ -494,6 +498,22 @@ public class PlayerController : MonoBehaviour{
         if (other.CompareTag("Ladder")){
             isNearLadder = false;
             isClimbing = false; // 梯子から離れたら強制的に登り状態を解除
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other){
+        // 大砲で飛んでいる最中に何かにぶつかったら
+        if (isCannonFlying){
+            BreakableBlock block = other.gameObject.GetComponent<BreakableBlock>();
+            if (block != null){
+                // 1. 特大ダメージ(9999)を与えて問答無用で破壊する！
+                // （鉄の箱でも canBreakByHazard がONなら壊せます）
+                block.TakeDamage(9999, savedFlyingVelocity.normalized);
+
+                // 2. ぶつかった衝撃でプレイヤーが止まってしまうのを防ぐため、
+                // 記憶しておいた「ぶつかる直前の勢い」を再セットして貫通させる！
+                rb.linearVelocity = savedFlyingVelocity;
+            }
         }
     }
 
