@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewWorldData", menuName = "GameData/WorldData")]
-public class WorldData : ScriptableObject{
-    [Header("ワールド基本情報")]
-    public int worldNumber;        // 例：1, 2, 3
-    public string worldName;       // 例："レベル1の島"
-    public string sceneName;       // ロードするScene名（例："MapSelectScene_Level1"）
+// これを書くことで、右クリックメニューからこのデータを作成できるようになります
+[CreateAssetMenu(fileName = "NewLevelData", menuName = "GameData/LevelData")]
+public class LevelData : ScriptableObject{
+    [Header("ステージ基本情報")]
+    public int stageNumber;        // ステージ番号
+    public string levelName;       // 画面に表示する名前（例："始まりの森"）
+    public string sceneName;       // 実際にロードするScene名（例："Stage_01"）
 
-    // ▼▼▼ ここを新規追加 ▼▼▼
-    [Header("ストーリー演出設定")]
-    [Tooltip("このワールドに入る時の導入シーン名（空欄ならストーリーなしで直接マップへ）")]
-    public string storySceneName;  // 例："Level1_OpeningScene"
-                                   // ▲▲▲ 新規追加ここまで ▲▲▲
+    [Tooltip("このステージを遊ぶために必要な進行度（1なら最初から遊べる）")]
+    public int requiredUnlockLevel = 1;
 
-    [Tooltip("このワールドに行くために必要な解放レベル")]
-    public int requiredWorldLevel = 1;
+    [Header("UI表示用")]
+    public Sprite thumbnail;       // マップ選択画面で表示する画像
+    [TextArea(2, 3)]
+    public string description;     // ステージの説明文（必要なら）
 }

@@ -282,7 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5806df779d8e514794035b08b3aee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
-  myLevelData: {fileID: 11400000, guid: 58eca359bff9cb342a26116fe953617b, type: 2}
+  myLevelData: {fileID: 11400000, guid: fd2f22fdef7af8140aaa911221d7650e, type: 2}
   nodeImage: {fileID: 144916495}
   lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
