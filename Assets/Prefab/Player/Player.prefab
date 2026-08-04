@@ -411,6 +411,7 @@ MonoBehaviour:
   dashText: {fileID: 0}
   hipDropHitbox: {fileID: 6413640022298465149}
   isHipDropping: 0
+  isSlowFallingActive: 0
   attackHitbox: {fileID: 1810350716830482527}
   attackDuration: 0.1
   attackCooldown: 0.3
@@ -425,6 +426,10 @@ MonoBehaviour:
   wallJumpForce: {x: 8, y: 12}
   wallJumpDuration: 0.4
   climbSpeed: 5
+  isInsideCannon: 0
+  isCannonFlying: 0
+  cannonWaitPoint: {fileID: 0}
+  savedFlyingVelocity: {x: 0, y: 0}
   jumpSE: {fileID: 8300000, guid: aaedd21b2b9a14d43911160b41247e82, type: 3}
   isKnockback: 0
   platformVelocity: {x: 0, y: 0}
@@ -646,7 +651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ce323332d28b7c43a0f66dce13cbd45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStomp
-  stompDamage: 2
+  stompDamage: 1
   bounceForce: 12
   stompSE: {fileID: 8300000, guid: afa8813c64902c54ba08975551a26ab5, type: 3}
 --- !u!1 &6239977293470616225
