@@ -18,6 +18,10 @@ public class EnemyTurret : MonoBehaviour{
         Down             // ▼追加：真下
     }
 
+    [Header("識別用ID（同じ敵に複数付ける場合用）")]
+    [Tooltip("アニメーションイベントから特定の砲台だけを撃たせたい場合に使います（例: 0, 1, 2...）")]
+    public int turretID = 0;
+
     [Header("基本設定")]
     public GameObject enemyBulletPrefab;
     public Transform firePoint;
@@ -69,8 +73,13 @@ public class EnemyTurret : MonoBehaviour{
         // 間隔（burstInterval）に対応するため、発射処理をコルーチンに任せる
         StartCoroutine(ShootRoutine());
     }
-
-private IEnumerator ShootRoutine(){
+    public void ShootByID(int id){
+        // 呼ばれた時の番号(id)が、自分の設定された番号(turretID)と同じ時だけ発射する！
+        if (this.turretID == id){
+            StartCoroutine(ShootRoutine());
+        }
+    }
+    private IEnumerator ShootRoutine(){
         if (enemyBulletPrefab == null || firePoint == null) yield break;
 
         // ▼【超重要・修正】向きの判定を「Scale」と「FlipX」の両方に対応させる ▼

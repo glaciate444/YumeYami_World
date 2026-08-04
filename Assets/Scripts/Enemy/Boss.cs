@@ -115,6 +115,10 @@ public class Boss : MonoBehaviour, IDamageable {
         // その他の汎用移動用
         MonoBehaviour move = GetComponent("EnemyMovement") as MonoBehaviour;
         if (move != null) move.enabled = isEnabled;
+
+        // 瞬間移動用
+        MonoBehaviour teleport = GetComponent("BossTeleportMove") as MonoBehaviour;
+        if (teleport != null) teleport.enabled = isEnabled;
     }
 
     public void TakeDamage(int damage, Vector2 knockbackDirection) {
