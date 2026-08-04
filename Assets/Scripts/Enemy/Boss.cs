@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : Boss.cs
  * 用途 : ボスのステータス管理、HPバー連動、登場演出、撃破演出
- * 拡張 : あらゆる移動スクリプトと砲台を全自動で検知して待機させる処理を追加
+ * 拡張 : 被弾時の無敵時間（点滅）処理を追加
  * =================================================== */
 using System.Collections;
 using TMPro;
@@ -19,6 +19,15 @@ public class Boss : MonoBehaviour, IDamageable {
     public int maxHp = 50;
     private int currentHp;
 
+    // ▼▼▼ 新規追加：無敵時間の設定 ▼▼▼
+    [Header("被弾時の無敵設定")]
+    [Tooltip("ダメージを受けた後に無敵になる秒数")]
+    public float invincibilityTime = 1.0f;
+    [Tooltip("点滅の速さ")]
+    public float blinkInterval = 0.1f;
+    private bool isInvincible = false;
+    // ▲▲▲ 新規追加ここまで ▲▲▲
+
     [Header("UI連携")]
     public Slider bossHpSlider;
     public TMP_Text bossHpText;
@@ -35,43 +44,40 @@ public class Boss : MonoBehaviour, IDamageable {
     public GameObject deathParticlePrefab;
 
     [Header("攻撃パターン（フェーズ）設定")]
-    [Tooltip("【重要】戦闘開始時に起動する砲台をここにセットしてください")]
     public EnemyTurret[] phase1Turrets;
     public EnemyTurret[] phase2Turrets;
     [Range(0.1f, 0.9f)] public float phase2Threshold = 0.5f;
 
     private Rigidbody2D rb;
     private Animator anim;
-    
+
     private bool isBattleStarted = false;
     private bool isDead = false;
     private bool isPhase2 = false;
 
-    void Awake() {
+    void Awake(){
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
-    void Start() {
+    void Start(){
         if (bossHpSlider != null) bossHpSlider.gameObject.SetActive(false);
 
-        // ▼【修正1】インスペクターの設定に関わらず、子オブジェクトにある砲台を「全て」強制停止する！
         EnemyTurret[] allTurrets = GetComponentsInChildren<EnemyTurret>();
-        foreach(var t in allTurrets) {
+        foreach (var t in allTurrets){
             t.enabled = false;
         }
 
-        // ▼【修正2】戦闘開始前は、移動を強制停止する
         SetMovementScriptsEnabled(false);
     }
 
-    public void StartBossBattle() {
+    public void StartBossBattle(){
         if (isBattleStarted) return;
         StartCoroutine(IntroRoutine());
     }
 
-    private IEnumerator IntroRoutine() {
-        if (bossHpSlider != null) {
+    private IEnumerator IntroRoutine(){
+        if (bossHpSlider != null){
             bossHpSlider.gameObject.SetActive(true);
             bossHpSlider.maxValue = maxHp;
             bossHpSlider.value = 0;
@@ -80,7 +86,7 @@ public class Boss : MonoBehaviour, IDamageable {
             float elapsed = 0f;
             float duration = 1.5f;
 
-            while (elapsed < duration) {
+            while (elapsed < duration){
                 elapsed += Time.deltaTime;
                 bossHpSlider.value = Mathf.Lerp(0f, maxHp, elapsed / duration);
                 bossHpText.text = bossHpSlider.value.ToString("0");
@@ -93,78 +99,109 @@ public class Boss : MonoBehaviour, IDamageable {
         isBattleStarted = true;
         isPhase2 = false;
 
-        // ▼ 戦闘開始！Phase1に登録された砲台だけをONにする
         SetTurretsEnabled(phase1Turrets, true);
-
-        // ▼【修正3】戦闘開始と同時に移動を再開する
         SetMovementScriptsEnabled(true);
     }
 
-    // ==========================================
-    // ▼【新規追加】代表的な移動スクリプトをまとめてON/OFFする便利メソッド
-    // ==========================================
-    private void SetMovementScriptsEnabled(bool isEnabled) {
-        // 妖精用の空中移動
+    private void SetMovementScriptsEnabled(bool isEnabled){
         MonoBehaviour hover = GetComponent("BossHoverMove") as MonoBehaviour;
         if (hover != null) hover.enabled = isEnabled;
 
-        // カボチャなどの地上徘徊用
         MonoBehaviour patrol = GetComponent("EnemyPatrol") as MonoBehaviour;
         if (patrol != null) patrol.enabled = isEnabled;
 
-        // その他の汎用移動用
         MonoBehaviour move = GetComponent("EnemyMovement") as MonoBehaviour;
         if (move != null) move.enabled = isEnabled;
 
-        // 瞬間移動用
         MonoBehaviour teleport = GetComponent("BossTeleportMove") as MonoBehaviour;
         if (teleport != null) teleport.enabled = isEnabled;
     }
 
-    public void TakeDamage(int damage, Vector2 knockbackDirection) {
-        if (!isBattleStarted || isDead) return;
+    public void TakeDamage(int damage, Vector2 knockbackDirection){
+        // ▼▼▼ 修正：無敵状態（isInvincible）の時はダメージ処理をシャットアウトする ▼▼▼
+        if (!isBattleStarted || isDead || isInvincible) return;
 
         currentHp -= damage;
 
-        if (bossHpSlider != null) {
+        if (bossHpSlider != null){
             bossHpSlider.value = currentHp;
             bossHpText.text = currentHp.ToString();
         }
 
         if (anim != null) anim.SetTrigger("Damage");
 
-        if (currentHp <= 0) {
+        if (currentHp <= 0){
             Die();
-        } else if (!isPhase2 && currentHp <= (maxHp * phase2Threshold)) {
-            EnterPhase2();
+        }else{
+            // 死んでいなければ、フェーズ移行判定と無敵時間の開始を行う
+            if (!isPhase2 && currentHp <= (maxHp * phase2Threshold)){
+                EnterPhase2();
+            }
+
+            // ▼ 追加：無敵状態（点滅）を開始する
+            StartCoroutine(InvincibilityRoutine());
         }
     }
 
-    private void EnterPhase2() {
+    // ▼▼▼ 新規追加：無敵時間の点滅コルーチン ▼▼▼
+    private IEnumerator InvincibilityRoutine(){
+        isInvincible = true; // 無敵フラグをON
+
+        // ボス本体や子オブジェクトにある SpriteRenderer（画像）をすべて取得
+        SpriteRenderer[] srs = GetComponentsInChildren<SpriteRenderer>();
+        float elapsed = 0f;
+
+        // 指定した無敵時間が経過するまで、またはボスが死ぬまで点滅を繰り返す
+        while (elapsed < invincibilityTime && !isDead){
+            // 透明にする
+            foreach (var sr in srs){
+                if (sr != null) sr.color = new Color(1f, 1f, 1f, 0f);
+            }
+            yield return new WaitForSeconds(blinkInterval);
+
+            // 元に戻す
+            foreach (var sr in srs){
+                if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
+            }
+            yield return new WaitForSeconds(blinkInterval);
+
+            elapsed += blinkInterval * 2f;
+        }
+
+        // 念のため、最後は確実に不透明（元の状態）に戻す
+        foreach (var sr in srs){
+            if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
+        }
+
+        isInvincible = false; // 無敵フラグをOFF
+    }
+    // ▲▲▲ 新規追加ここまで ▲▲▲
+
+    private void EnterPhase2(){
         isPhase2 = true;
         SetTurretsEnabled(phase1Turrets, false);
         SetTurretsEnabled(phase2Turrets, true);
+
+        if (anim != null){
+            anim.SetBool("isPhase2", true);
+        }
     }
 
-    private void SetTurretsEnabled(EnemyTurret[] turrets, bool isEnabled) {
+    private void SetTurretsEnabled(EnemyTurret[] turrets, bool isEnabled){
         if (turrets == null) return;
-        foreach (EnemyTurret t in turrets) {
+        foreach (EnemyTurret t in turrets){
             if (t != null) t.enabled = isEnabled;
         }
     }
 
-    public void Shoot() {
+    public void Shoot(){
         if (!isBattleStarted || isDead) return;
-        EnemyTurret[] allTurrets = GetComponentsInChildren<EnemyTurret>();
-        foreach (EnemyTurret t in allTurrets) {
-            // if (t.enabled) t.Fire(); 
-        }
     }
 
-    private void Die() {
+    private void Die(){
         isDead = true;
         isBattleStarted = false;
-        
+
         if (bossHpSlider != null) bossHpSlider.gameObject.SetActive(false);
 
         SetTurretsEnabled(phase1Turrets, false);
@@ -174,44 +211,44 @@ public class Boss : MonoBehaviour, IDamageable {
         StartCoroutine(DieRoutine());
     }
 
-    private IEnumerator DieRoutine() {
+    private IEnumerator DieRoutine(){
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
-        foreach(Collider2D col in colliders) {
+        foreach (Collider2D col in colliders){
             if (col.isTrigger) col.enabled = false;
         }
 
         if (anim != null){
             anim.SetBool("Die", true);
-            anim.Play("Damage"); 
+            anim.Play("Damage");
         }
 
-        if (rb != null) {
+        if (rb != null){
             rb.bodyType = RigidbodyType2D.Dynamic;
-            rb.gravityScale = 3f; 
+            rb.gravityScale = 3f;
         }
 
         yield return new WaitForSeconds(0.5f);
 
-        if (deathParticlePrefab != null) {
+        if (deathParticlePrefab != null){
             Vector3 effectPos = transform.position + new Vector3(0, 0, -1f);
             Instantiate(deathParticlePrefab, effectPos, Quaternion.identity);
         }
 
-        if (rb != null) {
+        if (rb != null){
             rb.linearVelocity = Vector2.zero;
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-        if (bossType == BossType.RoomGuarder) {
+        if (bossType == BossType.RoomGuarder){
             if (entranceBlocker != null) entranceBlocker.SetActive(false);
             if (entranceBlockerR != null) entranceBlockerR.SetActive(false);
             if (bossCameraObj != null) bossCameraObj.SetActive(false);
 
-            Destroy(gameObject, 0.5f); 
-        } 
-        else if (bossType == BossType.StageBoss) {
-            yield return new WaitForSeconds(2.0f); 
-            if (stageGoalPoint != null) {
+            Destroy(gameObject, 0.5f);
+        }else if (bossType == BossType.StageBoss){
+            yield return new WaitForSeconds(2.0f);
+            if (stageGoalPoint != null)
+            {
                 GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
                 if (playerObj != null) stageGoalPoint.TriggerGoal(playerObj);
             }
