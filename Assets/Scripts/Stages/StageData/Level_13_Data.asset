@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6adca6a612ad38c4d8818db72da41cc5, type: 3}
+  m_Name: Level_13_Data
+  m_EditorClassIdentifier: Assembly-CSharp::LevelData
+  stageNumber: 13
+  levelName: No.13
+  sceneName: Level3-Stage1
+  requiredUnlockLevel: 15
+  thumbnail: {fileID: 0}
+  description: "\u30B5\u30A4\u30B3\u30ED\u30CF\u30A6\u30B9"

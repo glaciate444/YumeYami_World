@@ -18,11 +18,14 @@ EditorBuildSettings:
     path: Assets/Scenes/WorldMapScene.unity
     guid: 2a56612bd2b966c449a6eb2925787277
   - enabled: 1
-    path: Assets/Scenes/MapSelectScene_Level_1.unity
+    path: Assets/Scenes/Level_1/MapSelectScene_Level_1.unity
     guid: c90479d28b7206347b028d89dbc45d1c
   - enabled: 1
-    path: Assets/Scenes/MapSelectScene_Level_2.unity
+    path: Assets/Scenes/Level_2/MapSelectScene_Level_2.unity
     guid: 8722f05d152cc984eb2b49beeceec696
+  - enabled: 1
+    path: Assets/Scenes/Level_3/MapSelectScene_Level_3.unity
+    guid: 8df79c8cb6ff79d4fa9b027813ff3406
   - enabled: 1
     path: Assets/Scenes/MiniGameScene.unity
     guid: f4fb243433358f942b1613cfdd9a48fd
@@ -83,6 +86,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level_2/LevelEndingScene_2.unity
     guid: 11d188265d0d4f74f86b7afe98fda46d
+  - enabled: 1
+    path: Assets/Scenes/Level_3/LevelOpeningScene_3.unity
+    guid: 294ebc5f7a0f7704899c6524695cacd2
+  - enabled: 1
+    path: Assets/Scenes/Level_3/LevelEndingScene_3.unity
+    guid: 651e1291884aa354881df52528867315
   - enabled: 1
     path: Assets/Scenes/StageTemple/StageTemplate05.unity
     guid: 835bc7ee091ce2d4d8402ae1c8264ef1
