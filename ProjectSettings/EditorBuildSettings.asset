@@ -54,6 +54,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Level_1/Level1-Stage7_Boss.unity
     guid: 79ea5c8116a3a3a449cf6b6581c5f107
   - enabled: 1
+    path: Assets/Scenes/Level_1/LevelEndingScene_1.unity
+    guid: 6a4c0bbc9033f4c419b4c3e7eadf306e
+  - enabled: 1
+    path: Assets/Scenes/Level_2/LevelOpeningScene_2.unity
+    guid: 07a3f718c54e5a44b9b7f555bde3d63f
+  - enabled: 1
     path: Assets/Scenes/Level_2/Level2-Stage1.unity
     guid: 17e347a733d638d47b90f5359b500b71
   - enabled: 1
@@ -71,6 +77,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level_2/Level2-Stage6.unity
     guid: 7ffe5775a76c4dc4d8e71acc561b8d43
+  - enabled: 1
+    path: Assets/Scenes/Level_2/Level2-Stage7_Boss.unity
+    guid: 613087cd20a40e94cbf5b4f2b091b3c6
+  - enabled: 1
+    path: Assets/Scenes/Level_2/LevelEndingScene_2.unity
+    guid: 11d188265d0d4f74f86b7afe98fda46d
   - enabled: 1
     path: Assets/Scenes/StageTemple/StageTemplate05.unity
     guid: 835bc7ee091ce2d4d8402ae1c8264ef1

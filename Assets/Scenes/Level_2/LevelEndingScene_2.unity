@@ -740,7 +740,7 @@ MonoBehaviour:
   messageText: {fileID: 0}
   storyImageUI: {fileID: 0}
   typingSpeed: 0.05
-  nextSceneName: MapSelectScene_Level_1
+  nextSceneName: WorldMapScene
   worldNumberToMarkWatched: 1
   transitionType: 0
 --- !u!4 &1322906809
