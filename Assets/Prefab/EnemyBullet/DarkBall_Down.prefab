@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 27e49f870fbca63448a5241c8261fb4b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3c7a9b4d8fb50c64383e82517d382f75, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -138,6 +138,7 @@ MonoBehaviour:
   damage: 1
   impact: 3
   lifeTime: 5
+  isPiercing: 1
   ignoreTag: Enemy
   hitEffectPrefab: {fileID: 0}
 --- !u!114 &6923209101809764886

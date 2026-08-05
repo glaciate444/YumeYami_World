@@ -258,9 +258,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 8
+  unlockLevelReward: 15
   unlocksNewWorld: 1
-  unlockWorldReward: 2
+  unlockWorldReward: 3
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:
@@ -3847,6 +3847,7 @@ GameObject:
   - component: {fileID: 1586846665}
   - component: {fileID: 1586846663}
   - component: {fileID: 1586846664}
+  - component: {fileID: 1586846666}
   m_Layer: 11
   m_Name: Boss
   m_TagString: Untagged
@@ -4091,6 +4092,7 @@ MonoBehaviour:
   bulletCount: 1
   spreadAngle: 15
   burstInterval: 3
+  parabolaUpForce: 1
   angleRandomness: 0
   positionOffset: {x: 0, y: 0}
   positionRandomness: {x: 0, y: 0}
@@ -4116,6 +4118,7 @@ MonoBehaviour:
   bulletCount: 1
   spreadAngle: 15
   burstInterval: 0
+  parabolaUpForce: 1
   angleRandomness: 0
   positionOffset: {x: 0, y: 0}
   positionRandomness: {x: 0, y: 0}
@@ -4173,6 +4176,33 @@ MonoBehaviour:
   bulletCount: 1
   spreadAngle: 15
   burstInterval: 0
+  parabolaUpForce: 1
+  angleRandomness: 0
+  positionOffset: {x: 0, y: 0}
+  positionRandomness: {x: 0, y: 0}
+  targetOffset: {x: 0, y: 0.5}
+--- !u!114 &1586846666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586846649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a80528df03ec98848a04fc8dfbafe74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
+  turretID: 2
+  enemyBulletPrefab: {fileID: 1094844637664648554, guid: 95fb67064c6a18645b41c356397d5849, type: 3}
+  firePoint: {fileID: 192749081}
+  fireInterval: 2
+  notRotateAngle: 1
+  aimType: 5
+  bulletCount: 1
+  spreadAngle: 15
+  burstInterval: 0
+  parabolaUpForce: 0.8
   angleRandomness: 0
   positionOffset: {x: 0, y: 0}
   positionRandomness: {x: 0, y: 0}
