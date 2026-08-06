@@ -26,4 +26,8 @@ public class ShopItemData : ScriptableObject {
 
     [Tooltip("上昇量や、パッシブアイテムのIDなど")]
     public int effectValue;
+
+    [Header("インベントリ連携（Passive_Inventory選択時のみ）")]
+    [Tooltip("この商品を買った時にインベントリに追加するアイテムのデータをセットします")]
+    public ItemInventoryData inventoryItemData;
 }

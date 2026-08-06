@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviour{
     [Header("マップ遷移用")]
     public string returnMapSceneName = ""; // ← これを追加！
 
+    [Header("インベントリデータ（セーブ対象）")]
+    public System.Collections.Generic.List<int> ownedItemIds = new System.Collections.Generic.List<int>();
+
     void Awake(){
         if (Instance == null){
             Instance = this;
@@ -83,7 +86,11 @@ public class GameManager : MonoBehaviour{
         PlayerPrefs.SetInt("UnlockedWorldLevel", unlockedWorldLevel);
         PlayerPrefs.SetInt("CurrentWorldNodeNumber", currentWorldNodeNumber);
 
-        PlayerPrefs.Save(); 
+        // ▼ 追加：持っているアイテムIDのリストを文字列にして保存
+        string itemIdsStr = string.Join(",", ownedItemIds);
+        PlayerPrefs.SetString("OwnedItemIds", itemIdsStr);
+
+        PlayerPrefs.Save();
     }
 
     public void LoadGame() {
@@ -100,6 +107,20 @@ public class GameManager : MonoBehaviour{
         // ▼ LoadGame() の中に追加
         if (PlayerPrefs.HasKey("UnlockedWorldLevel")) unlockedWorldLevel = PlayerPrefs.GetInt("UnlockedWorldLevel");
         if (PlayerPrefs.HasKey("CurrentWorldNodeNumber")) currentWorldNodeNumber = PlayerPrefs.GetInt("CurrentWorldNodeNumber");
+
+        // ▼ 追加：アイテムIDのリストを復元
+        if (PlayerPrefs.HasKey("OwnedItemIds")){
+            string idsStr = PlayerPrefs.GetString("OwnedItemIds");
+            ownedItemIds.Clear();
+            if (!string.IsNullOrEmpty(idsStr)){
+                string[] idArray = idsStr.Split(',');
+                foreach (string idStr in idArray){
+                    if (int.TryParse(idStr, out int id)){
+                        ownedItemIds.Add(id);
+                    }
+                }
+            }
+        }
     }
 
     public void ResetData() {
@@ -117,6 +138,9 @@ public class GameManager : MonoBehaviour{
 
         // ▼【追加】現在位置も初期化
         currentMapNodeNumber = 1;
+
+        // ▼ 追加
+        ownedItemIds.Clear();
     }
 
     // ワールドマップでレベル1のマスを選択した時の処理

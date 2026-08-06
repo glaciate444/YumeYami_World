@@ -119,8 +119,18 @@ public class ShopManager : MonoBehaviour {
                 // GameManager.Instance.weaponLevel += item.effectValue;
                 break;
             case ShopItemData.ItemEffectType.Passive_Inventory:
-                // ▼ インベントリへの追加処理をここに書く
-                Debug.Log($"インベントリに {item.itemName} を追加！");
+                // パッシブアイテムの追加処理 ▼▼▼
+                if (item.inventoryItemData != null){
+                    int idToAdd = item.inventoryItemData.itemId;
+
+                    // まだ持っていない場合のみ GameManager のリストに追加する
+                    if (!GameManager.Instance.ownedItemIds.Contains(idToAdd)){
+                        GameManager.Instance.ownedItemIds.Add(idToAdd);
+                        Debug.Log($"インベントリに {item.itemName} (ID:{idToAdd}) を追加しました！");
+                    }else{
+                        Debug.Log($"すでに {item.itemName} (ID:{idToAdd}) を持っています！");
+                    }
+                }
                 break;
         }
     }
