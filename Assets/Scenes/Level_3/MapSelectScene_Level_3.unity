@@ -2163,7 +2163,7 @@ MonoBehaviour:
   linePrefab: {fileID: 7060053811143140423, guid: 80a15dcb082d9ac489ed219dfc5d74fe, type: 3}
   lineContainer: {fileID: 1025023104}
   lockedLineColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-  unlockedLineColor: {r: 0.8, g: 0.6, b: 0.9, a: 1}
+  unlockedLineColor: {r: 0.58231425, g: 0.28114986, b: 0.735849, a: 1}
   worldMapSceneName: WorldMapScene
   stageNameText: {fileID: 1231764134}
   livesText: {fileID: 1575187965}
