@@ -59,6 +59,15 @@ public class PlayerShoot : MonoBehaviour{
             float facingDirection = Mathf.Sign(transform.localScale.x);
             Vector2 shootDir = new Vector2(facingDirection, 0);
 
+            Bullet b = bullet.GetComponent<Bullet>();
+            if (b != null){
+                PlayerController pc = GetComponent<PlayerController>();
+                if (pc != null){
+                    b.damage += pc.passiveAttackBonus;
+                }
+                b.Initialize(shootDir);
+            }
+
             bullet.GetComponent<Bullet>().Initialize(shootDir);
 
             if (anim != null) anim.SetTrigger("Shoot");

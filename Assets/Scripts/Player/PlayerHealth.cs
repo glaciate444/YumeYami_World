@@ -57,7 +57,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
     public void TakeDamage(int damage, Vector2 knockbackDirection){
         if (isInvincible) return; // 無敵中ならダメージを受けない
 
-        currentHealth -= damage;
+        // サファイアのダメージ軽減処理
+        int finalDamage = damage - playerController.passiveDefenseBonus;
+        if (finalDamage < 1) finalDamage = 1; // 軽減しすぎても最低1ダメージは保証する
+
+        currentHealth -= finalDamage;
         UpdateUI();
 
         // ノックバック開始
@@ -99,8 +103,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
     private IEnumerator DamageEffect(){
         isInvincible = true;
 
-        // ダメージ時の点滅演出
-        for (int i = 0; i < 5; i++){
+        // サファイアの無敵延長効果を加味した長さに変更
+        // 基本の無敵時間 + パッシブの延長時間
+        float totalInvincibleTime = invincibilityDuration + playerController.passiveInvincibleBonus;
+
+        // 0.2秒（消えて戻る1セット）を何回繰り返せば合計時間に達するか計算
+        int blinkCount = Mathf.RoundToInt(totalInvincibleTime / 0.2f);
+
+        // 計算した回数だけ点滅を繰り返す
+        for (int i = 0; i < blinkCount; i++){
             sr.color = new Color(1, 1, 1, 0); // 透明
             yield return new WaitForSeconds(0.1f);
             sr.color = new Color(1, 1, 1, 1); // 不透明

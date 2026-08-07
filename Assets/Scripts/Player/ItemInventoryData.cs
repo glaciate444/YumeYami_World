@@ -16,6 +16,15 @@ public enum SubActionType{
     SlowFall   // ゆっくり降下
 }
 
+// パッシブ効果の種類
+public enum PassiveEffectType {
+    None,
+    Ruby_AttackUp,       // 全体攻撃力アップ
+    Sapphire_DefenseUp,  // ダメージ軽減＆無敵延長
+    Emerald_JumpUp,      // ジャンプ力アップ
+    Amethyst_SpeedUp     // 移動速度アップ
+}
+
 [CreateAssetMenu(fileName = "NewInventoryItem", menuName = "GameData/ItemInventoryData")]
 public class ItemInventoryData : ScriptableObject{
     [Header("基本情報")]
@@ -28,6 +37,14 @@ public class ItemInventoryData : ScriptableObject{
     // ▼ ここを新規追加（インスペクターで選べるようにする）
     [Tooltip("緑枠の場合のみ、どのアクションを発動するか選択します")]
     public SubActionType subActionType = SubActionType.None;
+
+    // ▼▼▼ 新規追加：パッシブ設定 ▼▼▼
+    [Header("パッシブ設定（黄・紫枠用）")]
+    public PassiveEffectType passiveType = PassiveEffectType.None;
+
+    [Tooltip("星の数（レベル）。効果の強さやUIの星の数に直結します")]
+    [Range(1, 3)]
+    public int starLevel = 1;
 
     public int itemId;           // セーブ・ロード用の固有ID
 

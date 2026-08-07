@@ -18,6 +18,12 @@ public class PlayerAttack : MonoBehaviour{
                 finalAttackPower += currentWeaponEquip.attackPower;
             }
 
+            // パッシブ(ルビー)の攻撃力を加算
+            PlayerController pc = GetComponentInParent<PlayerController>();
+            if (pc != null){
+                finalAttackPower += pc.passiveAttackBonus;
+            }
+
             Vector2 knockbackDir = (other.transform.position - transform.parent.position).normalized;
             target.TakeDamage(finalAttackPower, knockbackDir);
         }

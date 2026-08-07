@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerStomp.cs
- * Version : Ver0.04
+ * Version : Ver0.05
  * 用途 : プレイヤーが敵を踏みつけた処理
- * 更新内容 : ヒップドロップ動作競合防止
+ * 更新内容 : 装備によるダメージ補正値
  * =================================================== */
 using UnityEngine;
 
@@ -43,9 +43,15 @@ public class PlayerStomp : MonoBehaviour{
 
             // 自分の足元が、敵のど真ん中より上にあれば「踏んだ」とみなす
             if (myBottomY > enemyCenterY - 0.2f){
-                
-                // 敵に2ダメージを与える
-                target.TakeDamage(stompDamage, Vector2.down);
+
+                // ▼▼▼ 修正：踏みつけダメージにパッシブを加算 ▼▼▼
+                int finalStompDamage = stompDamage;
+                if (pc != null){
+                    finalStompDamage += pc.passiveAttackBonus;
+                }
+
+                // 敵にダメージを与える
+                target.TakeDamage(finalStompDamage, Vector2.down);
 
                 if (SoundManager.instance != null){
                     SoundManager.instance.PlaySE(stompSE);

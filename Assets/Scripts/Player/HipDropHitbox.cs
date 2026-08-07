@@ -17,14 +17,15 @@ public class HipDropHitbox : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D other){
-        // 触れた相手がダメージを受けられるか（敵や壊せるブロックか）確認[cite: 10, 11]
+        // 触れた相手がダメージを受けられるか（敵や壊せるブロックか）
         IDamageable target = other.GetComponent<IDamageable>();
 
         if (target != null && !other.CompareTag("Player")){
             // 装備中のアイテム（SO）から攻撃力を取得。設定されていなければデフォルトの1
             int damage = 1;
+
             if (pc != null && pc.currentSubActionEquip != null){
-                damage = pc.currentSubActionEquip.attackPower;
+                damage = pc.currentSubActionEquip.attackPower + pc.passiveAttackBonus;
             }
 
             // 真下に向かってノックバック/衝撃を与える

@@ -232,15 +232,46 @@ public class InventoryMenuController : MonoBehaviour {
     }
 
     private void ConfirmEquipPassive(){
-        // ... (以前と同じ処理)
         InventoryItemSlot selectedSlot = inventoryRows[currentRowIndex].slots[currentColIndex];
         ItemInventoryData selectedItem = selectedSlot.itemData;
 
-        if (selectedPassiveIndex == 0){
-            if (equipIconPassiveA != null) equipIconPassiveA.sprite = selectedItem.icon;
-        }else{
-            if (equipIconPassiveB != null) equipIconPassiveB.sprite = selectedItem.icon;
+        PlayerController pc = FindFirstObjectByType<PlayerController>();
+
+        // ▼▼▼ 1. 重複装備の防止処理 ▼▼▼
+        if (pc != null){
+            // A枠に装備しようとした時、B枠に同じものがあればB枠を空にする
+            if (selectedPassiveIndex == 0 && pc.equipPassiveB == selectedItem){
+                pc.equipPassiveB = null;
+                if (equipIconPassiveB != null) equipIconPassiveB.color = new Color(1, 1, 1, 0); // 画像を透明にして隠す
+            }
+            // B枠に装備しようとした時、A枠に同じものがあればA枠を空にする
+            else if (selectedPassiveIndex == 1 && pc.equipPassiveA == selectedItem){
+                pc.equipPassiveA = null;
+                if (equipIconPassiveA != null) equipIconPassiveA.color = new Color(1, 1, 1, 0);
+            }
         }
+
+        // ▼▼▼ 2. 選択した枠への装備処理 ▼▼▼
+        if (selectedPassiveIndex == 0){
+            if (equipIconPassiveA != null){
+                equipIconPassiveA.sprite = selectedItem.icon;
+                equipIconPassiveA.color = new Color(1, 1, 1, 1); // 不透明にして表示
+            }
+            if (pc != null) pc.equipPassiveA = selectedItem;
+        }else{
+            if (equipIconPassiveB != null)
+            {
+                equipIconPassiveB.sprite = selectedItem.icon;
+                equipIconPassiveB.color = new Color(1, 1, 1, 1);
+            }
+            if (pc != null) pc.equipPassiveB = selectedItem;
+        }
+
+        // ▼▼▼ 3. ステータスの再計算を実行 ▼▼▼
+        if (pc != null) pc.ApplyPassiveEffects();
+
+        // ▼▼▼ 4. PauseManagerを呼んで、画面右下の数字を即座に最新化する ▼▼▼
+        if (PauseManager.Instance != null) PauseManager.Instance.UpdatePersonalData();
 
         isSelectingPassive = false;
         UpdateCursorPosition();

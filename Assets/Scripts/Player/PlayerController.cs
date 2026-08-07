@@ -77,6 +77,17 @@ public class PlayerController : MonoBehaviour{
     private bool isClimbing;      // 今実際に登っているか
     private float defaultGravity; // 元の重力を記憶しておく用
 
+    [Header("装備中のパッシブ")]
+    public ItemInventoryData equipPassiveA;
+    public ItemInventoryData equipPassiveB;
+
+    [HideInInspector] public int passiveAttackBonus = 0;
+    [HideInInspector] public int passiveDefenseBonus = 0;
+    [HideInInspector] public float passiveInvincibleBonus = 0f;
+
+    private float baseMoveSpeed;
+    private float baseJumpForce;
+
     [Header("大砲ギミック設定")]
     [HideInInspector] public bool isInsideCannon = false; // 大砲の中にいるか
     [HideInInspector] public bool isCannonFlying = false; // 大砲から発射されて飛んでいる最中か
@@ -111,10 +122,14 @@ public class PlayerController : MonoBehaviour{
         defaultGravity = rb.gravityScale; // 初期重力を記憶
         inputActions = new PlayerControls();
 
-        // ▼【追加】ダッシュチャージの初期化とUI検索
+        // 素のステータスを記憶しておく
+        baseMoveSpeed = moveSpeed;
+        baseJumpForce = jumpForce;
+
+        // ダッシュチャージの初期化とUI検索
         currentDashCharges = maxDashCharges;
 
-        // ▼【変更】親オブジェクトを探し、子供のImageを全て取得する
+        // 親オブジェクトを探し、子供のImageを全て取得する
         GameObject dashIconContainer = GameObject.FindWithTag("DashText");
         if (dashIconContainer != null){
             // 親オブジェクトの下にあるすべての Image コンポーネントを取得
@@ -617,6 +632,40 @@ public class PlayerController : MonoBehaviour{
         if (Mathf.Abs(force.x) > 0.1f){
             float facingDir = Mathf.Sign(force.x); // 右なら1、左なら-1になる
             transform.localScale = new Vector3(facingDir, transform.localScale.y, transform.localScale.z);
+        }
+    }
+    public void ApplyPassiveEffects(){
+        // 1. 一旦ステータスを元の基準値（素の状態）に戻す
+        moveSpeed = baseMoveSpeed;
+        jumpForce = baseJumpForce;
+        passiveAttackBonus = 0;
+        passiveDefenseBonus = 0;
+        passiveInvincibleBonus = 0f;
+
+        // 2. パッシブAとBの効果を乗せる
+        ApplySinglePassive(equipPassiveA);
+        ApplySinglePassive(equipPassiveB);
+    }
+
+    private void ApplySinglePassive(ItemInventoryData passiveObj){
+        if (passiveObj == null || passiveObj.category != ItemCategory.Passive) return;
+
+        int stars = passiveObj.starLevel; // 星の数を取得
+
+        switch (passiveObj.passiveType){
+            case PassiveEffectType.Emerald_JumpUp:
+                jumpForce += (stars * 1.5f); // 星1つにつきジャンプ力が1.5加算
+                break;
+            case PassiveEffectType.Amethyst_SpeedUp:
+                moveSpeed += (stars * 1.0f); // 星1つにつき移動速度が1.0加算
+                break;
+            case PassiveEffectType.Ruby_AttackUp:
+                passiveAttackBonus += stars; // 星1につき攻撃力+1
+                break;
+            case PassiveEffectType.Sapphire_DefenseUp:
+                passiveDefenseBonus += stars; // 星1につき-1ダメージ
+                passiveInvincibleBonus += (stars * 0.5f); // 星1につき無敵時間+0.5秒
+                break;
         }
     }
 }

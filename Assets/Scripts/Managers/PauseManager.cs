@@ -101,26 +101,18 @@ public class PauseManager : MonoBehaviour {
         }
     }
 
-    // ▼▼▼ ここから新規メソッド追加 ▼▼▼
-    /// <summary>
-    /// プレイヤーから各スクリプトを取得し、UIのテキストを最新の数値に書き換えます
-    /// </summary>
-    // ▼▼▼ 修正版の UpdatePersonalData メソッド ▼▼▼
-    private void UpdatePersonalData(){
-        // タグ検索ではなく、シーン内に確実に存在する PlayerController を直接探し出します。
+    // ▼ 修正1：外から呼べるように「public」に変更しました
+    public void UpdatePersonalData()
+    {
         PlayerController controller = FindFirstObjectByType<PlayerController>();
 
-        // 万が一見つからなかった場合はここで処理をストップ
         if (controller == null){
             Debug.LogError("PlayerControllerが見つかりませんでした。");
             return;
         }
 
-        // 見つけた controller を起点にして、同じオブジェクト（または子要素）に付いているスクリプトを取得します。
-        // これにより、タグの付け間違いや階層ズレによるエラーが完全に起きなくなります。
         PlayerHealth health = controller.GetComponent<PlayerHealth>();
         PlayerShoot shoot = controller.GetComponent<PlayerShoot>();
-
         PlayerAttack attack = controller.GetComponentInChildren<PlayerAttack>(true);
         PlayerStomp stomp = controller.GetComponentInChildren<PlayerStomp>(true);
 
@@ -140,21 +132,36 @@ public class PauseManager : MonoBehaviour {
             Debug.LogWarning("PlayerShootが見つかりません");
         }
 
-        // 【AP（普通 / 踏みつけ）】
-        if (apNormalText != null)
-            apNormalText.text = (attack != null) ? attack.attackPower.ToString() : "0";
+        // ▼▼▼ 修正2：【AP（普通 / 踏みつけ）】にパッシブボーナスを加算して表示 ▼▼▼
+        if (apNormalText != null){
+            int normalAp = (attack != null) ? attack.attackPower : 0;
+            // 武器を装備していれば足す
+            if (attack != null && attack.currentWeaponEquip != null)
+            {
+                normalAp += attack.currentWeaponEquip.attackPower;
+            }
+            // パッシブ（ルビー）の分を足す
+            normalAp += controller.passiveAttackBonus;
 
-        if (apStompText != null)
-            apStompText.text = (stomp != null) ? stomp.stompDamage.ToString() : "0";
+            apNormalText.text = normalAp.ToString();
+        }
+
+        if (apStompText != null){
+            int stompAp = (stomp != null) ? stomp.stompDamage : 0;
+            // パッシブ（ルビー）の分を足す
+            stompAp += controller.passiveAttackBonus;
+
+            apStompText.text = stompAp.ToString();
+        }
+        // ▲▲▲ 修正ここまで ▲▲▲
 
         // 【JP / DP】PlayerController から取得
+        // （ここは ApplyPassiveEffects で直接ジャンプ力自体が書き換わるため、そのまま表示でOKです）
         if (jpText != null) jpText.text = controller.jumpForce.ToString("F0");
         if (dpText != null) dpText.text = controller.moveSpeed.ToString("F0");
     }
-    // ▲▲▲ 修正ここまで ▲▲▲
 
-    private void OnDestroy()
-    {
+    private void OnDestroy(){
         Time.timeScale = 1f;
     }
 }
