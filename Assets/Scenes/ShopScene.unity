@@ -524,8 +524,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 311}
-  m_SizeDelta: {x: 250, y: 250}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &452968228
 MonoBehaviour:
@@ -540,14 +540,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -1151905075149521417, guid: 940f82cd9f295f44a895732081f27923, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2049,9 +2049,10 @@ MonoBehaviour:
   shopItems:
   - {fileID: 11400000, guid: 5f3cb3d2598117a48960a151eaf8ff3c, type: 2}
   - {fileID: 11400000, guid: fb900122bb3464d4fb5ad3ff9c93d862, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: a4fa6aa456d26734d8cf827e06d4d0e2, type: 2}
+  - {fileID: 11400000, guid: d54bb6094fb6cf8419011c378214d283, type: 2}
+  - {fileID: 11400000, guid: a05c9ec7a0999544b92cca4baf54ddf6, type: 2}
+  dopingPrices: c8000000f4010000bc020000e8030000b0040000dc050000
   itemIconUI:
   - {fileID: 660898081}
   - {fileID: 191163909}
@@ -2076,7 +2077,7 @@ Transform:
   m_GameObject: {fileID: 1348110622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 753.0159, y: 517.8526, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

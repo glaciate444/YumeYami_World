@@ -1,10 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : InventoryMenuController.cs
- * Version : Ver0.02
+ * Version : Ver0.03
  * Since : 2026/07/15
  * Update : 2026/07/17
  * 用途 : ポーズ画面のカーソル
- * 更新 : 新規作成
+ * 更新 : 装備再計算
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;

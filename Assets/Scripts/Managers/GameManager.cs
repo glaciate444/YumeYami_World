@@ -38,6 +38,9 @@ public class GameManager : MonoBehaviour{
     [Header("インベントリデータ（セーブ対象）")]
     public System.Collections.Generic.List<int> ownedItemIds = new System.Collections.Generic.List<int>();
 
+    [Header("ショップでの購入回数（セーブ対象）")]
+    public int hpUpPurchaseCount = 0;
+    public int spUpPurchaseCount = 0;
     void Awake(){
         if (Instance == null){
             Instance = this;
@@ -90,6 +93,10 @@ public class GameManager : MonoBehaviour{
         string itemIdsStr = string.Join(",", ownedItemIds);
         PlayerPrefs.SetString("OwnedItemIds", itemIdsStr);
 
+        // ドーピング回数のセーブ
+        PlayerPrefs.SetInt("HpUpPurchaseCount", hpUpPurchaseCount);
+        PlayerPrefs.SetInt("SpUpPurchaseCount", spUpPurchaseCount);
+
         PlayerPrefs.Save();
     }
 
@@ -107,6 +114,10 @@ public class GameManager : MonoBehaviour{
         // ▼ LoadGame() の中に追加
         if (PlayerPrefs.HasKey("UnlockedWorldLevel")) unlockedWorldLevel = PlayerPrefs.GetInt("UnlockedWorldLevel");
         if (PlayerPrefs.HasKey("CurrentWorldNodeNumber")) currentWorldNodeNumber = PlayerPrefs.GetInt("CurrentWorldNodeNumber");
+
+        // ドーピング回数のロード
+        if (PlayerPrefs.HasKey("HpUpPurchaseCount")) hpUpPurchaseCount = PlayerPrefs.GetInt("HpUpPurchaseCount");
+        if (PlayerPrefs.HasKey("SpUpPurchaseCount")) spUpPurchaseCount = PlayerPrefs.GetInt("SpUpPurchaseCount");
 
         // ▼ 追加：アイテムIDのリストを復元
         if (PlayerPrefs.HasKey("OwnedItemIds")){
@@ -138,6 +149,9 @@ public class GameManager : MonoBehaviour{
 
         // ▼【追加】現在位置も初期化
         currentMapNodeNumber = 1;
+
+        hpUpPurchaseCount = 0;
+        spUpPurchaseCount = 0;
 
         // ▼ 追加
         ownedItemIds.Clear();
