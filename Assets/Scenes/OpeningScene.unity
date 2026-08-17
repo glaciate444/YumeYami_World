@@ -149,8 +149,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StorySequenceManager
   pages:
-  - speakerName: 
-    message: 
+  - speakerName: AAA
+    message: BBCCDD
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 0}
+    animationTrigger: 
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+  - speakerName: BBB
+    message: ABABABAB
     cgSprite: {fileID: 0}
     targetAnimator: {fileID: 0}
     animationTrigger: 
