@@ -1,57 +1,58 @@
-/* ===================================================
- * ƒXƒNƒŠƒvƒg–¼ : StorySequenceManager.cs
- * —p“r : ¡Œ€‚Æ‰ï˜bƒeƒLƒXƒg‚ğ˜A“®‚³‚¹‚éƒXƒg[ƒŠ[isŠÇ—
- * Šg’£ : ˆê–‡ŠGiƒXƒ`ƒ‹j‚ÌØ‚è‘Ö‚¦‹@”\‚ğƒTƒ|[ƒg
+ï»¿/* ===================================================
+ * ã‚¹ã‚¯ãƒªãƒ—ãƒˆå : StorySequenceManager.cs
+ * ç”¨é€” : å¯¸åŠ‡ã¨ä¼šè©±ãƒ†ã‚­ã‚¹ãƒˆã‚’é€£å‹•ã•ã›ã‚‹ã‚¹ãƒˆãƒ¼ãƒªãƒ¼é€²è¡Œç®¡ç†
+ * æ‹¡å¼µ : ä¸€æšçµµå¯¾å¿œ ï¼† ç§»å‹•å®Œäº†æ™‚ã®è‡ªå‹•é€²è¡Œãƒ»ã‚¹ã‚­ãƒƒãƒ—åˆ¶å¾¡ã‚’è¿½åŠ 
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // ¥ Image‚ğg‚¤‚½‚ß‚É’Ç‰Á
+using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
 public class StoryPage {
-    [Header("‰ï˜bƒeƒLƒXƒg")]
+    [Header("ä¼šè©±ãƒ†ã‚­ã‚¹ãƒˆ")]
     public string speakerName;
     [TextArea(2, 4)]
     public string message;
 
-    // ¥¥¥ V‹K’Ç‰ÁFˆê–‡ŠG‚Ì˜A“® ¥¥¥
-    [Header("ˆê–‡ŠG˜A“®i”CˆÓj")]
-    [Tooltip("‚±‚Ìƒy[ƒW‚Å•\¦‚µ‚½‚¢ˆê–‡ŠGi‹ó—“‚È‚ç‘O‚ÌŠG‚ğˆÛj")]
+    [Header("ä¸€æšçµµé€£å‹•ï¼ˆä»»æ„ï¼‰")]
+    [Tooltip("ã“ã®ãƒšãƒ¼ã‚¸ã§è¡¨ç¤ºã—ãŸã„ä¸€æšçµµï¼ˆç©ºæ¬„ãªã‚‰å‰ã®çµµã‚’ç¶­æŒï¼‰")]
     public Sprite cgSprite;
-    // £££ V‹K’Ç‰Á‚±‚±‚Ü‚Å £££
 
-    [Header("ƒAƒjƒ[ƒVƒ‡ƒ“˜A“®i”CˆÓj")]
+    [Header("ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³é€£å‹•ï¼ˆä»»æ„ï¼‰")]
     public Animator targetAnimator;
     public string animationTrigger;
 
-    [Header("ˆÚ“®˜A“®i”CˆÓj")]
+    [Header("ç§»å‹•é€£å‹•ï¼ˆä»»æ„ï¼‰")]
     public Transform targetToMove;
     public Transform moveDestination;
     public float moveDuration = 1.0f;
+
+    // â–¼â–¼â–¼ æ–°è¦è¿½åŠ ï¼šç§»å‹•ä¸­ã®åˆ¶å¾¡ã‚ªãƒ—ã‚·ãƒ§ãƒ³ â–¼â–¼â–¼
+    [Tooltip("ONã«ã™ã‚‹ã¨ã€ã“ã®ç§»å‹•ãŒçµ‚ã‚ã‚‹ã¾ã§Enterã‚­ãƒ¼ã§ã®ã‚¹ã‚­ãƒƒãƒ—ã‚’ç¦æ­¢ã—ã¾ã™")]
+    public bool blockInputDuringMove = false;
+
+    [Tooltip("ONã«ã™ã‚‹ã¨ã€æŒ‡å®šä½ç½®ã«åˆ°é”ã—ãŸç¬é–“ã«è‡ªå‹•ã§æ¬¡ã®ãƒšãƒ¼ã‚¸ï¼ˆé…åˆ—ï¼‰ã¸é€²ã¿ã¾ã™")]
+    public bool autoProceedAfterMove = false;
+    // â–²â–²â–² æ–°è¦è¿½åŠ ã“ã“ã¾ã§ â–²â–²â–²
 }
 
 public class StorySequenceManager : MonoBehaviour {
-    [Header("ƒXƒg[ƒŠ[ƒf[ƒ^")]
+    [Header("ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ãƒ‡ãƒ¼ã‚¿")]
     public List<StoryPage> pages = new List<StoryPage>();
 
-    [Header("UIQÆ")]
+    [Header("UIå‚ç…§")]
     public TextMeshProUGUI speakerNameText;
     public TextMeshProUGUI messageText;
-
-    // ¥¥¥ V‹K’Ç‰ÁFˆê–‡ŠG‚ğ•\¦‚·‚é˜g ¥¥¥
-    [Header("ˆê–‡ŠG•\¦—p‚ÌUI")]
-    [Tooltip("Canvas“à‚Éì‚Á‚½ StoryImage ‚ğƒAƒTƒCƒ“‚µ‚Ä‚­‚¾‚³‚¢")]
     public Image storyImageUI;
-    // £££ V‹K’Ç‰Á‚±‚±‚Ü‚Å £££
 
-    [Header("ƒeƒLƒXƒg•\¦İ’è")]
+    [Header("ãƒ†ã‚­ã‚¹ãƒˆè¡¨ç¤ºè¨­å®š")]
     public float typingSpeed = 0.05f;
 
-    [Header("‘JˆÚæİ’è")]
+    [Header("é·ç§»å…ˆè¨­å®š")]
     public string nextSceneName = "MapSelectScene_Level1";
     public int worldNumberToMarkWatched = 1;
     public TransitionType transitionType = TransitionType.Fade;
@@ -60,6 +61,12 @@ public class StorySequenceManager : MonoBehaviour {
     private bool isFinished = false;
     private bool isTyping = false;
     private Coroutine typingCoroutine;
+
+    // â–¼ æ–°è¦è¿½åŠ ï¼šç§»å‹•çŠ¶æ…‹ã‚’ç®¡ç†ã™ã‚‹å¤‰æ•°
+    private Coroutine moveCoroutine;
+    private bool isMoving = false;
+    private Transform currentMovingTarget;
+    private Transform currentDestination;
 
     void Start(){
         if (pages.Count > 0){
@@ -73,6 +80,17 @@ public class StorySequenceManager : MonoBehaviour {
         if (keyboard == null) return;
 
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
+
+            // â–¼ ä¿®æ­£1ï¼šç§»å‹•ä¸­ã§ã€ã‹ã¤ã‚¹ã‚­ãƒƒãƒ—ç¦æ­¢è¨­å®šãªã‚‰ä½•ã‚‚ã—ãªã„
+            if (isMoving && pages[currentPageIndex].blockInputDuringMove) return;
+
+            // â–¼ ä¿®æ­£2ï¼šç§»å‹•ä¸­ã«ã‚¹ã‚­ãƒƒãƒ—ã•ã‚ŒãŸå ´åˆã€ç›®çš„åœ°ã¸ä¸€ç¬ã§ãƒ¯ãƒ¼ãƒ—ã•ã›ã¦ã‚¹ãƒ©ã‚¤ãƒ‰ç§»å‹•ã‚’é˜²ã
+            if (isMoving && currentMovingTarget != null && currentDestination != null){
+                if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+                currentMovingTarget.position = currentDestination.position;
+                isMoving = false;
+            }
+
             if (isTyping){
                 if (typingCoroutine != null) StopCoroutine(typingCoroutine);
                 messageText.text = pages[currentPageIndex].message;
@@ -92,51 +110,65 @@ public class StorySequenceManager : MonoBehaviour {
 
         if (speakerNameText != null) speakerNameText.text = page.speakerName;
 
-        // ¥¥¥ V‹K’Ç‰ÁFˆê–‡ŠG‚ÌØ‚è‘Ö‚¦ˆ— ¥¥¥
+        // ä¸€æšçµµã®åˆ‡ã‚Šæ›¿ãˆå‡¦ç†
         if (storyImageUI != null){
             if (page.cgSprite != null){
-                // V‚µ‚¢‰æ‘œ‚ªİ’è‚³‚ê‚Ä‚¢‚ê‚ÎA‚»‚ê‚ğ•\¦‚µ‚Ä“§–¾“x‚ğ100%‚É‚·‚é
                 storyImageUI.sprite = page.cgSprite;
                 storyImageUI.color = Color.white;
             }else if (storyImageUI.sprite == null){
-                // ‰æ‘œ‚ªİ’è‚³‚ê‚Ä‚¨‚ç‚¸AŒ³X‚Ì‰æ‘œ‚à–³‚¢ê‡‚Í“§–¾iŒ©‚¦‚È‚¢ó‘Ôj‚É‚µ‚Ä‚¨‚­
                 storyImageUI.color = Color.clear;
             }
-            // ¦page.cgSprite ‚ª‹ó—“‚ÅA‚·‚Å‚É‰½‚©‚Ì‰æ‘œ‚ª•\¦‚³‚ê‚Ä‚¢‚éê‡‚ÍA‘O‚Ìƒy[ƒW‚Ì‰æ‘œ‚ğ‚»‚Ì‚Ü‚Üˆø‚«Œp‚¬‚Ü‚·B
         }
-        // £££ V‹K’Ç‰Á‚±‚±‚Ü‚Å £££
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“w¦
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æŒ‡ç¤º
         if (page.targetAnimator != null && !string.IsNullOrEmpty(page.animationTrigger)){
             page.targetAnimator.SetTrigger(page.animationTrigger);
         }
 
-        // ˆÚ“®w¦
+        // â–¼ ä¿®æ­£3ï¼šç§»å‹•æŒ‡ç¤ºï¼ˆã‚³ãƒ«ãƒ¼ãƒãƒ³ã‚’ç®¡ç†ã™ã‚‹ï¼‰
         if (page.targetToMove != null && page.moveDestination != null){
-            StartCoroutine(MoveCharacterRoutine(page.targetToMove, page.moveDestination, page.moveDuration));
+            if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+            moveCoroutine = StartCoroutine(MoveCharacterRoutine(page, page.targetToMove, page.moveDestination, page.moveDuration));
+        }else{
+            isMoving = false; // ç§»å‹•ãŒãªã„ãƒšãƒ¼ã‚¸ã§ã¯ãƒ•ãƒ©ã‚°ã‚’æŠ˜ã‚‹
         }
 
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeText(page.message));
     }
 
-    private IEnumerator MoveCharacterRoutine(Transform target, Transform dest, float duration){
+    private IEnumerator MoveCharacterRoutine(StoryPage page, Transform target, Transform dest, float duration){
+        isMoving = true;
+        currentMovingTarget = target;
+        currentDestination = dest;
+
         Vector3 startPos = target.position;
         Vector3 endPos = dest.position;
         float time = 0;
 
-        if (duration <= 0f){
-            target.position = endPos;
-            yield break;
+        if (duration > 0f){
+            while (time < duration){
+                time += Time.deltaTime;
+                target.position = Vector3.Lerp(startPos, endPos, time / duration);
+                yield return null;
+            }
         }
 
-        while (time < duration){
-            time += Time.deltaTime;
-            target.position = Vector3.Lerp(startPos, endPos, time / duration);
-            yield return null;
-        }
-
+        // ç›®çš„åœ°ã«ãƒ”ãƒƒã‚¿ãƒªåˆã‚ã›ã‚‹
         target.position = endPos;
+        isMoving = false;
+        moveCoroutine = null;
+
+        // â–¼ ä¿®æ­£4ï¼šè‡ªå‹•é€²è¡Œã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒONãªã‚‰ã€å‹æ‰‹ã«æ¬¡ã®ãƒšãƒ¼ã‚¸ã¸é€²ã‚€
+        if (page.autoProceedAfterMove){
+            // ãƒ†ã‚­ã‚¹ãƒˆãŒã¾ã ã‚¿ã‚¤ãƒ”ãƒ³ã‚°é€”ä¸­ãªã‚‰å¼·åˆ¶å®Œäº†ã•ã›ã‚‹
+            if (isTyping){
+                if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+                messageText.text = page.message;
+                isTyping = false;
+            }
+            NextPage();
+        }
     }
 
     private IEnumerator TypeText(string text){
