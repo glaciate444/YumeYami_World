@@ -304,7 +304,7 @@ MonoBehaviour:
     message: "\u3093\uFF1F"
     cgSprite: {fileID: 0}
     targetAnimator: {fileID: 985156275}
-    animationTrigger: Idle
+    animationTrigger: 
     targetToMove: {fileID: 0}
     moveDestination: {fileID: 0}
     moveDuration: 0
@@ -324,7 +324,7 @@ MonoBehaviour:
     message: "\u5909\uFF1F"
     cgSprite: {fileID: 0}
     targetAnimator: {fileID: 1643215580}
-    animationTrigger: Idle
+    animationTrigger: 
     targetToMove: {fileID: 0}
     moveDestination: {fileID: 0}
     moveDuration: 0
@@ -360,6 +360,76 @@ MonoBehaviour:
     moveDuration: 0
     blockInputDuringMove: 0
     autoProceedAfterMove: 0
+  - speakerName: "\u30D5\u30E9\u30A6"
+    message: "\u3075\u30FC\u3093"
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 985156275}
+    animationTrigger: Idle
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+    blockInputDuringMove: 0
+    autoProceedAfterMove: 0
+  - speakerName: "\u5996\u7CBEB"
+    message: "\u3075\u30FC\u3093\u3058\u3083\u306A\u3044\u3067\u3059\uFF01"
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 1643215580}
+    animationTrigger: Talk
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+    blockInputDuringMove: 0
+    autoProceedAfterMove: 0
+  - speakerName: "\u30D5\u30E9\u30A6"
+    message: "\u5225\u306B\u4E00\u756A\u3058\u3083\u306A\u304F\u3066\u3082\u3044\u3044\u3093\u3058\u3083\u306A\u3044\uFF1F\n\u305D\u3053\u307E\u3067\u3042\u304F\u305B\u304F\u3057\u3066\u3044\u308B\u306E\u306F\u4F55\uFF1F"
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 1643215580}
+    animationTrigger: Idle
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+    blockInputDuringMove: 0
+    autoProceedAfterMove: 0
+  - speakerName: "\u5996\u7CBEA"
+    message: "\u3053\u306E\u5148\u306E\u68EE\u3067\u3082\u3001\u307F\u3093\u306A\u304C\u4E89\u3063\u3066\u3044\u307E\u3059\uFF01"
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 985156275}
+    animationTrigger: Talk
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+    blockInputDuringMove: 0
+    autoProceedAfterMove: 0
+  - speakerName: "\u5996\u7CBEB"
+    message: "\u304A\u9858\u3044\u3067\u3059\u3001\u6B62\u3081\u3066\u304F\u3060\u3055\u3044\uFF01"
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 985156275}
+    animationTrigger: Talk
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+    blockInputDuringMove: 0
+    autoProceedAfterMove: 0
+  - speakerName: "\u30D5\u30E9\u30A6"
+    message: "\u30FB\u30FB\u30FB\u308F\u304B\u3063\u305F\u3002\n\u884C\u3063\u3066\u307F\u308B\u3002"
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 0}
+    animationTrigger: 
+    targetToMove: {fileID: 0}
+    moveDestination: {fileID: 0}
+    moveDuration: 0
+    blockInputDuringMove: 0
+    autoProceedAfterMove: 0
+  - speakerName: 
+    message: 
+    cgSprite: {fileID: 0}
+    targetAnimator: {fileID: 1746816305}
+    animationTrigger: Walk
+    targetToMove: {fileID: 1746816307}
+    moveDestination: {fileID: 1839804015}
+    moveDuration: 3
+    blockInputDuringMove: 1
+    autoProceedAfterMove: 1
   speakerNameText: {fileID: 1257584764}
   messageText: {fileID: 1459723902}
   storyImageUI: {fileID: 0}
@@ -722,15 +792,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 362047b0e7ed3904e889163a4e84a192, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2827,6 +2897,94 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1038762681383830275, guid: bb909a79596eb604ebc479e92f192f7e, type: 3}
   m_PrefabInstance: {fileID: 1640466211}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1839804014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1839804015}
+  m_Layer: 0
+  m_Name: Frau_Point_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1839804015
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839804014}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 0.96, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1913303140
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4509460032205517663, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_Name
+      value: TransitionManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5493721630376397201, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d538a7184ca34f947aee5547ad5ad239, type: 3}
 --- !u!1 &2077891203
 GameObject:
   m_ObjectHideFlags: 0
@@ -2870,8 +3028,10 @@ SceneRoots:
   - {fileID: 1022721521}
   - {fileID: 1640466211}
   - {fileID: 2077891204}
+  - {fileID: 1839804015}
   - {fileID: 1158279999}
   - {fileID: 603669839}
   - {fileID: 311242938}
   - {fileID: 985156277}
   - {fileID: 1643215582}
+  - {fileID: 1913303140}
