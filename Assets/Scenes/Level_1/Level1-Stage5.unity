@@ -992,7 +992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 6
+  clearedStageNumber: 5
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2
@@ -18648,6 +18648,8 @@ MonoBehaviour:
   bossType: 1
   bossName: "\u30EB\u30FC\u30E0\u30AC\u30FC\u30C0\u30FC"
   maxHp: 7
+  invincibilityTime: 1
+  blinkInterval: 0.1
   bossHpSlider: {fileID: 408552647}
   bossHpText: {fileID: 408552646}
   entranceBlocker: {fileID: 1154109922}

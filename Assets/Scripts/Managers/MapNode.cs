@@ -29,30 +29,40 @@ public class MapNode : MonoBehaviour {
     public void SetupNode(){
         if (myLevelData == null) return;
 
-        // ▼▼▼ 修正：テストモード（GameManager不在時）の処理 ▼▼▼
+        // 【テストモード】 GameManagerがいない場合は無条件で解放
         if (GameManager.Instance == null){
             Debug.LogWarning($"【テストモード】 GameManagerがいないため、{myLevelData.levelName} を強制解放します！");
             IsUnlocked = true;
-            IsCleared = true; // 色もクリア済みにして、どこへでも移動可能にする
+            IsCleared = true;
             UpdateVisuals();
-            return; // ここで処理を終える
+            return;
         }
 
-        // ▲▲▲ 修正ここまで ▲▲▲
-        // ▼▼▼ 修正：本番モード（フラグによる判定） ▼▼▼
-        // 1. このノード自身がクリア済みかどうかをリストから判定
+        // ▼▼▼ 本番モード（フラグリストによる厳密な判定） ▼▼▼
+
+        // 1. このノード自身がクリア済みかどうか
         IsCleared = GameManager.Instance.IsStageCleared(myLevelData.stageNumber);
 
-        // 2. このノードが解放されているかどうか
-        // ※requiredUnlockLevel が 1 以下なら最初から遊べるステージとする
-        if (myLevelData.requiredUnlockLevel <= 1){
-            IsUnlocked = true;
-        }else{
-            // requiredUnlockLevel を「解放に必要なクリア済みステージ番号」として扱う
-            // 例：requiredUnlockLevel が 3 なら、「ステージ3をクリア済み」なら解放される
-            IsUnlocked = GameManager.Instance.IsStageCleared(myLevelData.requiredUnlockLevel);
+        // 2. 解放条件のチェック（最初は true にしておき、条件を満たしていないものがあれば false に落とす）
+        IsUnlocked = true;
+
+        // 条件A：必須クリアステージのチェック
+        foreach (int reqStageNum in myLevelData.requiredClearedStageNumbers){
+            if (!GameManager.Instance.IsStageCleared(reqStageNum)){
+                IsUnlocked = false; // 1つでもクリアしてないものがあればロック！
+                break;
+            }
         }
 
+        // 条件B：必須イベントフラグのチェック（ステージ条件をパスした場合のみ確認）
+        if (IsUnlocked){
+            foreach (string reqFlag in myLevelData.requiredEventFlags){
+                if (!GameManager.Instance.HasEventFlag(reqFlag)){
+                    IsUnlocked = false; // 1つでもフラグが足りなければロック！
+                    break;
+                }
+            }
+        }
         // ▲▲▲ 修正ここまで ▲▲▲
 
         UpdateVisuals();

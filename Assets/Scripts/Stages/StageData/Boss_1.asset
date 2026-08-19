@@ -15,6 +15,7 @@ MonoBehaviour:
   stageNumber: 91
   levelName: Boss Stage
   sceneName: Level1-Stage7_Boss
-  requiredUnlockLevel: 7
+  requiredClearedStageNumbers: 06000000
+  requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 

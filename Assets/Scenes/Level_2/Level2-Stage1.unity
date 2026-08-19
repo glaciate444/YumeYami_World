@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 8
+  clearedStageNumber: 1
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2
@@ -1941,7 +1941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 9
+  clearedStageNumber: 8
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2
@@ -7712,14 +7712,6 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.0094127655
       objectReference: {fileID: 0}
-    - target: {fileID: 1040239534721119922, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
-      propertyPath: initialForce
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1040239534721119922, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
-      propertyPath: initialTorque
-      value: 11
-      objectReference: {fileID: 0}
     - target: {fileID: 1882836325032132816, guid: 6901348bad93619429e1df098b523352, type: 3}
       propertyPath: m_Radius
       value: 1.229414
@@ -7728,9 +7720,33 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.014116287
       objectReference: {fileID: 0}
+    - target: {fileID: 1040239534721119922, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
+      propertyPath: initialForce
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1040239534721119922, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
+      propertyPath: initialTorque
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 4911271892502738863, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
       propertyPath: m_Name
       value: DonutRollingHazard
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -7464906571876832546, guid: c044e967652ff314297218fce044b3be, type: 3}
+    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7459823370172030794, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
       propertyPath: m_LocalScale.x
@@ -7779,22 +7795,6 @@ PrefabInstance:
     - target: {fileID: 7459823370172030794, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -7464906571876832546, guid: c044e967652ff314297218fce044b3be, type: 3}
-    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6111979044072540340, guid: 220f7da442cb11746b2960f4539ed09b, type: 3}
-      propertyPath: m_Color.r
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -36632,6 +36632,8 @@ MonoBehaviour:
   bossType: 1
   bossName: "\u30EB\u30FC\u30E0\u30AC\u30FC\u30C0\u30FC"
   maxHp: 10
+  invincibilityTime: 1
+  blinkInterval: 0.1
   bossHpSlider: {fileID: 408552647}
   bossHpText: {fileID: 408552646}
   entranceBlocker: {fileID: 1154109922}
@@ -36759,6 +36761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a80528df03ec98848a04fc8dfbafe74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
+  turretID: 0
   enemyBulletPrefab: {fileID: 7814645704091411752, guid: bb9ebfd7ab01cce4b9f18c488b6b5443, type: 3}
   firePoint: {fileID: 231813875}
   fireInterval: 2
@@ -36767,6 +36770,7 @@ MonoBehaviour:
   bulletCount: 2
   spreadAngle: 30
   burstInterval: 0
+  parabolaUpForce: 1
   angleRandomness: 0
   positionOffset: {x: 0, y: 0}
   positionRandomness: {x: 0, y: 0}

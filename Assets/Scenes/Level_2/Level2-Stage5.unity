@@ -944,7 +944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 8
+  clearedStageNumber: 1
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2
@@ -2245,7 +2245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 12
+  clearedStageNumber: 12
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2

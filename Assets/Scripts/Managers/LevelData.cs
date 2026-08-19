@@ -1,18 +1,32 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : LevelData.cs
+ * 用途 : ステージのデータ定義
+ * 拡張 : 単一レベル制から、フラグ条件（リスト）制へ移行
+ * =================================================== */
+using UnityEngine;
+using System.Collections.Generic;
 
-// これを書くことで、右クリックメニューからこのデータを作成できるようになります
 [CreateAssetMenu(fileName = "NewLevelData", menuName = "GameData/LevelData")]
-public class LevelData : ScriptableObject{
+public class LevelData : ScriptableObject {
     [Header("ステージ基本情報")]
-    public int stageNumber;        // ステージ番号
-    public string levelName;       // 画面に表示する名前（例："始まりの森"）
-    public string sceneName;       // 実際にロードするScene名（例："Stage_01"）
+    public int stageNumber;
+    public string levelName;
+    public string sceneName;
 
-    [Tooltip("このステージを遊ぶために必要な進行度（1なら最初から遊べる）")]
-    public int requiredUnlockLevel = 1;
+    // ▼ 旧仕様（廃止）
+    // public int requiredUnlockLevel = 1;
+
+    // ▼▼▼ 新仕様（RPG的フラグ管理用） ▼▼▼
+    [Header("解放条件（フラグ式）")]
+    [Tooltip("ここに入れたステージ番号を【すべて】クリアしていれば解放されます。最初から遊べるなら空(0件)にします。")]
+    public List<int> requiredClearedStageNumbers = new List<int>();
+
+    [Tooltip("ここに入れたイベントフラグが【すべて】立っていれば解放されます。（例: Defeated_Boss1）")]
+    public List<string> requiredEventFlags = new List<string>();
+    // ▲▲▲ 新仕様ここまで ▲▲▲
 
     [Header("UI表示用")]
-    public Sprite thumbnail;       // マップ選択画面で表示する画像
+    public Sprite thumbnail;
     [TextArea(2, 3)]
-    public string description;     // ステージの説明文（必要なら）
+    public string description;
 }

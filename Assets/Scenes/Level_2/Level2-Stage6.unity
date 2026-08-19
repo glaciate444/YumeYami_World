@@ -28903,7 +28903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 8
+  clearedStageNumber: 1
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2
@@ -31771,7 +31771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  unlockLevelReward: 13
+  clearedStageNumber: 13
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2
@@ -88919,6 +88919,8 @@ MonoBehaviour:
   bossType: 1
   bossName: "\u30EB\u30FC\u30E0\u30AC\u30FC\u30C0\u30FC"
   maxHp: 13
+  invincibilityTime: 1
+  blinkInterval: 0.1
   bossHpSlider: {fileID: 1229351527}
   bossHpText: {fileID: 2101363793}
   entranceBlocker: {fileID: 1567903155}
@@ -89121,6 +89123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a80528df03ec98848a04fc8dfbafe74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
+  turretID: 0
   enemyBulletPrefab: {fileID: 7814645704091411752, guid: ab9b976b3e4c5fc43a47122b89ced3ea, type: 3}
   firePoint: {fileID: 873372416}
   fireInterval: 3
@@ -89129,6 +89132,7 @@ MonoBehaviour:
   bulletCount: 1
   spreadAngle: 15
   burstInterval: 0
+  parabolaUpForce: 1
   angleRandomness: 0
   positionOffset: {x: 0, y: 0}
   positionRandomness: {x: 0, y: 0}

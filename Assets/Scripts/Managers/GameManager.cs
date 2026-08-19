@@ -203,6 +203,7 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.DeleteKey("SpUpPurchaseCount" + s);
         PlayerPrefs.DeleteKey("ClearedStageNumbers" + s);
         PlayerPrefs.DeleteKey("EventFlags" + s);
+
         PlayerPrefs.Save();
     }
 

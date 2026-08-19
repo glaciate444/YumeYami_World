@@ -15,6 +15,7 @@ MonoBehaviour:
   stageNumber: 5
   levelName: No.05
   sceneName: Level1-Stage5
-  requiredUnlockLevel: 5
+  requiredClearedStageNumbers: 04000000
+  requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 
