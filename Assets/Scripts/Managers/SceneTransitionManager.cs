@@ -41,14 +41,21 @@ public class SceneTransitionManager : MonoBehaviour {
     // ▼ 呼び出し用メソッド（種類を指定できるように拡張）
     // =================================================
 
-    // ① 文字なし遷移（タイトル→マップなど）。デフォルトを Fade に設定。
-    public void LoadScene(string sceneName, TransitionType type = TransitionType.Fade) {
+    // ① 文字なし遷移（タイトル→マップなど）
+    public void LoadScene(string sceneName, TransitionType type = TransitionType.Fade){
         StartCoroutine(TransitionRoutine(sceneName, "", type));
     }
 
-    // ② コースイン遷移（マップ→ステージなど）。デフォルトを CourseSlide に設定。
-    public void LoadCourse(string sceneName, string displayName, TransitionType type = TransitionType.CourseSlide) {
+    // ② 従来の文字入り遷移
+    public void LoadCourse(string sceneName, string displayName, TransitionType type = TransitionType.CourseSlide){
         StartCoroutine(TransitionRoutine(sceneName, displayName, type));
+    }
+
+    // ▼▼▼ 新規追加：ステージ番号を渡すと「Course No.00」にしてくれるメソッド ▼▼▼
+    public void LoadCourseByNumber(string sceneName, int stageNumber, TransitionType type = TransitionType.CourseSlide){
+        // "D2" を指定することで、一桁の数字（7など）も自動的に「07」とゼロ埋めしてくれます
+        string formattedName = $"Course No.{stageNumber:D2}";
+        StartCoroutine(TransitionRoutine(sceneName, formattedName, type));
     }
 
     // =================================================

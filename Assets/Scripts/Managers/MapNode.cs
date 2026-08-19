@@ -1,25 +1,22 @@
 ﻿/* ===================================================
  * スクリプト名 : MapNode.cs
- * Version : Ver0.01
- * Since : 2026/04/28
- * Update : 2026/04/28
+ * Version : Ver0.02
  * 用途 : マップ上の各ステージの位置を示すポイント。
- * このノード自身が、どの LevelData を持っているかを知っています。
+ * 拡張 : フラグ式進行度への対応とテストモードの完備
  * =================================================== */
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MapNode : MonoBehaviour{
+public class MapNode : MonoBehaviour {
     [Header("ステージ設定")]
-    public LevelData myLevelData; // このノードが担当するステージデータ
+    public LevelData myLevelData;
 
     [Header("UI設定")]
-    public Image nodeImage;       // ステージのアイコン（素材ができたら差し替えます）
-    public Color lockedColor = Color.gray;   // ロック中の色
-    public Color unlockedColor = Color.white;// 解放済みの色
-    public Color clearedColor = Color.yellow;// クリア済みの色
+    public Image nodeImage;
+    public Color lockedColor = Color.gray;
+    public Color unlockedColor = Color.white;
+    public Color clearedColor = Color.yellow;
 
-    // このノードから移動できる隣のノード（上、下、左、右）
     [Header("隣接ノード")]
     public MapNode upNode;
     public MapNode downNode;
@@ -29,24 +26,34 @@ public class MapNode : MonoBehaviour{
     public bool IsUnlocked { get; private set; }
     public bool IsCleared { get; private set; }
 
-    // ゲーム開始時に呼ばれ、自分の状態をチェックする
     public void SetupNode(){
         if (myLevelData == null) return;
 
-        int currentLevel = 1; // プレイヤーの現在レベル
-
-        // GameManagerがいる場合（本番の挙動）
-        if (GameManager.Instance != null){
-            currentLevel = GameManager.Instance.unlockedStageLevel;
-        }
-        // GameManagerがいない場合（Map画面から直接テスト再生した時の挙動）
-        else{
+        // ▼▼▼ 修正：テストモード（GameManager不在時）の処理 ▼▼▼
+        if (GameManager.Instance == null){
             Debug.LogWarning($"【テストモード】 GameManagerがいないため、{myLevelData.levelName} を強制解放します！");
-            currentLevel = 999; // 全ステージ解放とみなす
+            IsUnlocked = true;
+            IsCleared = true; // 色もクリア済みにして、どこへでも移動可能にする
+            UpdateVisuals();
+            return; // ここで処理を終える
         }
 
-        IsUnlocked = currentLevel >= myLevelData.requiredUnlockLevel;
-        IsCleared = currentLevel > myLevelData.requiredUnlockLevel;
+        // ▲▲▲ 修正ここまで ▲▲▲
+        // ▼▼▼ 修正：本番モード（フラグによる判定） ▼▼▼
+        // 1. このノード自身がクリア済みかどうかをリストから判定
+        IsCleared = GameManager.Instance.IsStageCleared(myLevelData.stageNumber);
+
+        // 2. このノードが解放されているかどうか
+        // ※requiredUnlockLevel が 1 以下なら最初から遊べるステージとする
+        if (myLevelData.requiredUnlockLevel <= 1){
+            IsUnlocked = true;
+        }else{
+            // requiredUnlockLevel を「解放に必要なクリア済みステージ番号」として扱う
+            // 例：requiredUnlockLevel が 3 なら、「ステージ3をクリア済み」なら解放される
+            IsUnlocked = GameManager.Instance.IsStageCleared(myLevelData.requiredUnlockLevel);
+        }
+
+        // ▲▲▲ 修正ここまで ▲▲▲
 
         UpdateVisuals();
     }

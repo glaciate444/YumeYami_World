@@ -156,10 +156,11 @@ public class MapManager : MonoBehaviour{
                     GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
                 }
 
-                SceneTransitionManager.Instance.LoadCourse(
+                SceneTransitionManager.Instance.LoadCourseByNumber(
                     currentNode.myLevelData.sceneName,
-                    currentNode.myLevelData.levelName
+                    currentNode.myLevelData.stageNumber // ← 修正：ステージ番号（int）を渡す！
                 );
+
             }
         }
     }

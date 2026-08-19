@@ -4,35 +4,43 @@
  * 用途 : ゴール判定とアイリスアウト遷移
  * 拡張 : 外部（ボスなど）から強制的にゴール処理を呼び出せるように修正
  * =================================================== */
+/* ===================================================
+ * スクリプト名 : GoalPoint.cs
+ * Version : Ver0.08
+ * 用途 : ゴール判定とアイリスアウト遷移
+ * 拡張 : フラグ式進行度管理（リスト登録）に対応
+ * =================================================== */
 using UnityEngine;
-using UnityEngine.SceneManagement; 
-using System.Collections; 
+using UnityEngine.SceneManagement;
+using System.Collections;
 
-public class GoalPoint : MonoBehaviour{
+public class GoalPoint : MonoBehaviour {
     [Header("遷移先シーン名")]
-    public string nextSceneName = "MiniGameScene"; 
+    public string nextSceneName = "MiniGameScene";
 
-    [Header("ステージ進行設定（通常）")]
-    public int unlockLevelReward = 2;
+    // ▼▼▼ 修正：単一変数の代入から、自ステージのフラグ登録に変更 ▼▼▼
+    [Header("ステージ進行設定（フラグ式）")]
+    [Tooltip("このゴールに触れた時にクリア扱いにするステージ番号")]
+    public int clearedStageNumber = 1;
 
     [Header("ワールド進行設定（ボス専用）")]
     public bool unlocksNewWorld = false;
+    [Tooltip("解放するワールド番号（フラグとして記録されます）")]
     public int unlockWorldReward = 2;
+    // ▲▲▲ 修正ここまで ▲▲▲
 
     [Header("演出時間")]
-    public float waitTime = 2.0f; 
+    public float waitTime = 2.0f;
 
     private bool isGoal;
 
-    // 通常の「触れたらゴール」の処理
     private void OnTriggerEnter2D(Collider2D other){
         if (!isGoal && other.CompareTag("Player")){
-            TriggerGoal(other.gameObject); // 下のメソッドにパスする
+            TriggerGoal(other.gameObject);
         }
     }
 
-    // ▼【新規追加】ボス撃破時など、外部から自動でゴール処理をスタートさせるメソッド
-    public void TriggerGoal(GameObject playerObject) {
+    public void TriggerGoal(GameObject playerObject){
         if (isGoal) return;
 
         PlayerController player = playerObject.GetComponentInParent<PlayerController>();
@@ -43,29 +51,29 @@ public class GoalPoint : MonoBehaviour{
         isGoal = true;
         Debug.Log("ゴール処理開始！");
 
-        // 1. プレイヤーにポーズを取らせる
         player.PlayGoalAction();
 
-        // 2. コイン引き継ぎ
         if (inventory != null && GameManager.Instance != null){
-            GameManager.Instance.stageCoins = inventory.currentCoins;            
+            GameManager.Instance.stageCoins = inventory.currentCoins;
         }
 
-        // 3. 進行度とワールド解放
+        // ▼▼▼ 修正：GameManagerのリストにクリア情報を追加する ▼▼▼
         if (GameManager.Instance != null){
-            if (GameManager.Instance.unlockedStageLevel < unlockLevelReward){
-                GameManager.Instance.unlockedStageLevel = unlockLevelReward;
-            }
-            
-            if (unlocksNewWorld) {
-                if (GameManager.Instance.unlockedWorldLevel < unlockWorldReward){
-                    GameManager.Instance.unlockedWorldLevel = unlockWorldReward;
-                    Debug.Log($"新ワールド {unlockWorldReward} が解放されました！");
-                }
-            }
-        }
 
-        // 4. アイリスアウト開始
+            // 1. このステージをクリア済みにする
+            GameManager.Instance.MarkStageAsCleared(clearedStageNumber);
+
+            // 2. ボス撃破などで新ワールドが解放される場合、イベントフラグを立てる
+            if (unlocksNewWorld){
+                string worldFlag = "Unlocked_World_" + unlockWorldReward;
+                GameManager.Instance.AddEventFlag(worldFlag);
+                Debug.Log($"新ワールド解放フラグ【{worldFlag}】が立ちました！");
+            }
+        }else{
+            Debug.LogWarning("【テストモード】GameManagerがいないため、フラグ保存はスキップされます。");
+        }
+        // ▲▲▲ 修正ここまで ▲▲▲
+
         StartCoroutine(GoalRoutine(player.transform));
     }
 
@@ -75,7 +83,7 @@ public class GoalPoint : MonoBehaviour{
         IrisTransitionManager iris = FindFirstObjectByType<IrisTransitionManager>();
         if (iris != null){
             iris.StartIrisOut(playerTransform, nextSceneName);
-        } else {
+        }else{
             SceneManager.LoadScene(nextSceneName);
         }
     }

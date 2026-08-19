@@ -44,6 +44,13 @@ public class GameManager : MonoBehaviour {
     public int hpUpPurchaseCount = 0;
     public int spUpPurchaseCount = 0;
 
+    [Header("進行度（フラグ管理）")]
+    [Tooltip("クリア済みのステージ番号を記録するリスト")]
+    public System.Collections.Generic.List<int> clearedStageNumbers = new System.Collections.Generic.List<int>();
+
+    [Tooltip("イベントの進行状況を文字列で記録するリスト（例：Boss1_Defeated）")]
+    public System.Collections.Generic.List<string> eventFlags = new System.Collections.Generic.List<string>();
+
     void Awake(){
         if (Instance == null){
             Instance = this;
@@ -91,6 +98,14 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetInt("HpUpPurchaseCount" + s, hpUpPurchaseCount);
         PlayerPrefs.SetInt("SpUpPurchaseCount" + s, spUpPurchaseCount);
 
+        // クリア済みステージリストのセーブ
+        string clearedStagesStr = string.Join(",", clearedStageNumbers);
+        PlayerPrefs.SetString("ClearedStageNumbers" + s, clearedStagesStr);
+
+        // イベントフラグリストのセーブ
+        string eventFlagsStr = string.Join(",", eventFlags);
+        PlayerPrefs.SetString("EventFlags" + s, eventFlagsStr);
+
         PlayerPrefs.Save();
     }
 
@@ -124,6 +139,30 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+
+        if (PlayerPrefs.HasKey("ClearedStageNumbers" + s)){
+            string stagesStr = PlayerPrefs.GetString("ClearedStageNumbers" + s);
+            clearedStageNumbers.Clear();
+            if (!string.IsNullOrEmpty(stagesStr)){
+                string[] idArray = stagesStr.Split(',');
+                foreach (string idStr in idArray){
+                    if (int.TryParse(idStr, out int val))
+                    {
+                        clearedStageNumbers.Add(val);
+                    }
+                }
+            }
+        }
+
+        if (PlayerPrefs.HasKey("EventFlags" + s)){
+            string flagsStr = PlayerPrefs.GetString("EventFlags" + s);
+            eventFlags.Clear();
+            if (!string.IsNullOrEmpty(flagsStr)){
+                // カンマ区切りの文字列を配列にして一気に追加
+                eventFlags.AddRange(flagsStr.Split(','));
+            }
+        }
+
     }
 
     public void ResetData(){
@@ -141,11 +180,13 @@ public class GameManager : MonoBehaviour {
         hpUpPurchaseCount = 0;
         spUpPurchaseCount = 0;
         ownedItemIds.Clear();
+
+        clearedStageNumbers.Clear();
+        eventFlags.Clear();
     }
 
     // ▼▼▼ 新規追加：指定したスロットのセーブデータを消去する（ファイルを消す用） ▼▼▼
-    public void DeleteSaveData(int slot)
-    {
+    public void DeleteSaveData(int slot){
         string s = "_" + slot;
         PlayerPrefs.DeleteKey("IsSaved" + s);
         PlayerPrefs.DeleteKey("MaxHp" + s);
@@ -160,12 +201,46 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.DeleteKey("OwnedItemIds" + s);
         PlayerPrefs.DeleteKey("HpUpPurchaseCount" + s);
         PlayerPrefs.DeleteKey("SpUpPurchaseCount" + s);
+        PlayerPrefs.DeleteKey("ClearedStageNumbers" + s);
+        PlayerPrefs.DeleteKey("EventFlags" + s);
         PlayerPrefs.Save();
     }
 
     // ▼▼▼ 新規追加：そのスロットにデータがあるか確認する（タイトル画面用） ▼▼▼
-    public static bool HasSaveData(int slot)
-    {
+    public static bool HasSaveData(int slot){
         return PlayerPrefs.HasKey("IsSaved_" + slot);
+    }
+
+    // ==========================================
+    // ▼ フラグ管理用の便利メソッド ▼
+    // ==========================================
+
+    // ステージをクリア済みにする
+    public void MarkStageAsCleared(int stageNum){
+        if (!clearedStageNumbers.Contains(stageNum)){
+            clearedStageNumbers.Add(stageNum);
+            SaveGame(); // フラグが立ったら自動でセーブする
+            Debug.Log($"ステージ {stageNum} をクリア済みにしました！");
+        }
+    }
+
+    // ステージがクリア済みか判定する
+    public bool IsStageCleared(int stageNum){
+        return clearedStageNumbers.Contains(stageNum);
+    }
+
+    // イベントフラグを立てる
+    public void AddEventFlag(string flagName){
+        if (!eventFlags.Contains(flagName))
+        {
+            eventFlags.Add(flagName);
+            SaveGame(); // フラグが立ったら自動でセーブする
+            Debug.Log($"イベントフラグ '{flagName}' が立ちました！");
+        }
+    }
+
+    // イベントフラグが立っているか判定する
+    public bool HasEventFlag(string flagName){
+        return eventFlags.Contains(flagName);
     }
 }

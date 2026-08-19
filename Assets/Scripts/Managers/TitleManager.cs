@@ -62,15 +62,12 @@ public class TitleManager : MonoBehaviour {
         { 3, 1, 4, 4 }  // 5: Credit (上->Data4,  下->Data2,  左右->Option)
     };
 
-    void Start()
-    {
+    void Start(){
         ChangeState(TitleState.PressAnyKey);
     }
 
-    void Update()
-    {
-        if (inputCooldown > 0f)
-        {
+    void Update(){
+        if (inputCooldown > 0f){
             inputCooldown -= Time.deltaTime;
             return;
         }
@@ -78,8 +75,7 @@ public class TitleManager : MonoBehaviour {
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        switch (currentState)
-        {
+        switch (currentState){
             case TitleState.PressAnyKey:
                 if (keyboard.anyKey.wasPressedThisFrame)
                 {
@@ -115,58 +111,43 @@ public class TitleManager : MonoBehaviour {
         }
     }
 
-    private void HandleMainMenuInput(Keyboard keyboard)
-    {
-        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
-        {
+    private void HandleMainMenuInput(Keyboard keyboard){
+        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame){
             currentIndex = navigation[currentIndex, 0];
             UpdateCursorPosition();
-        }
-        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
-        {
+        }else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
             currentIndex = navigation[currentIndex, 1];
             UpdateCursorPosition();
-        }
-        else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame)
-        {
+        }else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame){
             currentIndex = navigation[currentIndex, 2];
             UpdateCursorPosition();
-        }
-        else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame)
-        {
+        }else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame){
             currentIndex = navigation[currentIndex, 3];
             UpdateCursorPosition();
         }
 
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame)
-        {
+        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
             ExecuteMainMenu();
         }
     }
 
-    private void HandleFileMenuInput(Keyboard keyboard)
-    {
+    private void HandleFileMenuInput(Keyboard keyboard){
         // サブメニュー（ゲームスタート / 消す）の上下移動
         if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame ||
-            keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
-        {
+            keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
             subMenuIndex = (subMenuIndex == 0) ? 1 : 0; // 0と1を切り替える
             UpdateSubMenuCursorPosition();
         }
 
         // サブメニューの決定
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame)
-        {
+        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
             inputCooldown = 0.2f;
-            if (subMenuIndex == 0)
-            {
+            if (subMenuIndex == 0){
                 // 「ゲームスタート」を選んだ場合
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.LoadGame();
                 SceneTransitionManager.Instance.LoadScene("MapSelectScene_Level_1"); // ※続きから始まるシーン
-            }
-            else
-            {
+            }else{
                 // 「ファイルを消す」を選んだ場合
                 GameManager.Instance.DeleteSaveData(selectedSlot);
                 ChangeState(TitleState.MainMenu); // 消したらメインメニューに戻る
@@ -174,27 +155,22 @@ public class TitleManager : MonoBehaviour {
         }
 
         // キャンセル（Xキー）でメインメニューに戻る
-        if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame)
-        {
+        if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame){
             ChangeState(TitleState.MainMenu);
             inputCooldown = 0.2f;
         }
     }
 
-    private void UpdateCursorPosition()
-    {
-        if (menuPositions.Length > 0 && cursorImage != null && menuPositions[currentIndex] != null)
-        {
+    private void UpdateCursorPosition(){
+        if (menuPositions.Length > 0 && cursorImage != null && menuPositions[currentIndex] != null){
             Vector2 newPos = menuPositions[currentIndex].anchoredPosition;
             newPos.x -= cursorOffsetX;
             cursorImage.anchoredPosition = newPos;
         }
     }
 
-    private void UpdateSubMenuCursorPosition()
-    {
-        if (subMenuPositions.Length > 0 && subMenuCursor != null && subMenuPositions[subMenuIndex] != null)
-        {
+    private void UpdateSubMenuCursorPosition(){
+        if (subMenuPositions.Length > 0 && subMenuCursor != null && subMenuPositions[subMenuIndex] != null){
             Vector2 newPos = subMenuPositions[subMenuIndex].anchoredPosition;
             newPos.x -= subMenuCursorOffsetX;
             subMenuCursor.anchoredPosition = newPos;
@@ -202,60 +178,44 @@ public class TitleManager : MonoBehaviour {
     }
 
     // データがあるかどうかを調べてUIテキストを書き換える
-    private void UpdateFileTexts()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (fileTexts != null && i < fileTexts.Length && fileTexts[i] != null)
-            {
+    private void UpdateFileTexts(){
+        for (int i = 0; i < 4; i++){
+            if (fileTexts != null && i < fileTexts.Length && fileTexts[i] != null){
                 int slot = i + 1; // 配列0=ファイル1
-                if (GameManager.HasSaveData(slot))
-                {
+                if (GameManager.HasSaveData(slot)){
                     fileTexts[i].text = $"ファイル {slot}\n(つづきから)";
-                }
-                else
-                {
+                }else{
                     fileTexts[i].text = $"ファイル {slot}\n(あたらしくはじめる)";
                 }
             }
         }
     }
 
-    private void ExecuteMainMenu()
-    {
+    private void ExecuteMainMenu(){
         inputCooldown = 0.2f;
 
         // ファイル1〜4を選んだ場合
-        if (currentIndex >= 0 && currentIndex <= 3)
-        {
+        if (currentIndex >= 0 && currentIndex <= 3){
             selectedSlot = currentIndex + 1; // ファイル番号（1〜4）
 
-            if (GameManager.HasSaveData(selectedSlot))
-            {
+            if (GameManager.HasSaveData(selectedSlot)){
                 // データがある場合はサブメニューを開く
                 ChangeState(TitleState.FileMenu);
-            }
-            else
-            {
+            }else{
                 // データがない（空きスロット）場合は、即座にニューゲーム！
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.ResetData();
                 GameManager.Instance.SaveGame(); // 空のファイルを作成
                 SceneTransitionManager.Instance.LoadScene("OpeningScene");
             }
-        }
-        else if (currentIndex == 4)
-        {
+        }else if (currentIndex == 4){
             ChangeState(TitleState.Options);
-        }
-        else if (currentIndex == 5)
-        {
+        }else if (currentIndex == 5){
             ChangeState(TitleState.Credits);
         }
     }
 
-    private void ChangeState(TitleState newState)
-    {
+    private void ChangeState(TitleState newState){
         currentState = newState;
 
         if (pressAnyKeyPanel) pressAnyKeyPanel.SetActive(false);
@@ -266,8 +226,7 @@ public class TitleManager : MonoBehaviour {
         if (creditsPanel) creditsPanel.SetActive(false);
         if (cursorImage) cursorImage.gameObject.SetActive(false);
 
-        switch (currentState)
-        {
+        switch (currentState){
             case TitleState.PressAnyKey:
                 if (pressAnyKeyPanel) pressAnyKeyPanel.SetActive(true);
                 break;
@@ -292,14 +251,12 @@ public class TitleManager : MonoBehaviour {
         }
     }
 
-    public void CloseOptions()
-    {
+    public void CloseOptions(){
         ChangeState(TitleState.MainMenu);
         inputCooldown = 0.2f;
     }
 
-    public void CloseCredits()
-    {
+    public void CloseCredits(){
         ChangeState(TitleState.MainMenu);
         inputCooldown = 0.2f;
     }

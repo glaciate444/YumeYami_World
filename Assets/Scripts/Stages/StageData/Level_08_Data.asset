@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_08_Data
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 8
-  levelName: No.08
+  levelName: "2-2\uFF1A\u30DE\u30AB\u30ED\u30F3\u30BF\u30EF\u30FC"
   sceneName: Level2-Stage2
   requiredUnlockLevel: 9
   thumbnail: {fileID: 0}
