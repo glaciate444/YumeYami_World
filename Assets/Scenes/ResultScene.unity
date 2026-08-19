@@ -230,7 +230,7 @@ MonoBehaviour:
   countSpeed: 0.05
   countSE: {fileID: 8300000, guid: 94a12207012b5fa4db40db8f5df129a8, type: 3}
   finishSE: {fileID: 8300000, guid: ee38f5f6e465775459ffd06c54c390e7, type: 3}
-  mapSceneName: MapSelectScene_Level_1
+  fallbackMapSceneName: MapSelectScene
 --- !u!4 &308626381
 Transform:
   m_ObjectHideFlags: 0
@@ -911,7 +911,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 62, y: 6}
-  m_SizeDelta: {x: 400, y: 100}
+  m_SizeDelta: {x: 480, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1790035157
 MonoBehaviour:
@@ -935,8 +935,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 000000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: eefa6e5231b73294daebb4502a90f6e0, type: 2}
+  m_sharedMaterial: {fileID: 3899803966967239591, guid: eefa6e5231b73294daebb4502a90f6e0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1149,8 +1149,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: eefa6e5231b73294daebb4502a90f6e0, type: 2}
+  m_sharedMaterial: {fileID: 3899803966967239591, guid: eefa6e5231b73294daebb4502a90f6e0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

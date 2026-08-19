@@ -1,39 +1,41 @@
 ﻿/* ===================================================
  * スクリプト名 : GameManager.cs
- * Version : Ver0.04
  * 用途 : シーンを切り替えても絶対に消滅しない、ゲームの総司令塔
- * 拡張 : マップ上の現在位置（ノード番号）を記憶する機能を追加
+ * 拡張 : セーブデータ多重スロット（ファイル1〜4）対応版
  * =================================================== */
 using UnityEngine;
 
-public class GameManager : MonoBehaviour{
+public class GameManager : MonoBehaviour {
     public static GameManager Instance;
+
+    // ▼▼▼ 新規追加：セーブスロット管理 ▼▼▼
+    [Header("セーブデータ管理")]
+    public int currentSaveSlot = 1; // 現在選んでいるファイル番号（1〜4）
+    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("プレイヤーのデータ（セーブ対象）")]
     public int currentMaxHp = 12;
     public int currentMaxSp = 6;
-    public int unlockedStageLevel = 1; 
+    public int unlockedStageLevel = 1;
     public int totalCoins = 0;
 
-    // ▼【新規追加】最後にいたマップのノード番号（LevelDataのstageNumberと対応）
-    public int currentMapNodeNumber = 1; 
+    public int currentMapNodeNumber = 1;
 
     [Header("ステージで集めたコインの一時保存用（セーブ非対象）")]
     public int stageCoins = 0;
 
     [Header("残基システム")]
-    public int currentLives = 3;       
-    public int currentLifePieces = 0;  
+    public int currentLives = 3;
+    public int currentLifePieces = 0;
 
     public AudioClip oneUpSE;
 
-    // ▼ 変数宣言の場所に追加
     [Header("ワールド進行データ")]
-    public int unlockedWorldLevel = 1;   // レベル2が解放されたら2になる
-    public int currentWorldNodeNumber = 1; // マップの現在位置記憶用
+    public int unlockedWorldLevel = 1;
+    public int currentWorldNodeNumber = 1;
 
     [Header("マップ遷移用")]
-    public string returnMapSceneName = ""; // ← これを追加！
+    public string returnMapSceneName = "";
 
     [Header("インベントリデータ（セーブ対象）")]
     public System.Collections.Generic.List<int> ownedItemIds = new System.Collections.Generic.List<int>();
@@ -41,92 +43,82 @@ public class GameManager : MonoBehaviour{
     [Header("ショップでの購入回数（セーブ対象）")]
     public int hpUpPurchaseCount = 0;
     public int spUpPurchaseCount = 0;
+
     void Awake(){
         if (Instance == null){
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadGame();
+            // 注意：Awakeでの LoadGame() は外しています（タイトル画面でスロットを選んでからロードするため）
         }else{
             Destroy(gameObject);
         }
     }
 
-    public void AddLifePiece(int amount) {
+    public void AddLifePiece(int amount){
         currentLifePieces += amount;
-        Debug.Log($"1UPアイテムゲット！ 現在: {currentLifePieces} / 100");
-        
-        if (currentLifePieces >= 100) {
+        if (currentLifePieces >= 100){
             currentLifePieces -= 100;
             currentLives++;
-            
-            if (SoundManager.instance != null && oneUpSE != null) {
+            if (SoundManager.instance != null && oneUpSE != null){
                 SoundManager.instance.PlaySE(oneUpSE);
             }
-            Debug.Log($"1UPしました！ 残基: {currentLives}");
         }
-        
         LifeHUD hud = FindFirstObjectByType<LifeHUD>();
-        if (hud != null){
-            hud.UpdateHUD();
-        }
+        if (hud != null) hud.UpdateHUD();
     }
 
     // ==========================================
-    // セーブ・ロード・リセット機能
+    // セーブ・ロード・リセット機能（多重スロット対応）
     // ==========================================
-    public void SaveGame() {
-        PlayerPrefs.SetInt("MaxHp", currentMaxHp);
-        PlayerPrefs.SetInt("MaxSp", currentMaxSp);
-        PlayerPrefs.SetInt("UnlockedStageLevel", unlockedStageLevel);
-        PlayerPrefs.SetInt("TotalCoins", totalCoins);
-        PlayerPrefs.SetInt("CurrentLives", currentLives);
-        PlayerPrefs.SetInt("CurrentLifePieces", currentLifePieces);
-        
-        // ▼【追加】現在位置をセーブ
-        PlayerPrefs.SetInt("CurrentMapNodeNumber", currentMapNodeNumber);
+    public void SaveGame(){
+        string s = "_" + currentSaveSlot; // 例: "_1"
 
-        // ▼ SaveGame() の中に追加
-        PlayerPrefs.SetInt("UnlockedWorldLevel", unlockedWorldLevel);
-        PlayerPrefs.SetInt("CurrentWorldNodeNumber", currentWorldNodeNumber);
+        PlayerPrefs.SetInt("IsSaved" + s, 1); // データが存在する証拠のフラグ
 
-        // ▼ 追加：持っているアイテムIDのリストを文字列にして保存
+        PlayerPrefs.SetInt("MaxHp" + s, currentMaxHp);
+        PlayerPrefs.SetInt("MaxSp" + s, currentMaxSp);
+        PlayerPrefs.SetInt("UnlockedStageLevel" + s, unlockedStageLevel);
+        PlayerPrefs.SetInt("TotalCoins" + s, totalCoins);
+        PlayerPrefs.SetInt("CurrentLives" + s, currentLives);
+        PlayerPrefs.SetInt("CurrentLifePieces" + s, currentLifePieces);
+        PlayerPrefs.SetInt("CurrentMapNodeNumber" + s, currentMapNodeNumber);
+        PlayerPrefs.SetInt("UnlockedWorldLevel" + s, unlockedWorldLevel);
+        PlayerPrefs.SetInt("CurrentWorldNodeNumber" + s, currentWorldNodeNumber);
+
         string itemIdsStr = string.Join(",", ownedItemIds);
-        PlayerPrefs.SetString("OwnedItemIds", itemIdsStr);
+        PlayerPrefs.SetString("OwnedItemIds" + s, itemIdsStr);
 
-        // ドーピング回数のセーブ
-        PlayerPrefs.SetInt("HpUpPurchaseCount", hpUpPurchaseCount);
-        PlayerPrefs.SetInt("SpUpPurchaseCount", spUpPurchaseCount);
+        PlayerPrefs.SetInt("HpUpPurchaseCount" + s, hpUpPurchaseCount);
+        PlayerPrefs.SetInt("SpUpPurchaseCount" + s, spUpPurchaseCount);
 
         PlayerPrefs.Save();
     }
 
-    public void LoadGame() {
-        if (PlayerPrefs.HasKey("MaxHp")) currentMaxHp = PlayerPrefs.GetInt("MaxHp");
-        if (PlayerPrefs.HasKey("MaxSp")) currentMaxSp = PlayerPrefs.GetInt("MaxSp");
-        if (PlayerPrefs.HasKey("UnlockedStageLevel")) unlockedStageLevel = PlayerPrefs.GetInt("UnlockedStageLevel");
-        if (PlayerPrefs.HasKey("TotalCoins")) totalCoins = PlayerPrefs.GetInt("TotalCoins");
-        if (PlayerPrefs.HasKey("CurrentLives")) currentLives = PlayerPrefs.GetInt("CurrentLives");
-        if (PlayerPrefs.HasKey("CurrentLifePieces")) currentLifePieces = PlayerPrefs.GetInt("CurrentLifePieces");
-        
-        // ▼【追加】現在位置をロード
-        if (PlayerPrefs.HasKey("CurrentMapNodeNumber")) currentMapNodeNumber = PlayerPrefs.GetInt("CurrentMapNodeNumber");
+    public void LoadGame(){
+        string s = "_" + currentSaveSlot;
 
-        // ▼ LoadGame() の中に追加
-        if (PlayerPrefs.HasKey("UnlockedWorldLevel")) unlockedWorldLevel = PlayerPrefs.GetInt("UnlockedWorldLevel");
-        if (PlayerPrefs.HasKey("CurrentWorldNodeNumber")) currentWorldNodeNumber = PlayerPrefs.GetInt("CurrentWorldNodeNumber");
+        if (PlayerPrefs.HasKey("MaxHp" + s)) currentMaxHp = PlayerPrefs.GetInt("MaxHp" + s);
+        if (PlayerPrefs.HasKey("MaxSp" + s)) currentMaxSp = PlayerPrefs.GetInt("MaxSp" + s);
+        if (PlayerPrefs.HasKey("UnlockedStageLevel" + s)) unlockedStageLevel = PlayerPrefs.GetInt("UnlockedStageLevel" + s);
+        if (PlayerPrefs.HasKey("TotalCoins" + s)) totalCoins = PlayerPrefs.GetInt("TotalCoins" + s);
+        if (PlayerPrefs.HasKey("CurrentLives" + s)) currentLives = PlayerPrefs.GetInt("CurrentLives" + s);
+        if (PlayerPrefs.HasKey("CurrentLifePieces" + s)) currentLifePieces = PlayerPrefs.GetInt("CurrentLifePieces" + s);
+        if (PlayerPrefs.HasKey("CurrentMapNodeNumber" + s)) currentMapNodeNumber = PlayerPrefs.GetInt("CurrentMapNodeNumber" + s);
+        if (PlayerPrefs.HasKey("UnlockedWorldLevel" + s)) unlockedWorldLevel = PlayerPrefs.GetInt("UnlockedWorldLevel" + s);
+        if (PlayerPrefs.HasKey("CurrentWorldNodeNumber" + s)) currentWorldNodeNumber = PlayerPrefs.GetInt("CurrentWorldNodeNumber" + s);
 
-        // ドーピング回数のロード
-        if (PlayerPrefs.HasKey("HpUpPurchaseCount")) hpUpPurchaseCount = PlayerPrefs.GetInt("HpUpPurchaseCount");
-        if (PlayerPrefs.HasKey("SpUpPurchaseCount")) spUpPurchaseCount = PlayerPrefs.GetInt("SpUpPurchaseCount");
+        if (PlayerPrefs.HasKey("HpUpPurchaseCount" + s)) hpUpPurchaseCount = PlayerPrefs.GetInt("HpUpPurchaseCount" + s);
+        if (PlayerPrefs.HasKey("SpUpPurchaseCount" + s)) spUpPurchaseCount = PlayerPrefs.GetInt("SpUpPurchaseCount" + s);
 
-        // ▼ 追加：アイテムIDのリストを復元
-        if (PlayerPrefs.HasKey("OwnedItemIds")){
-            string idsStr = PlayerPrefs.GetString("OwnedItemIds");
+        if (PlayerPrefs.HasKey("OwnedItemIds" + s)){
+            string idsStr = PlayerPrefs.GetString("OwnedItemIds" + s);
             ownedItemIds.Clear();
             if (!string.IsNullOrEmpty(idsStr)){
                 string[] idArray = idsStr.Split(',');
-                foreach (string idStr in idArray){
-                    if (int.TryParse(idStr, out int id)){
+                foreach (string idStr in idArray)
+                {
+                    if (int.TryParse(idStr, out int id))
+                    {
                         ownedItemIds.Add(id);
                     }
                 }
@@ -134,40 +126,46 @@ public class GameManager : MonoBehaviour{
         }
     }
 
-    public void ResetData() {
-        PlayerPrefs.DeleteAll();
+    public void ResetData(){
+        // ★重要：PlayerPrefs.DeleteAll() は使わない！（他のファイルも消えるため）
+        // あくまで「現在ゲーム内で動いているメモリ上の数値を初期値に戻す」だけにする
         currentMaxHp = 12;
         currentMaxSp = 6;
         unlockedStageLevel = 1;
         totalCoins = 0;
         currentLives = 3;
         currentLifePieces = 0;
-
-        // ▼ ResetData() の中に追加
         unlockedWorldLevel = 1;
         currentWorldNodeNumber = 1;
-
-        // ▼【追加】現在位置も初期化
         currentMapNodeNumber = 1;
-
         hpUpPurchaseCount = 0;
         spUpPurchaseCount = 0;
-
-        // ▼ 追加
         ownedItemIds.Clear();
     }
 
-    // ワールドマップでレベル1のマスを選択した時の処理
-    public void OnSelectLevel1(){
-        // GameManagerの進行度を見て、未クリア（初めて）ならストーリーへ
-        if (GameManager.Instance.unlockedStageLevel == 1)
-        {
-            SceneTransitionManager.Instance.LoadScene("LevelOpeningScene");
-        }
-        else
-        {
-            // すでにクリア済み（2回目以降）なら直接ステージマップへ
-            SceneTransitionManager.Instance.LoadScene("MapSelectScene_Level_1");
-        }
+    // ▼▼▼ 新規追加：指定したスロットのセーブデータを消去する（ファイルを消す用） ▼▼▼
+    public void DeleteSaveData(int slot)
+    {
+        string s = "_" + slot;
+        PlayerPrefs.DeleteKey("IsSaved" + s);
+        PlayerPrefs.DeleteKey("MaxHp" + s);
+        PlayerPrefs.DeleteKey("MaxSp" + s);
+        PlayerPrefs.DeleteKey("UnlockedStageLevel" + s);
+        PlayerPrefs.DeleteKey("TotalCoins" + s);
+        PlayerPrefs.DeleteKey("CurrentLives" + s);
+        PlayerPrefs.DeleteKey("CurrentLifePieces" + s);
+        PlayerPrefs.DeleteKey("CurrentMapNodeNumber" + s);
+        PlayerPrefs.DeleteKey("UnlockedWorldLevel" + s);
+        PlayerPrefs.DeleteKey("CurrentWorldNodeNumber" + s);
+        PlayerPrefs.DeleteKey("OwnedItemIds" + s);
+        PlayerPrefs.DeleteKey("HpUpPurchaseCount" + s);
+        PlayerPrefs.DeleteKey("SpUpPurchaseCount" + s);
+        PlayerPrefs.Save();
+    }
+
+    // ▼▼▼ 新規追加：そのスロットにデータがあるか確認する（タイトル画面用） ▼▼▼
+    public static bool HasSaveData(int slot)
+    {
+        return PlayerPrefs.HasKey("IsSaved_" + slot);
     }
 }
