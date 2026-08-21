@@ -1,18 +1,28 @@
-﻿using UnityEngine;
+﻿/* ===================================================
+ * スクリプト名 : WorldData.cs
+ * 用途 : ワールド（大マップのマス）のデータ定義
+ * 拡張 : 単一レベル制から、フラグ条件（リスト）制へ移行
+ * =================================================== */
+using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewWorldData", menuName = "GameData/WorldData")]
-public class WorldData : ScriptableObject{
+public class WorldData : ScriptableObject {
     [Header("ワールド基本情報")]
-    public int worldNumber;        // 例：1, 2, 3
-    public string worldName;       // 例："レベル1の島"
-    public string sceneName;       // ロードするScene名（例："MapSelectScene_Level1"）
+    public int worldNumber;
+    public string worldName;
+    public string sceneName;
 
-    // ▼▼▼ ここを新規追加 ▼▼▼
     [Header("ストーリー演出設定")]
     [Tooltip("このワールドに入る時の導入シーン名（空欄ならストーリーなしで直接マップへ）")]
-    public string storySceneName;  // 例："Level1_OpeningScene"
-                                   // ▲▲▲ 新規追加ここまで ▲▲▲
+    public string storySceneName;
 
-    [Tooltip("このワールドに行くために必要な解放レベル")]
-    public int requiredWorldLevel = 1;
+    // ▼ 旧仕様（廃止）
+    // public int requiredWorldLevel = 1;
+
+    // ▼▼▼ 新仕様（RPG的フラグ管理用） ▼▼▼
+    [Header("解放条件（フラグ式）")]
+    [Tooltip("ここに入れたイベントフラグが【すべて】立っていれば解放されます。（例: Unlocked_World_2）")]
+    public List<string> requiredEventFlags = new List<string>();
+    // ▲▲▲ 新仕様ここまで ▲▲▲
 }
