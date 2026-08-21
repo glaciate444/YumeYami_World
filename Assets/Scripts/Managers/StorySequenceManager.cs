@@ -194,9 +194,16 @@ public class StorySequenceManager : MonoBehaviour {
         isFinished = true;
 
         if (worldNumberToMarkWatched > 0){
-            string saveKey = "StoryWatched_World_" + worldNumberToMarkWatched;
-            PlayerPrefs.SetInt(saveKey, 1);
-            PlayerPrefs.Save();
+            string storyFlag = "StoryWatched_World_" + worldNumberToMarkWatched;
+
+            if (GameManager.Instance != null){
+                // セーブデータ（GameManager）にストーリー既読フラグを刻み込む
+                GameManager.Instance.AddEventFlag(storyFlag);
+            }else{
+                // テスト用の旧処理（GameManager不在時）
+                PlayerPrefs.SetInt(storyFlag, 1);
+                PlayerPrefs.Save();
+            }
         }
 
         if (SceneTransitionManager.Instance != null && !string.IsNullOrEmpty(nextSceneName)){

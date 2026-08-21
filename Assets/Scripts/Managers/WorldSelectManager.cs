@@ -72,12 +72,19 @@ public class WorldSelectManager : MonoBehaviour {
                 // ワールドに入ることが確定したら、フラグをONにして連打をロックする！
                 isStartingWorld = true;
 
-                // ▼▼▼ ここから修正：ストーリーの既読判定 ▼▼▼
+                // ▼▼▼ ここから修正：ストーリーの既読判定（フラグ式に完全対応） ▼▼▼
                 WorldData targetWorld = currentNode.myWorldData;
 
-                // 1. セーブデータから「既読フラグ」を読み込む（1なら既読、0なら未読）
-                string saveKey = "StoryWatched_World_" + targetWorld.worldNumber;
-                bool isStoryWatched = PlayerPrefs.GetInt(saveKey, 0) == 1;
+                // 1. GameManagerのイベントフラグから「既読フラグ」をチェック
+                string storyFlag = "StoryWatched_World_" + targetWorld.worldNumber;
+                bool isStoryWatched = false;
+
+                if (GameManager.Instance != null){
+                    isStoryWatched = GameManager.Instance.HasEventFlag(storyFlag);
+                }else{
+                    // テストモード時（GameManager不在時）の保険
+                    isStoryWatched = PlayerPrefs.GetInt(storyFlag, 0) == 1;
+                }
 
                 string sceneToLoad = targetWorld.sceneName; // デフォルトは直接マップへ遷移
 
@@ -92,7 +99,6 @@ public class WorldSelectManager : MonoBehaviour {
                 }else{
                     SceneManager.LoadScene(sceneToLoad);
                 }
-                // ▲▲▲ 修正ここまで ▲▲▲
             }
         }
     }
