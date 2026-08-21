@@ -146,7 +146,7 @@ public class TitleManager : MonoBehaviour {
                 // 「ゲームスタート」を選んだ場合
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.LoadGame();
-                SceneTransitionManager.Instance.LoadScene("MapSelectScene_Level_1"); // ※続きから始まるシーン
+                SceneTransitionManager.Instance.LoadScene("WorldMapScene");
             }else{
                 // 「ファイルを消す」を選んだ場合
                 GameManager.Instance.DeleteSaveData(selectedSlot);
