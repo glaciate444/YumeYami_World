@@ -1,8 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : MapNode.cs
- * Version : Ver0.02
+ * Version : Ver0.04
  * 用途 : マップ上の各ステージの位置を示すポイント。
- * 拡張 : フラグ式進行度への対応とテストモードの完備
+ * 拡張 : メダル最大枚数の可変対応（LevelData連動）
  * =================================================== */
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,11 +11,22 @@ public class MapNode : MonoBehaviour {
     [Header("ステージ設定")]
     public LevelData myLevelData;
 
-    [Header("UI設定")]
+    [Header("UI設定（ベース枠）")]
     public Image nodeImage;
-    public Color lockedColor = Color.gray;
-    public Color unlockedColor = Color.white;
-    public Color clearedColor = Color.yellow;
+    public Sprite lockedSprite;
+    public Sprite unlockedSprite;
+    public Sprite clearedSprite;
+
+    [Header("UI設定（数字アイコン）")]
+    public Image numberImage;
+    public Sprite lockedNumSprite;
+    public Sprite unlockedNumSprite;
+    public Sprite clearedNumSprite;
+
+    [Header("UI設定（クラウン）")]
+    public Image crownImage;
+    public Sprite silverCrownSprite;
+    public Sprite goldCrownSprite;
 
     [Header("隣接ノード")]
     public MapNode upNode;
@@ -29,54 +40,87 @@ public class MapNode : MonoBehaviour {
     public void SetupNode(){
         if (myLevelData == null) return;
 
-        // 【テストモード】 GameManagerがいない場合は無条件で解放
         if (GameManager.Instance == null){
             Debug.LogWarning($"【テストモード】 GameManagerがいないため、{myLevelData.levelName} を強制解放します！");
             IsUnlocked = true;
             IsCleared = true;
             UpdateVisuals();
+            UpdateCrown();
             return;
         }
 
-        // ▼▼▼ 本番モード（フラグリストによる厳密な判定） ▼▼▼
-
-        // 1. このノード自身がクリア済みかどうか
         IsCleared = GameManager.Instance.IsStageCleared(myLevelData.stageNumber);
-
-        // 2. 解放条件のチェック（最初は true にしておき、条件を満たしていないものがあれば false に落とす）
         IsUnlocked = true;
 
-        // 条件A：必須クリアステージのチェック
         foreach (int reqStageNum in myLevelData.requiredClearedStageNumbers){
             if (!GameManager.Instance.IsStageCleared(reqStageNum)){
-                IsUnlocked = false; // 1つでもクリアしてないものがあればロック！
+                IsUnlocked = false;
                 break;
             }
         }
 
-        // 条件B：必須イベントフラグのチェック（ステージ条件をパスした場合のみ確認）
         if (IsUnlocked){
             foreach (string reqFlag in myLevelData.requiredEventFlags){
                 if (!GameManager.Instance.HasEventFlag(reqFlag)){
-                    IsUnlocked = false; // 1つでもフラグが足りなければロック！
+                    IsUnlocked = false;
                     break;
                 }
             }
         }
-        // ▲▲▲ 修正ここまで ▲▲▲
 
         UpdateVisuals();
+        UpdateCrown();
     }
 
     private void UpdateVisuals(){
-        if (nodeImage == null) return;
+        if (nodeImage != null) nodeImage.color = Color.white;
+        if (numberImage != null) numberImage.color = Color.white;
 
         if (IsCleared){
-            nodeImage.color = clearedColor;
+            if (nodeImage != null && clearedSprite != null) nodeImage.sprite = clearedSprite;
+            if (numberImage != null && clearedNumSprite != null) numberImage.sprite = clearedNumSprite;
         }else if (IsUnlocked){
-            nodeImage.color = unlockedColor;
+            if (nodeImage != null && unlockedSprite != null) nodeImage.sprite = unlockedSprite;
+            if (numberImage != null && unlockedNumSprite != null) numberImage.sprite = unlockedNumSprite;
         }else{
-            nodeImage.color = lockedColor;
+            if (nodeImage != null && lockedSprite != null) nodeImage.sprite = lockedSprite;
+            if (numberImage != null && lockedNumSprite != null) numberImage.sprite = lockedNumSprite;
         }
+    }
+
+    private void UpdateCrown(){
+        if (crownImage == null || myLevelData == null) return;
+
+        // ▼▼▼ 修正：LevelDataから最大枚数を取得する ▼▼▼
+        int maxMedals = myLevelData.maxMedals;
+        int collectedMedals = 0;
+
+        // メダルが存在しないステージ（ボス戦のみなど）の場合はクラウンを非表示にして終了
+        if (maxMedals <= 0){
+            crownImage.gameObject.SetActive(false);
+            return;
+        }
+
+        // maxMedals の数だけループを回してチェックする
+        for (int i = 0; i < maxMedals; i++){
+            string saveKey = $"Stage_{myLevelData.stageNumber}_SpecialItem_{i}";
+            if (PlayerPrefs.GetInt(saveKey, 0) == 1){
+                collectedMedals++;
+            }
+        }
+
+        if (collectedMedals == 0){
+            // 1枚も取っていない場合は非表示
+            crownImage.gameObject.SetActive(false);
+        }else if (collectedMedals < maxMedals){
+            // 1枚以上、最大枚数未満の場合は銀冠
+            crownImage.gameObject.SetActive(true);
+            crownImage.sprite = silverCrownSprite;
+        }else{
+            // 最大枚数（コンプリート）の場合は金冠
+            crownImage.gameObject.SetActive(true);
+            crownImage.sprite = goldCrownSprite;
+        }
+        // ▲▲▲ 修正ここまで ▲▲▲
     }
 }

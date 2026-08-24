@@ -29,4 +29,8 @@ public class LevelData : ScriptableObject {
     public Sprite thumbnail;
     [TextArea(2, 3)]
     public string description;
+
+    [Header("収集アイテム設定")]
+    [Tooltip("このステージに存在するメダルの総数（レベル1は3、レベル2は4など）")]
+    public int maxMedals = 5;
 }

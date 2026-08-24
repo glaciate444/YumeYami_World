@@ -189,38 +189,48 @@ public class MapManager : MonoBehaviour{
     private void UpdateMapUI(){
         // 1. 残機の更新
         if (livesText != null && GameManager.Instance != null){
-            // "00" のように2桁フォーマットで表示
             livesText.text = GameManager.Instance.currentLives.ToString("D2");
         }
 
         // 2. ステージ名とメダルの更新
         if (currentNode != null && currentNode.myLevelData != null){
 
-            // レベル名をそのままテキストへ挿入
-            // （※LevelData側の「levelName」に "1-1: AAAAA" と直接記入している前提です）
             if (stageNameText != null){
                 stageNameText.text = currentNode.myLevelData.levelName;
             }
 
-            // メダルの取得状況を判定して色を変更する
+            // ▼▼▼ 修正：LevelDataから最大枚数を取得して表示枠を切り替える ▼▼▼
+            int maxMedals = currentNode.myLevelData.maxMedals;
+
             for (int i = 0; i < medalImages.Length; i++){
                 if (medalImages[i] != null){
-                    // SpecialCollectible.cs で保存されているキーと同じ文字列を作る
-                    string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}";
+                    // ループの回数が、そのステージの最大メダル数より少ない場合は表示する
+                    if (i < maxMedals){
+                        medalImages[i].gameObject.SetActive(true); // 枠を表示
 
-                    // 1なら取得済み、0なら未取得
-                    bool isGot = PlayerPrefs.GetInt(saveKey, 0) == 1;
+                        string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}";
+                        bool isGot = PlayerPrefs.GetInt(saveKey, 0) == 1;
 
-                    medalImages[i].color = isGot ? gotMedalColor : notGotMedalColor;
+                        medalImages[i].color = isGot ? gotMedalColor : notGotMedalColor;
+
+
+                    } // 最大枚数を超えている枠は非表示にする（例：最大3枚なら、iが3, 4の枠は消す）
+                    else{
+                        medalImages[i].gameObject.SetActive(false);
+                    }
                 }
             }
+            // ▲▲▲ 修正ここまで ▲▲▲
+
         }else{
             // ステージデータを持たない「通過点」に止まった場合の処理
-            if (stageNameText != null) stageNameText.text = ""; // 名前を空にする
+            if (stageNameText != null) stageNameText.text = "";
 
-            // メダルを透明にして見えなくする
+            // ▼ 修正：通過点は枠ごと非表示にする
             for (int i = 0; i < medalImages.Length; i++){
-                if (medalImages[i] != null) medalImages[i].color = Color.clear;
+                if (medalImages[i] != null){
+                    medalImages[i].gameObject.SetActive(false);
+                }
             }
         }
     }

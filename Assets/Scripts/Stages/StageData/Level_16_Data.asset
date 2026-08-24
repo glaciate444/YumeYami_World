@@ -15,6 +15,8 @@ MonoBehaviour:
   stageNumber: 16
   levelName: No.16
   sceneName: Level3-Stage4
-  requiredUnlockLevel: 18
+  requiredClearedStageNumbers: 
+  requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: "\u3077\u304F\u3077\u304F\u30D5\u30ED\u30FC\u30C8\u30DC\u30FC\u30EB"
+  maxMedals: 4
