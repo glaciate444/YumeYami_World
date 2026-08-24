@@ -204,6 +204,12 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.DeleteKey("ClearedStageNumbers" + s);
         PlayerPrefs.DeleteKey("EventFlags" + s);
 
+        //そのファイル（スロット）の全メダル記録を徹底的に消去する
+        for (int stage = 0; stage < 50; stage++){
+            for (int item = 0; item < 10; item++){
+                PlayerPrefs.DeleteKey($"Stage_{stage}_SpecialItem_{item}_{slot}");
+            }
+        }
         PlayerPrefs.Save();
     }
 

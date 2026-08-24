@@ -21,9 +21,12 @@ public class SpecialCollectible : MonoBehaviour {
     public AudioClip collectSE;
 
     // セーブデータに記録するための「合言葉（キー）」を作るメソッド
-    // 例: "Stage_1_SpecialItem_0" という固有の名前になります
     private string GetSaveKey(){
-        return $"Stage_{stageId}_SpecialItem_{collectibleId}";
+        int slot = 1;
+        if (GameManager.Instance != null){
+            slot = GameManager.Instance.currentSaveSlot;
+        }
+        return $"Stage_{stageId}_SpecialItem_{collectibleId}_{slot}";
     }
 
     void Start(){

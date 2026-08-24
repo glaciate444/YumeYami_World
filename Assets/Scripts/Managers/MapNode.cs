@@ -95,15 +95,18 @@ public class MapNode : MonoBehaviour {
         int maxMedals = myLevelData.maxMedals;
         int collectedMedals = 0;
 
-        // メダルが存在しないステージ（ボス戦のみなど）の場合はクラウンを非表示にして終了
         if (maxMedals <= 0){
             crownImage.gameObject.SetActive(false);
             return;
         }
 
-        // maxMedals の数だけループを回してチェックする
+        // ▼ GameManagerから現在のファイル番号を取得
+        int slot = 1;
+        if (GameManager.Instance != null) slot = GameManager.Instance.currentSaveSlot;
+
         for (int i = 0; i < maxMedals; i++){
-            string saveKey = $"Stage_{myLevelData.stageNumber}_SpecialItem_{i}";
+            // ▼ 末尾に _{slot} を追加して読み込む
+            string saveKey = $"Stage_{myLevelData.stageNumber}_SpecialItem_{i}_{slot}";
             if (PlayerPrefs.GetInt(saveKey, 0) == 1){
                 collectedMedals++;
             }

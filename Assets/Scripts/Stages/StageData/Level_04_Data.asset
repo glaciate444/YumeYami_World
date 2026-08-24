@@ -19,3 +19,4 @@ MonoBehaviour:
   requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 
+  maxMedals: 3

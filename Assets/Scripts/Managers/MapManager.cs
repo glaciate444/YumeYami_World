@@ -202,26 +202,25 @@ public class MapManager : MonoBehaviour{
             // ▼▼▼ 修正：LevelDataから最大枚数を取得して表示枠を切り替える ▼▼▼
             int maxMedals = currentNode.myLevelData.maxMedals;
 
+            // ▼ GameManagerから現在のファイル番号を取得
+            int slot = 1;
+            if (GameManager.Instance != null) slot = GameManager.Instance.currentSaveSlot;
+
             for (int i = 0; i < medalImages.Length; i++){
                 if (medalImages[i] != null){
-                    // ループの回数が、そのステージの最大メダル数より少ない場合は表示する
                     if (i < maxMedals){
-                        medalImages[i].gameObject.SetActive(true); // 枠を表示
+                        medalImages[i].gameObject.SetActive(true);
 
-                        string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}";
+                        // ▼ 末尾に _{slot} を追加して読み込む
+                        string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}_{slot}";
                         bool isGot = PlayerPrefs.GetInt(saveKey, 0) == 1;
 
                         medalImages[i].color = isGot ? gotMedalColor : notGotMedalColor;
-
-
-                    } // 最大枚数を超えている枠は非表示にする（例：最大3枚なら、iが3, 4の枠は消す）
-                    else{
+                    }else{
                         medalImages[i].gameObject.SetActive(false);
                     }
                 }
             }
-            // ▲▲▲ 修正ここまで ▲▲▲
-
         }else{
             // ステージデータを持たない「通過点」に止まった場合の処理
             if (stageNameText != null) stageNameText.text = "";
