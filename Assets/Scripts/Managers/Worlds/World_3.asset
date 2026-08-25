@@ -16,4 +16,5 @@ MonoBehaviour:
   worldName: Toy Lands
   sceneName: MapSelectScene_Level_3
   storySceneName: LevelOpeningScene_3
-  requiredWorldLevel: 3
+  requiredEventFlags:
+  - 14

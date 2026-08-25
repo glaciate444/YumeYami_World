@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d3a7ae6216dc3c49863b6add5e71e7c, type: 3}
-  m_Name: World_2
+  m_Name: World_4
   m_EditorClassIdentifier: Assembly-CSharp::WorldData
-  worldNumber: 2
-  worldName: Sweetia Field
-  sceneName: MapSelectScene_Level_2
-  storySceneName: LevelOpeningScene_2
+  worldNumber: 4
+  worldName: Cyan Beach
+  sceneName: MapSelectScene_Level_4
+  storySceneName: LevelOpeningScene_4
   requiredEventFlags:
-  - 7
+  - 20
