@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Level_08_Data
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 22
+  displayCourseNumber: 8
   levelName: "2-2\uFF1A\u30DE\u30AB\u30ED\u30F3\u30BF\u30EF\u30FC"
   sceneName: Level2-Stage2
-  requiredClearedStageNumbers: 16000000
+  requiredClearedStageNumbers: 15000000
   requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 

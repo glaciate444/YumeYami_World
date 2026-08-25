@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Boss_1
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 17
+  displayCourseNumber: 1
   levelName: Boss Stage
   sceneName: Level1-Stage7_Boss
-  requiredClearedStageNumbers: 11000000
+  requiredClearedStageNumbers: 10000000
   requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 

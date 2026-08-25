@@ -19,15 +19,20 @@ public class PlayerShoot : MonoBehaviour{
     private Animator anim; // ←【追加1】Animator用の変数を用意
 
     void Awake(){
-        anim = GetComponent<Animator>(); // ←【追加2】プレイヤーのAnimatorを取得する
-        RecoverSp(maxSp);
-        currentSp = maxSp;
-        spText.text = currentSp.ToString();
-        UpdateUI();
-
+        anim = GetComponent<Animator>();
         inputActions = new PlayerControls();
-        // Shootアクションが呼ばれたら Shoot() メソッドを実行
         inputActions.Player.Shoot.performed += context => Shoot();
+    }
+
+    void Start(){
+        // GameManager が存在する場合、成長後の最大SPを読み込む
+        if (GameManager.Instance != null){
+            maxSp = GameManager.Instance.currentMaxSp;
+        }
+
+        // SPを満タンにする
+        currentSp = maxSp;
+        UpdateUI();
     }
 
     private void OnEnable() => inputActions.Enable();

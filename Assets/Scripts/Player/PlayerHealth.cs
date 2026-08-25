@@ -33,34 +33,47 @@ public class PlayerHealth : MonoBehaviour, IDamageable{
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
         playerController = GetComponent<PlayerController>();
-
         sr = GetComponent<SpriteRenderer>();
-        currentHealth = maxHealth;
 
-        // インスペクターで設定されていなければ、タグを使ってシーン内から自動で探す
         if (healthSlider == null){
             GameObject sliderObj = GameObject.FindWithTag("HPSlider");
             if (sliderObj != null) healthSlider = sliderObj.GetComponent<Slider>();
         }
+    }
 
-        // 初期UIの更新
+    void Start(){
+        // GameManager が存在する場合、成長後の最大HPを読み込む
+        if (GameManager.Instance != null){
+            maxHealth = GameManager.Instance.currentMaxHp;
+        }
+
+        // HPを満タンにする（※アクションゲームなのでステージ開始時は満タンにする仕様です）
+        currentHealth = maxHealth;
+
+        // UIを最新の最大値で更新する
         if (healthSlider != null){
             healthSlider.maxValue = maxHealth;
             healthSlider.value = currentHealth;
-            
         }
         if (healthText != null){
             healthText.text = currentHealth.ToString();
         }
     }
 
+
+    // IDamageableインターフェースの実装
     // IDamageableインターフェースの実装
     public void TakeDamage(int damage, Vector2 knockbackDirection){
         if (isInvincible) return; // 無敵中ならダメージを受けない
 
-        // サファイアのダメージ軽減処理
-        int finalDamage = damage - playerController.passiveDefenseBonus;
-        if (finalDamage < 1) finalDamage = 1; // 軽減しすぎても最低1ダメージは保証する
+        int finalDamage = 0;
+
+        // ▼▼▼ 修正：元々のダメージが1以上の攻撃にだけ「防御軽減」と「最低1ダメージ保証」を適用する ▼▼▼
+        if (damage > 0){
+            finalDamage = damage - playerController.passiveDefenseBonus;
+            if (finalDamage < 1) finalDamage = 1; // 軽減しすぎても最低1ダメージは保証する
+        }
+        // ▲▲▲ 修正ここまで ▲▲▲
 
         currentHealth -= finalDamage;
         UpdateUI();

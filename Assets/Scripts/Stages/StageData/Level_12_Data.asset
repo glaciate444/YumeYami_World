@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Level_12_Data
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 26
+  displayCourseNumber: 12
   levelName: No.12
   sceneName: Level2-Stage6
   requiredClearedStageNumbers: 19000000

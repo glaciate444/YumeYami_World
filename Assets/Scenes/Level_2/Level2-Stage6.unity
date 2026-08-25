@@ -31771,7 +31771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: MiniGameScene
-  clearedStageNumber: 27
+  clearedStageNumber: 26
   unlocksNewWorld: 0
   unlockWorldReward: 2
   waitTime: 2

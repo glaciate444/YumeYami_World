@@ -16,7 +16,7 @@ MonoBehaviour:
   displayCourseNumber: 2
   levelName: No.02
   sceneName: Level1-Stage2
-  requiredClearedStageNumbers: 0c000000
+  requiredClearedStageNumbers: 0b000000
   requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 
