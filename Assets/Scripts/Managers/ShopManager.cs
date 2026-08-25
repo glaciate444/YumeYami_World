@@ -3,10 +3,11 @@
  * 用途 : キーボード操作前提のショップUI制御と購入処理
  * 拡張 : 売り切れ判定と、購入回数による価格上昇（ドーピング）を実装
  * =================================================== */
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour {
     [Header("商品ラインナップ（5つセットする）")]
@@ -177,11 +178,9 @@ public class ShopManager : MonoBehaviour {
             case ShopItemData.ItemEffectType.Immediate_WeaponUp:
                 break;
             case ShopItemData.ItemEffectType.Passive_Inventory:
-                if (item.inventoryItemData != null)
-                {
+                if (item.inventoryItemData != null){
                     int idToAdd = item.inventoryItemData.itemId;
-                    if (!GameManager.Instance.ownedItemIds.Contains(idToAdd))
-                    {
+                    if (!GameManager.Instance.ownedItemIds.Contains(idToAdd)){
                         GameManager.Instance.ownedItemIds.Add(idToAdd);
                     }
                 }
@@ -189,9 +188,20 @@ public class ShopManager : MonoBehaviour {
         }
     }
 
-    private void ExitShop()
-    {
+    private void ExitShop(){
         isShopping = false;
-        // ※シーン遷移処理をここに記述
+        // ここを実装：GameManagerの記憶から帰り道を探す ▼▼▼
+        string returnScene = "WorldMapScene"; // 記憶がなかった場合の予備
+
+        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.returnMapSceneName)){
+            returnScene = GameManager.Instance.returnMapSceneName; // 例：MapSelectScene_Level_1 が入る
+        }
+
+        // 暗転フェードで元のマップへ帰還
+        if (SceneTransitionManager.Instance != null){
+            SceneTransitionManager.Instance.LoadScene(returnScene, TransitionType.Fade);
+        }else{
+            SceneManager.LoadScene(returnScene);
+        }
     }
 }

@@ -223,6 +223,7 @@ RectTransform:
   - {fileID: 1027083738}
   - {fileID: 179194803}
   - {fileID: 683036201}
+  - {fileID: 1015108634}
   - {fileID: 1267188803}
   - {fileID: 1877918294}
   m_Father: {fileID: 0}
@@ -439,6 +440,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 9282afd5592f30640b41d7cd66c4c48c, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 179194805}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -545,6 +548,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 460b0c7400a017e40a0a6e2acfef305f, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 216246494}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -651,6 +656,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 3aa82cd4b768bb84d8b8a63196d8a73c, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 329518401}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -664,7 +671,7 @@ MonoBehaviour:
   goldCrownSprite: {fileID: -6156647272689741206, guid: 0558b0ac601f3d6438bc10b2caf6cfad, type: 3}
   upNode: {fileID: 509168686}
   downNode: {fileID: 216246493}
-  leftNode: {fileID: 0}
+  leftNode: {fileID: 1015108635}
   rightNode: {fileID: 0}
 --- !u!114 &329518401
 MonoBehaviour:
@@ -886,6 +893,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 28cb6407e8c01f64482cc38ce45102fb, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 509168687}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -1383,6 +1392,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 5a559e2518ddeb142b96508e6d9e898e, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 683036203}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -1435,6 +1446,188 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683036200}
+  m_CullTransparentMesh: 1
+--- !u!1 &870490071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 870490072}
+  - component: {fileID: 870490074}
+  - component: {fileID: 870490073}
+  m_Layer: 5
+  m_Name: Point_NumIcon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &870490072
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870490071}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1015108634}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -50, y: 50}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &870490073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870490071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -603530366, guid: 5569aedf108570549b3f641103bd0ded, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &870490074
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870490071}
+  m_CullTransparentMesh: 1
+--- !u!1 &1015108633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1015108634}
+  - component: {fileID: 1015108637}
+  - component: {fileID: 1015108636}
+  - component: {fileID: 1015108635}
+  m_Layer: 5
+  m_Name: Point_Shop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1015108634
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015108633}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 870490072}
+  m_Father: {fileID: 72648065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -600, y: -220}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1015108635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015108633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5806df779d8e514794035b08b3aee1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  myLevelData: {fileID: 0}
+  isShopNode: 1
+  shopSceneName: ShopScene
+  nodeImage: {fileID: 1015108636}
+  lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
+  unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
+  clearedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
+  numberImage: {fileID: 870490073}
+  lockedNumSprite: {fileID: -603530366, guid: 5569aedf108570549b3f641103bd0ded, type: 3}
+  unlockedNumSprite: {fileID: 999929585, guid: 5569aedf108570549b3f641103bd0ded, type: 3}
+  clearedNumSprite: {fileID: 999929585, guid: 5569aedf108570549b3f641103bd0ded, type: 3}
+  crownImage: {fileID: 0}
+  silverCrownSprite: {fileID: 0}
+  goldCrownSprite: {fileID: 0}
+  upNode: {fileID: 0}
+  downNode: {fileID: 0}
+  leftNode: {fileID: 0}
+  rightNode: {fileID: 329518400}
+--- !u!114 &1015108636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015108633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1015108637
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015108633}
   m_CullTransparentMesh: 1
 --- !u!1 &1025023103
 GameObject:
@@ -1524,6 +1717,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 22ac398918e003444b13f0e3fe9cb16d, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 1027083740}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -2923,6 +3118,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: c59cf89ed80a2104dbaeac39d299e609, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 1935131183}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}

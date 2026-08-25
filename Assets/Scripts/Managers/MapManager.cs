@@ -146,21 +146,36 @@ public class MapManager : MonoBehaviour{
         }
 
         // ▼ 決定ボタンの処理
+        // ▼ 決定ボタンの処理
         if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
-            if (currentNode != null && currentNode.myLevelData != null && currentNode.IsUnlocked){
-                
-                // ▼【新規追加】コースに入ることが確定したら、フラグをONにして連打をロックする！
-                isStartingCourse = true;
 
-                if (GameManager.Instance != null) {
-                    GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
+            if (currentNode != null && currentNode.IsUnlocked){
+
+                // ショップマスだった場合の処理
+                if (currentNode.isShopNode){
+                    isStartingCourse = true;
+                    if (GameManager.Instance != null){
+                        // 今いるマップの名前（MapSelectScene_Level_N）を記憶させる！
+                        GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
+                    }
+                    if (SceneTransitionManager.Instance != null){
+                        SceneTransitionManager.Instance.LoadScene(currentNode.shopSceneName, TransitionType.Fade); // 文字なしフェード
+                    }else{
+                        SceneManager.LoadScene(currentNode.shopSceneName);
+                    }
                 }
 
-                SceneTransitionManager.Instance.LoadCourseByNumber(
-                    currentNode.myLevelData.sceneName,
-                    currentNode.myLevelData.stageNumber // ← 修正：ステージ番号（int）を渡す！
-                );
-
+                // ▼ 既存のコース遷移処理（else if に変更します）
+                else if (currentNode.myLevelData != null){
+                    isStartingCourse = true;
+                    if (GameManager.Instance != null){
+                        GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
+                    }
+                    SceneTransitionManager.Instance.LoadCourseByNumber(
+                        currentNode.myLevelData.sceneName,
+                        currentNode.myLevelData.stageNumber
+                    );
+                }
             }
         }
     }
@@ -193,16 +208,22 @@ public class MapManager : MonoBehaviour{
         }
 
         // 2. ステージ名とメダルの更新
-        if (currentNode != null && currentNode.myLevelData != null){
+        if (currentNode != null && currentNode.isShopNode){
+            if (stageNameText != null) stageNameText.text = "ショップ";
+            // メダル枠は非表示にする
+            for (int i = 0; i < medalImages.Length; i++){
+                if (medalImages[i] != null) medalImages[i].gameObject.SetActive(false);
+            }
+        }else if (currentNode != null && currentNode.myLevelData != null){
 
             if (stageNameText != null){
                 stageNameText.text = currentNode.myLevelData.levelName;
             }
 
-            // ▼▼▼ 修正：LevelDataから最大枚数を取得して表示枠を切り替える ▼▼▼
+            // LevelDataから最大枚数を取得して表示枠を切り替える
             int maxMedals = currentNode.myLevelData.maxMedals;
 
-            // ▼ GameManagerから現在のファイル番号を取得
+            // GameManagerから現在のファイル番号を取得
             int slot = 1;
             if (GameManager.Instance != null) slot = GameManager.Instance.currentSaveSlot;
 
@@ -211,7 +232,7 @@ public class MapManager : MonoBehaviour{
                     if (i < maxMedals){
                         medalImages[i].gameObject.SetActive(true);
 
-                        // ▼ 末尾に _{slot} を追加して読み込む
+                        // 末尾に _{slot} を追加して読み込む
                         string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}_{slot}";
                         bool isGot = PlayerPrefs.GetInt(saveKey, 0) == 1;
 

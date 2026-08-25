@@ -11,6 +11,11 @@ public class MapNode : MonoBehaviour {
     [Header("ステージ設定")]
     public LevelData myLevelData;
 
+    [Header("特殊ノード設定（ショップ用）")]
+    [Tooltip("チェックを入れると、LevelData不要のショップマスになります")]
+    public bool isShopNode = false;
+    public string shopSceneName = "ShopScene";
+
     [Header("UI設定（ベース枠）")]
     public Image nodeImage;
     public Sprite lockedSprite;
@@ -38,6 +43,15 @@ public class MapNode : MonoBehaviour {
     public bool IsCleared { get; private set; }
 
     public void SetupNode(){
+        // ショップマスの場合は強制的に解放状態にする
+        if (isShopNode){
+            IsUnlocked = true;
+            IsCleared = false; // ショップは黄色(クリア済)にはならない
+            UpdateVisuals();
+            if (crownImage != null) crownImage.gameObject.SetActive(false);
+            return;
+        }
+
         if (myLevelData == null) return;
 
         if (GameManager.Instance == null){
