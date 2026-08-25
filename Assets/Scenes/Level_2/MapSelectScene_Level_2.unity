@@ -915,7 +915,7 @@ MonoBehaviour:
   goldCrownSprite: {fileID: -6156647272689741206, guid: 0558b0ac601f3d6438bc10b2caf6cfad, type: 3}
   upNode: {fileID: 0}
   downNode: {fileID: 1027083739}
-  leftNode: {fileID: 2106499348}
+  leftNode: {fileID: 509168686}
   rightNode: {fileID: 216246493}
 --- !u!114 &329518401
 MonoBehaviour:
@@ -1225,10 +1225,10 @@ MonoBehaviour:
   crownImage: {fileID: 1734271380}
   silverCrownSprite: {fileID: -8222406987496834216, guid: 0558b0ac601f3d6438bc10b2caf6cfad, type: 3}
   goldCrownSprite: {fileID: -6156647272689741206, guid: 0558b0ac601f3d6438bc10b2caf6cfad, type: 3}
-  upNode: {fileID: 0}
+  upNode: {fileID: 2106499348}
   downNode: {fileID: 1935131182}
   leftNode: {fileID: 0}
-  rightNode: {fileID: 2106499348}
+  rightNode: {fileID: 329518400}
 --- !u!114 &509168687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1285,7 +1285,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -532, y: 198}
+  m_AnchoredPosition: {x: -342, y: 166}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &519420028
@@ -3450,7 +3450,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -71, y: 216}
+  m_AnchoredPosition: {x: -119, y: 306}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2106499348
@@ -3480,9 +3480,9 @@ MonoBehaviour:
   silverCrownSprite: {fileID: 0}
   goldCrownSprite: {fileID: 0}
   upNode: {fileID: 0}
-  downNode: {fileID: 0}
-  leftNode: {fileID: 509168686}
-  rightNode: {fileID: 329518400}
+  downNode: {fileID: 509168686}
+  leftNode: {fileID: 0}
+  rightNode: {fileID: 0}
 --- !u!114 &2106499349
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6adca6a612ad38c4d8818db72da41cc5, type: 3}
   m_Name: Level_03_Data
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
-  stageNumber: 3
+  stageNumber: 13
+  displayCourseNumber: 3
   levelName: No.03
   sceneName: Level1-Stage3
-  requiredClearedStageNumbers: 02000000
+  requiredClearedStageNumbers: 0d000000
   requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 

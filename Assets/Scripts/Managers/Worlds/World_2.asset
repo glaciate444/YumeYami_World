@@ -17,4 +17,4 @@ MonoBehaviour:
   sceneName: MapSelectScene_Level_2
   storySceneName: LevelOpeningScene_2
   requiredEventFlags:
-  - 7
+  - Unlocked_World_2

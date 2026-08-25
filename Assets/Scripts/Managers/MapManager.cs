@@ -173,7 +173,7 @@ public class MapManager : MonoBehaviour{
                     }
                     SceneTransitionManager.Instance.LoadCourseByNumber(
                         currentNode.myLevelData.sceneName,
-                        currentNode.myLevelData.stageNumber
+                        currentNode.myLevelData.displayCourseNumber // ← 修正：表向きの番号を渡す！
                     );
                 }
             }

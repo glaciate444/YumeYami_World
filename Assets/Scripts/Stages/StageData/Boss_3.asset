@@ -15,6 +15,8 @@ MonoBehaviour:
   stageNumber: 93
   levelName: Boss Stage
   sceneName: Level3-Stage7_Boss
-  requiredUnlockLevel: 21
+  requiredClearedStageNumbers: 25000000
+  requiredEventFlags: []
   thumbnail: {fileID: 0}
   description: 
+  maxMedals: 5
