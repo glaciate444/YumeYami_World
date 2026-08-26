@@ -987,7 +987,7 @@ MonoBehaviour:
   initialVelocity: {x: -5, y: 0}
   inheritDirection: 1
   spawnPoint: {fileID: 0}
-  activeDistance: 20
+  activeDistance: 8
 --- !u!212 &329141078
 SpriteRenderer:
   serializedVersion: 2
