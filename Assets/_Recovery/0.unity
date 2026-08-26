@@ -1385,7 +1385,6 @@ GameObject:
   - component: {fileID: 776723185}
   - component: {fileID: 776723184}
   - component: {fileID: 776723183}
-  - component: {fileID: 776723187}
   - component: {fileID: 776723186}
   m_Layer: 11
   m_Name: 9-Sliced
@@ -1576,18 +1575,6 @@ MonoBehaviour:
   damage: 1
   impact: 5
   canBeStomped: 1
---- !u!114 &776723187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776723180}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0afe77ef03cf1d0428d3946dc74cf5b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConstantVelocity
 --- !u!1001 &803173742
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -87,6 +87,10 @@ public class Enemy : MonoBehaviour, IDamageable {
         EnemyActivator activator = GetComponent<EnemyActivator>();
         if (activator != null) activator.enabled = false;
 
+        // キラー等の「強制等速移動」スクリプトを止める！ ▼▼▼
+        ConstantVelocity cv = GetComponent<ConstantVelocity>();
+        if (cv != null) cv.enabled = false;
+
         // 2. 当たり判定を全て消す
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
         foreach (var col in colliders){
