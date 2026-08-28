@@ -253,6 +253,7 @@ MonoBehaviour:
   firePoint: {fileID: 2277960918581896380}
   fireInterval: 2
   notRotateAngle: 0
+  shootSE: {fileID: 8300000, guid: c48d21803f7b6ec42bd9966fdb69be28, type: 3}
   aimType: 0
   bulletCount: 1
   spreadAngle: 15

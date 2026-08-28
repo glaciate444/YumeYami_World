@@ -52,6 +52,10 @@ public class StorySequenceManager : MonoBehaviour {
     [Header("テキスト表示設定")]
     public float typingSpeed = 0.05f;
 
+    [Header("演出設定")]
+    public float cgFadeDuration = 0.5f; // フェードにかかる時間
+    private Coroutine cgFadeCoroutine;
+
     [Header("遷移先設定")]
     public string nextSceneName = "MapSelectScene_Level1";
     public int worldNumberToMarkWatched = 1;
@@ -110,15 +114,8 @@ public class StorySequenceManager : MonoBehaviour {
 
         if (speakerNameText != null) speakerNameText.text = page.speakerName;
 
-        // 一枚絵の切り替え処理
-        if (storyImageUI != null){
-            if (page.cgSprite != null){
-                storyImageUI.sprite = page.cgSprite;
-                storyImageUI.color = Color.white;
-            }else if (storyImageUI.sprite == null){
-                storyImageUI.color = Color.clear;
-            }
-        }
+        // ▼▼▼ ここにフェード切り替え処理を呼び出す ▼▼▼
+        ChangeCGWithFade(page.cgSprite);
 
         // アニメーション指示
         if (page.targetAnimator != null && !string.IsNullOrEmpty(page.animationTrigger)){
@@ -188,6 +185,67 @@ public class StorySequenceManager : MonoBehaviour {
         if (currentPageIndex < pages.Count) PlayPage(currentPageIndex);
         else EndStory();
     }
+
+    /// <summary>
+    /// 一枚絵（CG）をフェードアウト・インで切り替える
+    /// </summary>
+    private void ChangeCGWithFade(Sprite nextSprite)
+    {
+        if (storyImageUI == null) return;
+
+        // すでにフェード処理中なら一旦止める
+        if (cgFadeCoroutine != null)
+        {
+            StopCoroutine(cgFadeCoroutine);
+        }
+
+        cgFadeCoroutine = StartCoroutine(FadeCGRoutine(nextSprite));
+    }
+
+    private IEnumerator FadeCGRoutine(Sprite nextSprite)
+    {
+        // 1. 次の画像が空（None）の場合：現在の画像をフェードアウトして消す
+        if (nextSprite == null)
+        {
+            yield return StartCoroutine(FadeAlpha(0f, cgFadeDuration));
+            storyImageUI.sprite = null;
+        }
+        // 2. 現在の画像と同じ画像が設定されている場合：何もしない（チラつき防止）
+        else if (storyImageUI.sprite == nextSprite)
+        {
+            yield return StartCoroutine(FadeAlpha(1f, cgFadeDuration));
+        }
+        // 3. 違う画像に切り替わる場合：一度フェードアウトしてから、新しい画像をセットしてフェードイン
+        else
+        {
+            // すでに絵が表示されているなら、一度透明にする
+            if (storyImageUI.sprite != null && storyImageUI.color.a > 0)
+            {
+                yield return StartCoroutine(FadeAlpha(0f, cgFadeDuration / 2f));
+            }
+
+            // 新しい画像をセットして、不透明（1f）に向かってフェードイン
+            storyImageUI.sprite = nextSprite;
+            yield return StartCoroutine(FadeAlpha(1f, cgFadeDuration));
+        }
+    }
+
+    private IEnumerator FadeAlpha(float targetAlpha, float duration)
+    {
+        float startAlpha = storyImageUI.color.a;
+        float time = 0;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
+            storyImageUI.color = new Color(storyImageUI.color.r, storyImageUI.color.g, storyImageUI.color.b, newAlpha);
+            yield return null;
+        }
+
+        storyImageUI.color = new Color(storyImageUI.color.r, storyImageUI.color.g, storyImageUI.color.b, targetAlpha);
+    }
+
 
     public void EndStory(){
         if (isFinished) return;

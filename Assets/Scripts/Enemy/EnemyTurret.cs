@@ -1,9 +1,8 @@
 ﻿/* ===================================================
  * スクリプト名 : EnemyTurret.cs
- * Version : Ver0.06
- * Update : 2026/08/05
+ * Version : Ver0.07
  * 用途 : アクエディ風の高性能な敵弾発射システム
- * 修正 : 放物線（山なり）に投げる AimType を追加
+ * 拡張 : 弾発射時の効果音（SE）再生機能を追加
  * =================================================== */
 using UnityEngine;
 using System.Collections;
@@ -15,8 +14,8 @@ public class EnemyTurret : MonoBehaviour {
         RandomDirection,
         Up,
         Down,
-        ParabolaForward,  // 前方へ放物線（山なり）で投げる
-        ParabolaAtPlayer  // プレイヤーのいる方向へ放物線で投げる
+        ParabolaForward,
+        ParabolaAtPlayer
     }
 
     [Header("識別用ID（同じ敵に複数付ける場合用）")]
@@ -28,17 +27,20 @@ public class EnemyTurret : MonoBehaviour {
     public float fireInterval = 2f;
     public bool notRotateAngle = false;
 
+    // ▼▼▼ 新規追加：サウンド設定 ▼▼▼
+    [Header("サウンド設定")]
+    [Tooltip("弾を発射した時に鳴らす効果音")]
+    public AudioClip shootSE;
+    // ▲▲▲ 新規追加ここまで ▲▲▲
+
     [Header("発射フォーメーション")]
     public AimType aimType = AimType.AimAtPlayer;
     public int bulletCount = 1;
     public float spreadAngle = 15f;
     public float burstInterval = 0f;
 
-    // ▼▼▼ 新規追加：放物線の設定 ▼▼▼
     [Header("放物線設定（AimTypeがParabolaの時）")]
-    [Tooltip("上に投げる強さの比率。1で斜め45度、数値を大きくすると高く上がります")]
     public float parabolaUpForce = 1.0f;
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("ズレ（ゆらぎ）設定")]
     public float angleRandomness = 0f;
@@ -103,17 +105,12 @@ public class EnemyTurret : MonoBehaviour {
             baseDir = Vector2.up;
         }else if (aimType == AimType.Down){
             baseDir = Vector2.down;
-        }
-        // ▼▼▼ 新規追加：放物線（山なり）の軌道計算 ▼▼▼
-        else if (aimType == AimType.ParabolaForward){
-            // 自分の向いている方向（X）に、指定した上向きの力（Y）を合成する
+        }else if (aimType == AimType.ParabolaForward){
             baseDir = new Vector2(facingDirection, parabolaUpForce).normalized;
         }else if (aimType == AimType.ParabolaAtPlayer && player != null){
-            // プレイヤーが左右どちらにいるかを判定し、その方向へ山なりに投げる
             float dirX = Mathf.Sign(player.position.x - firePoint.position.x);
             baseDir = new Vector2(dirX, parabolaUpForce).normalized;
         }
-        // ▲▲▲ 新規追加ここまで ▲▲▲
 
         for (int i = 0; i < bulletCount; i++){
             float offsetAngle = 0f;
@@ -129,6 +126,12 @@ public class EnemyTurret : MonoBehaviour {
                              + randomPosOffset;
 
             GameObject bullet = Instantiate(enemyBulletPrefab, finalPos, Quaternion.identity);
+
+            // ▼▼▼ 新規追加：弾生成時にSEを再生 ▼▼▼
+            if (shootSE != null && SoundManager.instance != null){
+                SoundManager.instance.PlaySE(shootSE);
+            }
+            // ▲▲▲ 新規追加ここまで ▲▲▲
 
             float angle = Mathf.Atan2(finalDir.y, finalDir.x) * Mathf.Rad2Deg;
             if (!notRotateAngle){
