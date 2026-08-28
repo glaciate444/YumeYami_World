@@ -935,8 +935,9 @@ MonoBehaviour:
   messageText: {fileID: 229158407}
   storyImageUI: {fileID: 0}
   typingSpeed: 0.05
+  cgFadeDuration: 0.5
   nextSceneName: MapSelectScene_Level_2
-  worldNumberToMarkWatched: 1
+  worldNumberToMarkWatched: 2
   transitionType: 0
 --- !u!4 &1322906809
 Transform:
