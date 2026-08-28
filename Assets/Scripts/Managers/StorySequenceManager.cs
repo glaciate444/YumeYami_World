@@ -114,7 +114,7 @@ public class StorySequenceManager : MonoBehaviour {
 
         if (speakerNameText != null) speakerNameText.text = page.speakerName;
 
-        // ▼▼▼ ここにフェード切り替え処理を呼び出す ▼▼▼
+        // ここにフェード切り替え処理を呼び出す
         ChangeCGWithFade(page.cgSprite);
 
         // アニメーション指示
@@ -122,7 +122,7 @@ public class StorySequenceManager : MonoBehaviour {
             page.targetAnimator.SetTrigger(page.animationTrigger);
         }
 
-        // ▼ 修正3：移動指示（コルーチンを管理する）
+        // 移動指示（コルーチンを管理する）
         if (page.targetToMove != null && page.moveDestination != null){
             if (moveCoroutine != null) StopCoroutine(moveCoroutine);
             moveCoroutine = StartCoroutine(MoveCharacterRoutine(page, page.targetToMove, page.moveDestination, page.moveDuration));
@@ -156,7 +156,7 @@ public class StorySequenceManager : MonoBehaviour {
         isMoving = false;
         moveCoroutine = null;
 
-        // ▼ 修正4：自動進行オプションがONなら、勝手に次のページへ進む
+        // 自動進行オプションがONなら、勝手に次のページへ進む
         if (page.autoProceedAfterMove){
             // テキストがまだタイピング途中なら強制完了させる
             if (isTyping){
@@ -202,25 +202,20 @@ public class StorySequenceManager : MonoBehaviour {
         cgFadeCoroutine = StartCoroutine(FadeCGRoutine(nextSprite));
     }
 
-    private IEnumerator FadeCGRoutine(Sprite nextSprite)
-    {
+    private IEnumerator FadeCGRoutine(Sprite nextSprite){
         // 1. 次の画像が空（None）の場合：現在の画像をフェードアウトして消す
-        if (nextSprite == null)
-        {
+        if (nextSprite == null){
             yield return StartCoroutine(FadeAlpha(0f, cgFadeDuration));
             storyImageUI.sprite = null;
         }
         // 2. 現在の画像と同じ画像が設定されている場合：何もしない（チラつき防止）
-        else if (storyImageUI.sprite == nextSprite)
-        {
+        else if (storyImageUI.sprite == nextSprite){
             yield return StartCoroutine(FadeAlpha(1f, cgFadeDuration));
         }
         // 3. 違う画像に切り替わる場合：一度フェードアウトしてから、新しい画像をセットしてフェードイン
-        else
-        {
+        else{
             // すでに絵が表示されているなら、一度透明にする
-            if (storyImageUI.sprite != null && storyImageUI.color.a > 0)
-            {
+            if (storyImageUI.sprite != null && storyImageUI.color.a > 0){
                 yield return StartCoroutine(FadeAlpha(0f, cgFadeDuration / 2f));
             }
 
@@ -230,13 +225,11 @@ public class StorySequenceManager : MonoBehaviour {
         }
     }
 
-    private IEnumerator FadeAlpha(float targetAlpha, float duration)
-    {
+    private IEnumerator FadeAlpha(float targetAlpha, float duration){
         float startAlpha = storyImageUI.color.a;
         float time = 0;
 
-        while (time < duration)
-        {
+        while (time < duration){
             time += Time.deltaTime;
             float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
             storyImageUI.color = new Color(storyImageUI.color.r, storyImageUI.color.g, storyImageUI.color.b, newAlpha);
