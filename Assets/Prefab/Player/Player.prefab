@@ -400,7 +400,7 @@ MonoBehaviour:
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 896
+    m_Bits: 66432
   currentSubActionEquip: {fileID: 11400000, guid: a2608a6f698695348b674bebba7a2f5c, type: 2}
   dashCooldown: 0.5
   maxDashCharges: 3
@@ -426,6 +426,11 @@ MonoBehaviour:
   wallJumpForce: {x: 8, y: 12}
   wallJumpDuration: 0.4
   climbSpeed: 5
+  equipPassiveA: {fileID: 0}
+  equipPassiveB: {fileID: 0}
+  passiveAttackBonus: 0
+  passiveDefenseBonus: 0
+  passiveInvincibleBonus: 0
   isInsideCannon: 0
   isCannonFlying: 0
   cannonWaitPoint: {fileID: 0}
