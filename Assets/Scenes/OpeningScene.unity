@@ -434,7 +434,8 @@ MonoBehaviour:
   messageText: {fileID: 1459723902}
   storyImageUI: {fileID: 0}
   typingSpeed: 0.05
-  nextSceneName: WorldMapScene
+  cgFadeDuration: 0.5
+  nextSceneName: Level0_ Tutorial
   worldNumberToMarkWatched: 1
   transitionType: 0
 --- !u!4 &486719244
