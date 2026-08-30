@@ -17,12 +17,14 @@ public class WorldData : ScriptableObject {
     [Tooltip("このワールドに入る時の導入シーン名（空欄ならストーリーなしで直接マップへ）")]
     public string storySceneName;
 
-    // ▼ 旧仕様（廃止）
-    // public int requiredWorldLevel = 1;
+    [Header("サウンド設定")]
+    [Tooltip("このステージで流すBGM")]
+    public AudioClip worldBGM;
 
-    // ▼▼▼ 新仕様（RPG的フラグ管理用） ▼▼▼
+    // 新仕様（RPG的フラグ管理用）
     [Header("解放条件（フラグ式）")]
     [Tooltip("ここに入れたイベントフラグが【すべて】立っていれば解放されます。（例: Unlocked_World_2）")]
     public List<string> requiredEventFlags = new List<string>();
-    // ▲▲▲ 新仕様ここまで ▲▲▲
+
+
 }

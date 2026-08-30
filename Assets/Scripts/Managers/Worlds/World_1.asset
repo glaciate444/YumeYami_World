@@ -16,4 +16,5 @@ MonoBehaviour:
   worldName: Pastel Forest
   sceneName: MapSelectScene_Level_1
   storySceneName: LevelOpeningScene_1
-  requiredWorldLevel: 1
+  worldBGM: {fileID: 8300000, guid: c91711b0093a2cb43a07c35942569e31, type: 3}
+  requiredEventFlags: []

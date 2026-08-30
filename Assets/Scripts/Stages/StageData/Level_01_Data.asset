@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Level_01_Data
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   stageNumber: 11
+  displayCourseNumber: 1
   levelName: No.01
   sceneName: Level1-Stage1
   requiredClearedStageNumbers: 
@@ -20,3 +21,4 @@ MonoBehaviour:
   thumbnail: {fileID: 0}
   description: 
   maxMedals: 3
+  stageBGM: {fileID: 8300000, guid: 6c936c83b171eea469c17277d756ea7f, type: 3}

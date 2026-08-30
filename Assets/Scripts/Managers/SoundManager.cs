@@ -1,39 +1,58 @@
 ﻿/* ===================================================
  * スクリプト名 : SoundManager.cs
- * Version : Ver0.01
- * Since : 2026/05/25
- * Update : 2026/05/25
- * 用途 : 全てのSEを一括管理・再生する（音が途切れるのを防ぐ）
+ * Version : Ver0.02
+ * 用途 : 全てのSEとBGMを一括管理・再生する
+ * 拡張 : BGM再生機能（ループ対応、重複再生防止）の追加
  * =================================================== */
 using UnityEngine;
 
-// ▼ アタッチした時、自動的に AudioSource（スピーカー）を追加してくれる便利機能
 [RequireComponent(typeof(AudioSource))]
 public class SoundManager : MonoBehaviour{
-    // どこからでもアクセスできるシングルトン
     public static SoundManager instance;
 
     private AudioSource seSource;
+    private AudioSource bgmSource; // ▼ 新規追加：BGM専用スピーカー
 
     void Awake(){
         if (instance == null){
             instance = this;
             DontDestroyOnLoad(gameObject);
 
+            // 1. SE用の設定（元からあるコンポーネントを使用）
             seSource = GetComponent<AudioSource>();
-            // 効果音用なので、ループ再生や起動時の自動再生はOFFにしておく
             seSource.playOnAwake = false;
             seSource.loop = false;
+
+            // 2. BGM用の設定（スクリプトから自動で追加する）
+            bgmSource = gameObject.AddComponent<AudioSource>();
+            bgmSource.playOnAwake = false;
+            bgmSource.loop = true; // BGMなのでループ再生をONにする
         }else{
             Destroy(gameObject);
         }
     }
 
-    // ▼ 各スクリプト（プレイヤーや敵）から呼ばれる再生メソッド ▼
     public void PlaySE(AudioClip clip){
         if (clip != null){
-            // PlayOneShot は、音が重なっても途切れずに「複数同時再生」してくれる優秀な機能です
             seSource.PlayOneShot(clip);
+        }
+    }
+
+    // BGMを再生するメソッド
+    public void PlayBGM(AudioClip clip){
+        if (clip == null) return;
+
+        // ※同じ曲がすでに流れている場合は、曲を最初から戻さない（リロード時の途切れ防止）
+        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
+
+        bgmSource.clip = clip;
+        bgmSource.Play();
+    }
+
+    // BGMを止めるメソッド
+    public void StopBGM(){
+        if (bgmSource.isPlaying){
+            bgmSource.Stop();
         }
     }
 }

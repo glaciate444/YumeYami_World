@@ -44,7 +44,14 @@ public class MapManager : MonoBehaviour{
     [Tooltip("未取得のメダルの色（デフォルトは半透明の黒など）")]
     public Color notGotMedalColor = new Color(0, 0, 0, 0.5f);
 
+    [Header("このワールドマップのデータ")]
+    [Tooltip("このシーンの WorldData をセットしてください")]
+    public WorldData myWorldData;
+
     void Start(){
+        // ▼ シーン開始と同時にBGMを再生する
+        PlayStageBGM();
+
         MapNode[] allNodes = FindObjectsByType<MapNode>(FindObjectsSortMode.None);
         foreach (var node in allNodes){
             node.SetupNode();
@@ -197,7 +204,6 @@ public class MapManager : MonoBehaviour{
         }
         UpdateMapUI();
     }
-    // ▼▼▼ ここから新規追加 ▼▼▼
     /// <summary>
     /// 現在のノード情報やGameManagerのデータを元に、UIを最新状態に更新します
     /// </summary>
@@ -251,6 +257,17 @@ public class MapManager : MonoBehaviour{
                 if (medalImages[i] != null){
                     medalImages[i].gameObject.SetActive(false);
                 }
+            }
+        }
+    }
+
+    private void PlayStageBGM(){
+        if (myWorldData != null && myWorldData.worldBGM != null){
+            if (SoundManager.instance != null){
+                // ※SoundManagerにBGM再生用のメソッド（PlayBGMなど）がある前提のコードです
+                SoundManager.instance.PlayBGM(myWorldData.worldBGM);
+            }else{
+                Debug.LogWarning("SoundManagerが見つかりません。BGMが再生できませんでした。");
             }
         }
     }

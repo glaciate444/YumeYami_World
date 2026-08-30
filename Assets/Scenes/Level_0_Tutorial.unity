@@ -1560,7 +1560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   nextSceneName: WorldMapScene
-  clearedStageNumber: 11
+  clearedStageNumber: 0
   unlocksNewWorld: 0
   unlockWorldReward: 1
   waitTime: 2

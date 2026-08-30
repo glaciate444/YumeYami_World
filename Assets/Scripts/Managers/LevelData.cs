@@ -31,4 +31,8 @@ public class LevelData : ScriptableObject {
     [Header("収集アイテム設定")]
     [Tooltip("このステージに存在するメダルの総数")]
     public int maxMedals = 3;
+
+    [Header("サウンド設定")]
+    [Tooltip("このステージで流すBGM")]
+    public AudioClip stageBGM;
 }

@@ -2842,6 +2842,7 @@ MonoBehaviour:
   - {fileID: 605040589}
   gotMedalColor: {r: 1, g: 1, b: 1, a: 1}
   notGotMedalColor: {r: 0, g: 0, b: 0, a: 0.5}
+  myWorldData: {fileID: 11400000, guid: ef65fc6d9436beb4882bbc5822779b12, type: 2}
 --- !u!4 &1665485294
 Transform:
   m_ObjectHideFlags: 0

@@ -435,7 +435,7 @@ MonoBehaviour:
   storyImageUI: {fileID: 0}
   typingSpeed: 0.05
   cgFadeDuration: 0.5
-  nextSceneName: Level0_ Tutorial
+  nextSceneName: Level_0_Tutorial
   worldNumberToMarkWatched: 1
   transitionType: 0
 --- !u!4 &486719244
