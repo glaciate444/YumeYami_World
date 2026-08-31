@@ -537,6 +537,7 @@ MonoBehaviour:
   clearedStageNumber: 1
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &66928853
 BoxCollider2D:
@@ -863,6 +864,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16b2386a9d0a62c4cb9f6d9413799563, type: 3}
+--- !u!1 &104208856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 104208858}
+  - component: {fileID: 104208857}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &104208857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104208856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 463eec63e61b4b94e923eed6c987a0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  myLevelData: {fileID: 11400000, guid: c30f75c47a2392f42a17c01fe6f10cb1, type: 2}
+--- !u!4 &104208858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104208856}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &113252243 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 789043147625015064, guid: 74b786963dfc8be4a8fd620bfb0df65c, type: 3}
@@ -2431,6 +2477,7 @@ MonoBehaviour:
   clearedStageNumber: 23
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:
@@ -36522,6 +36569,7 @@ MonoBehaviour:
   firePoint: {fileID: 1511448680}
   fireInterval: 3
   notRotateAngle: 0
+  shootSE: {fileID: 0}
   aimType: 0
   bulletCount: 1
   spreadAngle: 15
@@ -41720,3 +41768,4 @@ SceneRoots:
   - {fileID: 1131376298}
   - {fileID: 690419712}
   - {fileID: 1792361870}
+  - {fileID: 104208858}

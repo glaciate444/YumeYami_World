@@ -552,6 +552,7 @@ MonoBehaviour:
   clearedStageNumber: 1
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &66928853
 BoxCollider2D:
@@ -2239,6 +2240,7 @@ MonoBehaviour:
   clearedStageNumber: 24
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:
@@ -5700,6 +5702,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4905993769278685355, guid: 5c2d00d8470c5a64ca06c91d47c634b7, type: 3}
   m_PrefabInstance: {fileID: 784686680}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &795484017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 795484019}
+  - component: {fileID: 795484018}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &795484018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795484017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 463eec63e61b4b94e923eed6c987a0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  myLevelData: {fileID: 11400000, guid: e6abe23b7da217b47897cbb15a201694, type: 2}
+--- !u!4 &795484019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795484017}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &803298383 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3687301894691455125, guid: 17a74dd96bcabea419c2fac37978be25, type: 3}
@@ -29331,6 +29378,7 @@ MonoBehaviour:
   firePoint: {fileID: 1511448680}
   fireInterval: 2
   notRotateAngle: 0
+  shootSE: {fileID: 0}
   aimType: 1
   bulletCount: 3
   spreadAngle: 15
@@ -32842,3 +32890,4 @@ SceneRoots:
   - {fileID: 942166476}
   - {fileID: 26913805}
   - {fileID: 1688515940}
+  - {fileID: 795484019}

@@ -535,6 +535,7 @@ MonoBehaviour:
   clearedStageNumber: 1
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &66928853
 BoxCollider2D:
@@ -2555,6 +2556,7 @@ MonoBehaviour:
   clearedStageNumber: 22
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:
@@ -8561,6 +8563,51 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &757204436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 757204438}
+  - component: {fileID: 757204437}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &757204437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757204436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 463eec63e61b4b94e923eed6c987a0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  myLevelData: {fileID: 11400000, guid: 94106d6da1cd0d540a7db52f1e660197, type: 2}
+--- !u!4 &757204438
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757204436}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &758565078 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 789043147625015064, guid: 74b786963dfc8be4a8fd620bfb0df65c, type: 3}
@@ -19965,6 +20012,7 @@ MonoBehaviour:
   firePoint: {fileID: 0}
   fireInterval: 2
   notRotateAngle: 0
+  shootSE: {fileID: 0}
   aimType: 1
   bulletCount: 1
   spreadAngle: 15
@@ -25219,6 +25267,7 @@ MonoBehaviour:
   firePoint: {fileID: 1511448680}
   fireInterval: 3
   notRotateAngle: 0
+  shootSE: {fileID: 0}
   aimType: 1
   bulletCount: 1
   spreadAngle: 15
@@ -31385,3 +31434,4 @@ SceneRoots:
   - {fileID: 296795791}
   - {fileID: 1944580151}
   - {fileID: 689886567}
+  - {fileID: 757204438}
