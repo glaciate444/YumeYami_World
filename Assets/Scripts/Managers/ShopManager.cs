@@ -13,12 +13,11 @@ public class ShopManager : MonoBehaviour {
     [Header("商品ラインナップ（5つセットする）")]
     public ShopItemData[] shopItems;
 
-    // ▼▼▼ 新規追加：価格変動の設定 ▼▼▼
+    // 価格変動の設定
     [Header("ドーピング価格設定（最大6回）")]
     [Tooltip("左から順に1回目, 2回目...の価格になります")]
     public int[] dopingPrices = { 200, 500, 1000, 1500, 2000, 3000 };
     private int maxDopingCount = 6;
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("UI参照")]
     public Image[] itemIconUI;
@@ -27,10 +26,14 @@ public class ShopManager : MonoBehaviour {
     public TMP_Text currentCoinsText;
     public RectTransform cursorUI;
 
+    [Header("BGM")]
+    public AudioClip myShopBGM;
+
     private int currentIndex = 0;
     private bool isShopping = true;
 
     void Start(){
+        PlayStageBGM();
         InitializeShop();
         UpdateUI();
     }
@@ -200,6 +203,18 @@ public class ShopManager : MonoBehaviour {
             SceneTransitionManager.Instance.LoadScene(returnScene, TransitionType.Fade);
         }else{
             SceneManager.LoadScene(returnScene);
+        }
+    }
+    private void PlayStageBGM(){
+        if (myShopBGM != null){
+            if (SoundManager.instance != null){
+                // ※SoundManagerにBGM再生用のメソッド（PlayBGMなど）がある前提のコードです
+                SoundManager.instance.PlayBGM(myShopBGM);
+            }else{
+                Debug.LogWarning("SoundManagerが見つかりません。BGMが再生できませんでした。");
+            }
+        }else{
+            Debug.LogWarning("BGMを指定していません。");
         }
     }
 }

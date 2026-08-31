@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour{
     private bool isAttacking;
     private bool canAttack = true;
 
+
     [Header("坂道対策の摩擦マテリアル")]
     public PhysicsMaterial2D zeroFriction; // 動く時・空中の時用
     public PhysicsMaterial2D highFriction; // 立ち止まった時用
@@ -107,7 +108,9 @@ public class PlayerController : MonoBehaviour{
     private Animator anim;
 
     [Header("効果音")]
-    public AudioClip jumpSE; // ← ここに追加
+    public AudioClip jumpSE;
+    // 武器を振った時の音
+    public AudioClip attackSwingSE;
 
     [HideInInspector] public bool isKnockback; // 外から操作できるように public または [HideInInspector]
 
@@ -375,7 +378,6 @@ public class PlayerController : MonoBehaviour{
             // 飛ぶと同時に、プレイヤーの向き（絵）も反転させる
             transform.localScale = new Vector3(jumpDirection, 1, 1);
         }
-
         if (isClimbing){
             isClimbing = false;
         }
@@ -384,6 +386,13 @@ public class PlayerController : MonoBehaviour{
     private void OnJumpCanceled(){
         if (rb.linearVelocity.y > 0 && !isDashing){
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+        }
+    }
+
+    // Animationイベントから呼び出すためのメソッド
+    public void PlaySwingSE(){
+        if (SoundManager.instance != null && attackSwingSE != null){
+            SoundManager.instance.PlaySE(attackSwingSE);
         }
     }
 

@@ -193,7 +193,16 @@ public class GameManager : MonoBehaviour {
         currentMapNodeNumber = 1;
         hpUpPurchaseCount = 0;
         spUpPurchaseCount = 0;
-        ownedItems.Clear();
+        ownedItems.Clear(); // 一旦すべて空にする
+
+        // テスト用の初期所持アイテムを追加 ▼▼▼
+        // ※ 0, 1, 2, 3 の数字は、実際のアイテムのID（ItemInventoryDataに設定した数字）に合わせてください
+        ownedItems.Add(new OwnedItemData { itemId = 0, itemLevel = 1 }); // アクション1
+        ownedItems.Add(new OwnedItemData { itemId = 1, itemLevel = 1 }); // アクション2
+        ownedItems.Add(new OwnedItemData { itemId = 2, itemLevel = 1 }); // アクション3
+        ownedItems.Add(new OwnedItemData { itemId = 3, itemLevel = 1 }); // スペシャル技
+
+        clearedStageNumbers.Clear();
 
         clearedStageNumbers.Clear();
         eventFlags.Clear();
