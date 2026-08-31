@@ -102,14 +102,13 @@ public class ShopManager : MonoBehaviour {
         }
     }
 
-    // ▼▼▼ 新規追加：売り切れかどうかを判定するメソッド ▼▼▼
-    private bool IsSoldOut(ShopItemData item)
-    {
+    // 売り切れかどうかを判定するメソッド
+    private bool IsSoldOut(ShopItemData item){
         if (GameManager.Instance == null) return false;
 
-        // パッシブアイテム：すでにIDを持っているか？
+        // パッシブアイテム：すでにIDを持っているか？（レベルが1以上なら所持と判定）
         if (item.effectType == ShopItemData.ItemEffectType.Passive_Inventory){
-            if (item.inventoryItemData != null && GameManager.Instance.ownedItemIds.Contains(item.inventoryItemData.itemId)){
+            if (item.inventoryItemData != null && GameManager.Instance.GetItemLevel(item.inventoryItemData.itemId) > 0){
                 return true;
             }
         }
@@ -180,9 +179,8 @@ public class ShopManager : MonoBehaviour {
             case ShopItemData.ItemEffectType.Passive_Inventory:
                 if (item.inventoryItemData != null){
                     int idToAdd = item.inventoryItemData.itemId;
-                    if (!GameManager.Instance.ownedItemIds.Contains(idToAdd)){
-                        GameManager.Instance.ownedItemIds.Add(idToAdd);
-                    }
+                    // ▼ 修正：新しいメソッドを呼ぶだけ（未所持ならLv1で追加、所持済なら強化を自動処理）
+                    GameManager.Instance.AddOrUpgradeItem(idToAdd);
                 }
                 break;
         }

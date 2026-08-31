@@ -58,6 +58,19 @@ public class InventoryMenuController : MonoBehaviour {
         isSelectingPassive = false;
         currentRowIndex = 0;
         currentColIndex = 0;
+        // ▼▼▼ 新規追加：メニューを開いた瞬間、全マスの表示を最新レベルに更新する ▼▼▼
+        if (inventoryRows != null){
+            foreach (var row in inventoryRows){
+                if (row.slots != null){
+                    foreach (var slot in row.slots){
+                        if (slot != null){
+                            slot.UpdateSlotUI(); // ここで星や透明化を自動処理
+                        }
+                    }
+                }
+            }
+        }
+
         UpdateCursorPosition();
     }
 
@@ -203,10 +216,30 @@ public class InventoryMenuController : MonoBehaviour {
     }
 
     private void EquipSelectedItem(){
-        // ... (以前と同じ処理)
         InventoryItemSlot selectedSlot = inventoryRows[currentRowIndex].slots[currentColIndex];
         ItemInventoryData selectedItem = selectedSlot.itemData;
         if (selectedItem == null) return;
+
+        // ▼▼▼ 修正：アクションコマンドは強制許可、それ以外はレベル0ならブロック ▼▼▼
+        int level = 0;
+        if (GameManager.Instance != null){
+            level = GameManager.Instance.GetItemLevel(selectedItem.itemId);
+        }
+
+        // 特例1：アクションコマンド（緑枠）は無条件で装備許可
+        if (selectedItem.category == ItemCategory.SubAction && level <= 0){
+            level = 1;
+        }
+
+        // 特例2：初期スペシャル技（例：ID3）も無条件で装備許可
+        if (selectedItem.itemId == 3 && level <= 0){
+            level = 1;
+        }
+
+        // レベル0のまま（＝本当に持っていないパッシブ等）ならここで処理を強制終了
+        if (level <= 0){
+            return;
+        }
 
         PlayerController pc = FindFirstObjectByType<PlayerController>();
         PlayerShoot ps = FindFirstObjectByType<PlayerShoot>();
@@ -275,5 +308,30 @@ public class InventoryMenuController : MonoBehaviour {
 
         isSelectingPassive = false;
         UpdateCursorPosition();
+    }
+    // 持っていないアイテムを透明にして隠す処理
+    private void UpdateInventoryVisibility(){
+        if (GameManager.Instance == null) return;
+
+        foreach (var row in inventoryRows){
+            foreach (var slot in row.slots){
+                if (slot != null && slot.itemData != null){
+                    // GameManagerに「このアイテムのレベルはいくつか（持っているか）？」を聞く
+                    int level = GameManager.Instance.GetItemLevel(slot.itemData.itemId);
+                    Image iconImage = slot.GetComponent<Image>();
+
+                    if (iconImage != null){
+                        if (level > 0){
+                            // 持っている（Lv1以上）：不透明にして表示する
+                            iconImage.color = new Color(1f, 1f, 1f, 1f);
+                        }else{
+                            // 持っていない（Lv0）：透明にして完全に隠す
+                            iconImage.color = new Color(1f, 1f, 1f, 0f);
+                            // ※もし未所持を「黒いシルエット」にしたい場合は new Color(0f, 0f, 0f, 0.7f) などにします
+                        }
+                    }
+                }
+            }
+        }
     }
 }

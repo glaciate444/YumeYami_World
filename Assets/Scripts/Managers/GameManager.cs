@@ -8,10 +8,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
     public static GameManager Instance;
 
-    // ▼▼▼ 新規追加：セーブスロット管理 ▼▼▼
+    // セーブスロット管理
     [Header("セーブデータ管理")]
     public int currentSaveSlot = 1; // 現在選んでいるファイル番号（1〜4）
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("プレイヤーのデータ（セーブ対象）")]
     public int currentMaxHp = 12;
@@ -37,8 +36,16 @@ public class GameManager : MonoBehaviour {
     [Header("マップ遷移用")]
     public string returnMapSceneName = "";
 
+    // ▼▼▼ 新規追加：IDとレベルをセットで管理するデータ構造 ▼▼▼
+    [System.Serializable]
+    public class OwnedItemData{
+        public int itemId;
+        public int itemLevel; // 1〜3
+    }
+
     [Header("インベントリデータ（セーブ対象）")]
-    public System.Collections.Generic.List<int> ownedItemIds = new System.Collections.Generic.List<int>();
+    // 修正：単なるintのリストから、カスタムクラスのリストに変更
+    public System.Collections.Generic.List<OwnedItemData> ownedItems = new System.Collections.Generic.List<OwnedItemData>();
 
     [Header("ショップでの購入回数（セーブ対象）")]
     public int hpUpPurchaseCount = 0;
@@ -92,8 +99,11 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetInt("UnlockedWorldLevel" + s, unlockedWorldLevel);
         PlayerPrefs.SetInt("CurrentWorldNodeNumber" + s, currentWorldNodeNumber);
 
-        string itemIdsStr = string.Join(",", ownedItemIds);
-        PlayerPrefs.SetString("OwnedItemIds" + s, itemIdsStr);
+        System.Collections.Generic.List<string> itemSaveList = new System.Collections.Generic.List<string>();
+        foreach (var item in ownedItems){
+            itemSaveList.Add(item.itemId + ":" + item.itemLevel);
+        }
+        PlayerPrefs.SetString("OwnedItemIds" + s, string.Join(",", itemSaveList));
 
         PlayerPrefs.SetInt("HpUpPurchaseCount" + s, hpUpPurchaseCount);
         PlayerPrefs.SetInt("SpUpPurchaseCount" + s, spUpPurchaseCount);
@@ -126,19 +136,23 @@ public class GameManager : MonoBehaviour {
         if (PlayerPrefs.HasKey("SpUpPurchaseCount" + s)) spUpPurchaseCount = PlayerPrefs.GetInt("SpUpPurchaseCount" + s);
 
         if (PlayerPrefs.HasKey("OwnedItemIds" + s)){
+            // ▼ LoadGame() 内の変更
+            // if (PlayerPrefs.HasKey("OwnedItemIds" + s)) の中身を書き換え
             string idsStr = PlayerPrefs.GetString("OwnedItemIds" + s);
-            ownedItemIds.Clear();
+            ownedItems.Clear();
             if (!string.IsNullOrEmpty(idsStr)){
-                string[] idArray = idsStr.Split(',');
-                foreach (string idStr in idArray)
-                {
-                    if (int.TryParse(idStr, out int id))
-                    {
-                        ownedItemIds.Add(id);
+                string[] itemArray = idsStr.Split(',');
+                foreach (string itemStr in itemArray){
+                    string[] parts = itemStr.Split(':'); // IDとレベルを分割
+                    if (parts.Length == 2 && int.TryParse(parts[0], out int id) && int.TryParse(parts[1], out int lv)){
+                        ownedItems.Add(new OwnedItemData { itemId = id, itemLevel = lv });
                     }
                 }
             }
         }
+
+
+
 
         if (PlayerPrefs.HasKey("ClearedStageNumbers" + s)){
             string stagesStr = PlayerPrefs.GetString("ClearedStageNumbers" + s);
@@ -179,7 +193,7 @@ public class GameManager : MonoBehaviour {
         currentMapNodeNumber = 1;
         hpUpPurchaseCount = 0;
         spUpPurchaseCount = 0;
-        ownedItemIds.Clear();
+        ownedItems.Clear();
 
         clearedStageNumbers.Clear();
         eventFlags.Clear();
@@ -249,5 +263,27 @@ public class GameManager : MonoBehaviour {
     // イベントフラグが立っているか判定する
     public bool HasEventFlag(string flagName){
         return eventFlags.Contains(flagName);
+    }
+
+    // ▼ 指定したアイテムのレベルを返す（0なら非所持）
+    public int GetItemLevel(int id){
+        foreach (var item in ownedItems){
+            if (item.itemId == id) return item.itemLevel;
+        }
+        return 0; // リストに無ければ0（非所持）
+    }
+
+    // ▼ アイテムを取得、またはレベルアップさせる
+    public void AddOrUpgradeItem(int id){
+        foreach (var item in ownedItems){
+            if (item.itemId == id){
+                if (item.itemLevel < 3) item.itemLevel++; // 最大レベル3
+                SaveGame();
+                return;
+            }
+        }
+        // リストに無かったら新規追加（レベル1）
+        ownedItems.Add(new OwnedItemData { itemId = id, itemLevel = 1 });
+        SaveGame();
     }
 }

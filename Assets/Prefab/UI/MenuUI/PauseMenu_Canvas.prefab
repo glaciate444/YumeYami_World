@@ -487,6 +487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &637925373521296574
 GameObject:
@@ -1004,6 +1005,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: 4aa0e04cdf861cd42beba8b83862cb25, type: 2}
+  iconImage: {fileID: 0}
   starIcons:
   - {fileID: 5568570524623301997}
   - {fileID: 7217487560313919243}
@@ -1327,6 +1329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: ea999aab80ee1f64482aa28258c844c9, type: 2}
+  iconImage: {fileID: 475969395695151760}
   starIcons: []
 --- !u!1 &1691350605317367558
 GameObject:
@@ -1890,6 +1893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: a2608a6f698695348b674bebba7a2f5c, type: 2}
+  iconImage: {fileID: 6507440192572016732}
   starIcons: []
 --- !u!1 &1821034320760209141
 GameObject:
@@ -2256,6 +2260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &2008680210905066181
 GameObject:
@@ -2426,6 +2431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &2256084670996793104
 GameObject:
@@ -2591,6 +2597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: ffbb79bad5f3dbe4bb56cd000dd49ce3, type: 2}
+  iconImage: {fileID: 1758156241657238248}
   starIcons: []
 --- !u!1 &2520060824461471462
 GameObject:
@@ -2684,6 +2691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: ac6fc7192849cef4185b7262b213e4d5, type: 2}
+  iconImage: {fileID: 0}
   starIcons:
   - {fileID: 5859802935155743015}
   - {fileID: 6123640202000745142}
@@ -2992,6 +3000,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &3310047446885530696
 GameObject:
@@ -3933,6 +3942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: 1fd6c59795ac474488a4afce6a5c9b59, type: 2}
+  iconImage: {fileID: 2922118555860366781}
   starIcons: []
 --- !u!1 &4509975025248664903
 GameObject:
@@ -5247,6 +5257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &6839691434858837468
 GameObject:
@@ -5900,6 +5911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: 26cb23165a2b6464199a27a3592bd02a, type: 2}
+  iconImage: {fileID: 0}
   starIcons:
   - {fileID: 5222902879855630269}
   - {fileID: 1305826505938238300}
@@ -5996,6 +6008,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 11400000, guid: 747e20a47ef8acc469b9d09b1739c409, type: 2}
+  iconImage: {fileID: 0}
   starIcons:
   - {fileID: 637925373521296574}
   - {fileID: 9090112060514495556}
@@ -6306,6 +6319,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &8703124360389386225
 GameObject:
@@ -6535,6 +6549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSlot
   itemData: {fileID: 0}
+  iconImage: {fileID: 0}
   starIcons: []
 --- !u!1 &8947948045820121913
 GameObject:
