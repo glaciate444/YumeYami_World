@@ -18,7 +18,7 @@ public class GoalPoint : MonoBehaviour {
     [Header("遷移先シーン名")]
     public string nextSceneName = "MiniGameScene";
 
-    // ▼▼▼ 修正：単一変数の代入から、自ステージのフラグ登録に変更 ▼▼▼
+    // 単一変数の代入から、自ステージのフラグ登録に変更 ▼▼▼
     [Header("ステージ進行設定（フラグ式）")]
     [Tooltip("このゴールに触れた時にクリア扱いにするステージ番号")]
     public int clearedStageNumber = 1;
@@ -27,7 +27,10 @@ public class GoalPoint : MonoBehaviour {
     public bool unlocksNewWorld = false;
     [Tooltip("解放するワールド番号（フラグとして記録されます）")]
     public int unlockWorldReward = 2;
-    // ▲▲▲ 修正ここまで ▲▲▲
+
+    [Header("サウンド設定")]
+    [Tooltip("ゴール時に鳴らすファンファーレ")]
+    public AudioClip resultBGM;
 
     [Header("演出時間")]
     public float waitTime = 2.0f;
@@ -50,6 +53,11 @@ public class GoalPoint : MonoBehaviour {
 
         isGoal = true;
         Debug.Log("ゴール処理開始！");
+
+        // ゴールした瞬間にジングルを鳴らす（前のBGMは自動で止まります）
+        if (SoundManager.instance != null && resultBGM != null){
+            SoundManager.instance.PlayJingle(resultBGM);
+        }
 
         player.PlayGoalAction();
 

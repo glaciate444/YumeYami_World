@@ -19,15 +19,24 @@ public class GoalResultManager : MonoBehaviour {
     public AudioClip countSE;
     public AudioClip finishSE;
 
+    // サウンド設定
+    [Header("サウンド設定")]
+    public AudioClip resultBGM;
+
     [Header("遷移先（予備）")]
     [Tooltip("記憶がない場合の予備の帰り道")]
-    public string fallbackMapSceneName = "MapSelectScene";
+    public string fallbackMapSceneName = "WorldMapScene";
 
     private bool isCounting = false;
     private bool isTransitioning = false;
 
     void Start(){
-        // ▼▼▼ 【重要】前のシーン（ボス戦等）でスローや停止(Time.timeScale=0)になっていても強制的に1(通常)に戻す ▼▼▼
+        // シーン開始時にBGM再生
+        if (SoundManager.instance != null && resultBGM != null){
+            SoundManager.instance.PlayBGM(resultBGM);
+        }
+
+        // 【重要】前のシーン（ボス戦等）でスローや停止(Time.timeScale=0)になっていても強制的に1(通常)に戻す ▼▼▼
         Time.timeScale = 1f;
 
         if (GameManager.Instance != null){

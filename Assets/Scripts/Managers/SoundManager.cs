@@ -38,13 +38,23 @@ public class SoundManager : MonoBehaviour{
         }
     }
 
-    // BGMを再生するメソッド
+    // 通常のBGM再生メソッド
     public void PlayBGM(AudioClip clip){
         if (clip == null) return;
 
-        // ※同じ曲がすでに流れている場合は、曲を最初から戻さない（リロード時の途切れ防止）
-        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
+        // 同じ曲が「ループあり」で流れている場合のみスキップ
+        if (bgmSource.clip == clip && bgmSource.isPlaying && bgmSource.loop == true) return;
 
+        bgmSource.loop = true; // ★通常のBGMなので確実にループをONにする
+        bgmSource.clip = clip;
+        bgmSource.Play();
+    }
+
+    // ジングル（1回だけ鳴らす音楽）用のメソッド
+    public void PlayJingle(AudioClip clip){
+        if (clip == null) return;
+
+        bgmSource.loop = false; // ★ジングルなのでループをOFFにする
         bgmSource.clip = clip;
         bgmSource.Play();
     }

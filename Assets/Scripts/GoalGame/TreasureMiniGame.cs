@@ -29,9 +29,13 @@ public class TreasureMiniGame : MonoBehaviour {
     public Vector2 cursorOffset = new Vector2(0f, 0f);
 
     [Header("遷移先")]
-    public string resultSceneName = "ResultScene"; 
+    public string resultSceneName = "ResultScene";
 
-    // ▼【新規追加】HUDとポップアップ用の設定
+    // サウンド設定
+    [Header("サウンド設定")]
+    public AudioClip miniGameBGM;
+
+    // HUDとポップアップ用の設定
     [Header("HUD連携")]
     public TextMeshProUGUI hudCoinText;     // コインの数字
     public TextMeshProUGUI hudHeartText;    // ハートの数字
@@ -57,7 +61,12 @@ public class TreasureMiniGame : MonoBehaviour {
     };
 
     void Start() {
-        // ▼【追加】設定の数が足りない時に、日本語で警告を出す安全装置
+        // シーン開始時にBGM再生
+        if (SoundManager.instance != null && miniGameBGM != null){
+            SoundManager.instance.PlayBGM(miniGameBGM);
+        }
+
+        // ▼設定の数が足りない時に、日本語で警告を出す安全装置
         if (rewards.Count < chestButtons.Length) {
             Debug.LogError($"【設定エラー】Rewards（中身）の数が足りません！宝箱が {chestButtons.Length} 個あるのに対し、Rewardsが {rewards.Count} 個しかありません。");
             return; // エラー回避のためここで止める
