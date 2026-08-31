@@ -61,6 +61,9 @@ public class StorySequenceManager : MonoBehaviour {
     public int worldNumberToMarkWatched = 1;
     public TransitionType transitionType = TransitionType.Fade;
 
+    [Header("BGM")]
+    public AudioClip myStoryBGM;
+
     private int currentPageIndex = 0;
     private bool isFinished = false;
     private bool isTyping = false;
@@ -73,6 +76,9 @@ public class StorySequenceManager : MonoBehaviour {
     private Transform currentDestination;
 
     void Start(){
+        // ▼ シーン開始と同時にBGMを再生する
+        PlayStageBGM();
+
         if (pages.Count > 0){
             PlayPage(currentPageIndex);
         }
@@ -106,6 +112,17 @@ public class StorySequenceManager : MonoBehaviour {
 
         if (keyboard.xKey.wasPressedThisFrame){
             EndStory();
+        }
+    }
+
+    private void PlayStageBGM(){
+        if (myStoryBGM != null){
+            if (SoundManager.instance != null){
+                // ※SoundManagerにBGM再生用のメソッド（PlayBGMなど）がある前提のコードです
+                SoundManager.instance.PlayBGM(myStoryBGM);
+            }else{
+                Debug.LogWarning("SoundManagerが見つかりません。BGMが再生できませんでした。");
+            }
         }
     }
 

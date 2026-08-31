@@ -1005,6 +1005,7 @@ MonoBehaviour:
   clearedStageNumber: 13
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &246472027
 BoxCollider2D:
@@ -16791,6 +16792,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3ad63132d8c05b44b278ee899016379, type: 3}
+--- !u!1 &1687531548
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1687531550}
+  - component: {fileID: 1687531549}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1687531549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687531548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 463eec63e61b4b94e923eed6c987a0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  myLevelData: {fileID: 11400000, guid: 3aa82cd4b768bb84d8b8a63196d8a73c, type: 2}
+--- !u!4 &1687531550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687531548}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1716453360
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18255,3 +18301,4 @@ SceneRoots:
   - {fileID: 1222113486}
   - {fileID: 2061192505}
   - {fileID: 2058148627}
+  - {fileID: 1687531550}
