@@ -55,8 +55,12 @@ public class GoalPoint : MonoBehaviour {
         Debug.Log("ゴール処理開始！");
 
         // ゴールした瞬間にジングルを鳴らす（前のBGMは自動で止まります）
-        if (SoundManager.instance != null && resultBGM != null){
+        if (resultBGM != null){
+            // 曲が設定されている場合はジングルを鳴らす（前の曲は上書きされて消える）
             SoundManager.instance.PlayJingle(resultBGM);
+        }else{
+            // 曲が未設定の場合は、とにかく今のBGMをピタッと止める
+            SoundManager.instance.StopBGM();
         }
 
         player.PlayGoalAction();

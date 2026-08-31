@@ -15,14 +15,17 @@ public class StageManager : MonoBehaviour{
     }
 
     private void PlayStageBGM(){
-        if (myLevelData != null && myLevelData.stageBGM != null){
-            if (SoundManager.instance != null){
-                // ※SoundManagerにBGM再生用のメソッド（PlayBGMなど）がある前提のコードです
-                SoundManager.instance.PlayBGM(myLevelData.stageBGM);
-            }else
-            {
-                Debug.LogWarning("SoundManagerが見つかりません。BGMが再生できませんでした。");
+        if (myLevelData != null){
+            if(myLevelData.stageBGM != null){
+                if (SoundManager.instance != null){
+                    // ※SoundManagerにBGM再生用のメソッド（PlayBGMなど）がある前提のコードです
+                    SoundManager.instance.PlayBGM(myLevelData.stageBGM);
+                }else{
+                    Debug.LogWarning("SoundManagerが見つかりません。BGMが再生できませんでした。");
+                }
             }
+        }else{
+            Debug.LogWarning("BGMを指定していません。");
         }
     }
 }

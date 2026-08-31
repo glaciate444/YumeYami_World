@@ -436,8 +436,9 @@ MonoBehaviour:
   typingSpeed: 0.05
   cgFadeDuration: 0.5
   nextSceneName: Level_0_Tutorial
-  worldNumberToMarkWatched: 1
+  worldNumberToMarkWatched: 0
   transitionType: 0
+  myStoryBGM: {fileID: 0}
 --- !u!4 &486719244
 Transform:
   m_ObjectHideFlags: 0
