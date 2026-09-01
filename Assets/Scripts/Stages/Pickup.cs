@@ -1,11 +1,9 @@
 ﻿/* ===================================================
  * スクリプト名 : Pickup.cs
- * Version : Ver0.02
- * Since : 2026/04/11
- * Update : 2026/05/05
- * 用途 : アイテム
+ * Version : Ver0.03
+ * 用途 : アイテム取得
+ * 修正 : 子オブジェクト（足元判定など）接触時のエラーを修正
  * =================================================== */
-using NUnit.Framework.Interfaces;
 using UnityEngine;
 
 public class Pickup : MonoBehaviour{
@@ -14,42 +12,41 @@ public class Pickup : MonoBehaviour{
     [Header("効果音")]
     public AudioClip itemSE;
 
-    // ▼ すり抜けるタイプ（空中に浮いているコインなど）で呼ばれる
     private void OnTriggerEnter2D(Collider2D other){
         PickItem(other.gameObject);
     }
 
-    // ▼ すり抜けないタイプ（地面に落ちるドロップコインなど）で呼ばれる
     private void OnCollisionEnter2D(Collision2D other){
         PickItem(other.gameObject);
     }
 
-    // ▼ 共通の取得処理
     private void PickItem(GameObject playerObj){
         if (playerObj.CompareTag("Player")){
-            PlayerInventory inventory = playerObj.GetComponent<PlayerInventory>();
+            // ▼ 修正：子オブジェクトに触れても「親（プレイヤー本体）」から取得するように変更
+            PlayerInventory inventory = playerObj.GetComponentInParent<PlayerInventory>();
 
-            // ▼ 音を鳴らす（安全装置付き）
             if (SoundManager.instance != null){
                 SoundManager.instance.PlaySE(itemSE);
             }
 
-            // 安全装置：インベントリ系のアイテムなのにスクリプトが付いていない場合
             if ((data.itemType == ItemType.Coin || data.itemType == ItemType.Stock) && inventory == null){
-                Debug.LogError("エラー：プレイヤーに PlayerInventory スクリプトがアタッチされていません！");
+                Debug.LogError("エラー：親オブジェクトに PlayerInventory が見つかりません！");
                 return;
             }
-            if(data.itemType == ItemType.LifePiece && GameManager.Instance == null){
+            if (data.itemType == ItemType.LifePiece && GameManager.Instance == null){
                 Debug.LogError("エラー：GameManagerがありません！");
                 return;
             }
 
+            // ▼ 修正：他のステータス系も親から取得し、存在チェックを追加
             switch (data.itemType){
                 case ItemType.Health:
-                    playerObj.GetComponent<PlayerHealth>().Heal(data.value);
+                    PlayerHealth health = playerObj.GetComponentInParent<PlayerHealth>();
+                    if (health != null) health.Heal(data.value);
                     break;
                 case ItemType.SP:
-                    playerObj.GetComponent<PlayerShoot>().RecoverSp(data.value);
+                    PlayerShoot shoot = playerObj.GetComponentInParent<PlayerShoot>();
+                    if (shoot != null) shoot.RecoverSp(data.value);
                     break;
                 case ItemType.Stock:
                     inventory.AddItem(data);
@@ -61,7 +58,7 @@ public class Pickup : MonoBehaviour{
                     GameManager.Instance.AddLifePiece(data.value);
                     break;
             }
-            Destroy(gameObject); // アイテムを消す
+            Destroy(gameObject);
         }
     }
 }

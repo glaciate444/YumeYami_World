@@ -1,11 +1,5 @@
 ﻿/* ===================================================
  * スクリプト名 : GoalPoint.cs
- * Version : Ver0.07
- * 用途 : ゴール判定とアイリスアウト遷移
- * 拡張 : 外部（ボスなど）から強制的にゴール処理を呼び出せるように修正
- * =================================================== */
-/* ===================================================
- * スクリプト名 : GoalPoint.cs
  * Version : Ver0.08
  * 用途 : ゴール判定とアイリスアウト遷移
  * 拡張 : フラグ式進行度管理（リスト登録）に対応
@@ -55,12 +49,13 @@ public class GoalPoint : MonoBehaviour {
         Debug.Log("ゴール処理開始！");
 
         // ゴールした瞬間にジングルを鳴らす（前のBGMは自動で止まります）
-        if (resultBGM != null){
-            // 曲が設定されている場合はジングルを鳴らす（前の曲は上書きされて消える）
-            SoundManager.instance.PlayJingle(resultBGM);
-        }else{
-            // 曲が未設定の場合は、とにかく今のBGMをピタッと止める
-            SoundManager.instance.StopBGM();
+        // ▼ 修正：SoundManagerが存在するかどうかの確認（if文）で全体を囲む
+        if (SoundManager.instance != null){
+            if (resultBGM != null){
+                SoundManager.instance.PlayJingle(resultBGM);
+            }else{
+                SoundManager.instance.StopBGM();
+            }
         }
 
         player.PlayGoalAction();

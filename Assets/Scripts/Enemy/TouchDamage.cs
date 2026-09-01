@@ -1,10 +1,13 @@
 ﻿/* ===================================================
  * スクリプト名 : TouchDamage.cs
- * 用途 : 敵接触ダメージ（元の安定版に戻し、Pivotズレのみ修正）
+ * Version : Ver0.04
+ * 用途 : 敵接触ダメージ
+ * 修正 : 無効化時の強制実行バグ（Unity仕様）への対策
  * =================================================== */
 using UnityEngine;
 
-public class TouchDamage : MonoBehaviour{
+public class TouchDamage : MonoBehaviour
+{
     [Header("ダメージ設定")]
     public int damage = 1;
     public float impact = 5f;
@@ -13,23 +16,27 @@ public class TouchDamage : MonoBehaviour{
     public bool canBeStomped = true;
 
     private void OnCollisionEnter2D(Collision2D other){
-        IDamageable target = other.gameObject.GetComponent<IDamageable>();
+        // スクリプトがOFFの時は絶対に処理をしない（相打ち防止）
+        if (!this.enabled) return;
 
-        if (target != null && other.gameObject.CompareTag("Player")){
+        IDamageable target = other.gameObject.GetComponentInParent<IDamageable>();
+        PlayerController pc = other.gameObject.GetComponentInParent<PlayerController>();
 
-            // ▼ 踏みつけ時の相打ち防止処理 ▼
+        if (target != null && (other.gameObject.CompareTag("Player") || pc != null)){
+
             if (canBeStomped){
                 float playerBottomY = other.collider.bounds.min.y;
-                
-                // 【根本解決】transform ではなく、コライダー自身の「真ん中」のY座標を取得する！
-                // これにより、鳥でもキノコでも、純粋な当たり判定の半分より上なら「踏んだ」と認識されます。
                 float enemyCenterY = GetComponent<Collider2D>().bounds.center.y;
 
-                bool isPlayerAbove = playerBottomY > enemyCenterY - 0.2f;
+                bool isFalling = false;
+                if (pc != null){
+                    isFalling = pc.GetComponent<Rigidbody2D>().linearVelocity.y <= 0.1f;
+                }
 
-                if (isPlayerAbove){
-                    // 上にいるなら、ダメージ処理をキャンセルして PlayerStomp に任せる
-                    return; 
+                bool isPlayerAbove = playerBottomY > enemyCenterY - 0.4f;
+
+                if (isPlayerAbove && isFalling){
+                    return;
                 }
             }
 
