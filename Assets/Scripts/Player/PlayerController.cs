@@ -1,10 +1,10 @@
 ﻿/* ===================================================
  * スクリプト名 : PlayerController.cs
- * Version : Ver0.13
+ * Version : Ver0.15
  * Since : 2026/04/01
- * Update : 2026/08/07
+ * Update : 2026/09/01
  * 用途 : プレイヤー制御
- * 更新 : 装備によるパッシブアイテム効果を追加
+ * 更新 : シーン跨いでアイテム装備を引き継ぐ
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -171,6 +171,24 @@ public class PlayerController : MonoBehaviour{
                 PauseManager.Instance.TogglePause();
             }
         };
+    }
+    // シーン開始時にGameManagerから装備を引き継ぐ ▼▼▼
+    void Start(){
+        if (GameManager.Instance != null){
+            // GameManagerが記憶している装備データを自分にセットする
+            if (GameManager.Instance.currentEquipSubAction != null){
+                currentSubActionEquip = GameManager.Instance.currentEquipSubAction;
+            }
+            if (GameManager.Instance.currentEquipPassiveA != null){
+                equipPassiveA = GameManager.Instance.currentEquipPassiveA;
+            }
+            if (GameManager.Instance.currentEquipPassiveB != null){
+                equipPassiveB = GameManager.Instance.currentEquipPassiveB;
+            }
+
+            // 引き継いだパッシブ装備を元に、ステータスを再計算して反映！
+            ApplyPassiveEffects();
+        }
     }
 
     private void OnEnable() => inputActions.Enable();

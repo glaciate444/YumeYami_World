@@ -231,8 +231,8 @@ public class InventoryMenuController : MonoBehaviour {
             level = 1;
         }
 
-        // 特例2：初期スペシャル技（例：ID3）も無条件で装備許可
-        if (selectedItem.itemId == 3 && level <= 0){
+        // 特例2：初期スペシャル技（例：ID21）も無条件で装備許可
+        if (selectedItem.itemId == 21 && level <= 0){
             level = 1;
         }
 
@@ -247,10 +247,12 @@ public class InventoryMenuController : MonoBehaviour {
         switch (selectedItem.category){
             case ItemCategory.SubAction:
                 if (pc != null) pc.currentSubActionEquip = selectedItem;
+                if (GameManager.Instance != null) GameManager.Instance.currentEquipSubAction = selectedItem;
                 if (equipIconSubAction != null) equipIconSubAction.sprite = selectedItem.icon;
                 break;
             case ItemCategory.Special:
                 if (ps != null) ps.currentSpecialEquip = selectedItem;
+                if (GameManager.Instance != null) GameManager.Instance.currentEquipSpecial = selectedItem;
                 if (equipIconSpecial != null) equipIconSpecial.sprite = selectedItem.icon;
                 break;
             case ItemCategory.Passive:
@@ -291,13 +293,16 @@ public class InventoryMenuController : MonoBehaviour {
                 equipIconPassiveA.color = new Color(1, 1, 1, 1); // 不透明にして表示
             }
             if (pc != null) pc.equipPassiveA = selectedItem;
-        }else{
+            if (GameManager.Instance != null) GameManager.Instance.currentEquipPassiveA = selectedItem; // ▼ 追加
+        }
+        else{
             if (equipIconPassiveB != null)
             {
                 equipIconPassiveB.sprite = selectedItem.icon;
                 equipIconPassiveB.color = new Color(1, 1, 1, 1);
             }
             if (pc != null) pc.equipPassiveB = selectedItem;
+            if (GameManager.Instance != null) GameManager.Instance.currentEquipPassiveB = selectedItem;
         }
 
         // ▼▼▼ 3. ステータスの再計算を実行 ▼▼▼

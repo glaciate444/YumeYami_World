@@ -47,6 +47,13 @@ public class GameManager : MonoBehaviour {
     // 修正：単なるintのリストから、カスタムクラスのリストに変更
     public System.Collections.Generic.List<OwnedItemData> ownedItems = new System.Collections.Generic.List<OwnedItemData>();
 
+    // ▼▼▼ 新規追加：現在装備中のアイテム（シーン間維持用） ▼▼▼
+    [Header("現在の装備データ")]
+    public ItemInventoryData currentEquipSubAction;
+    public ItemInventoryData currentEquipSpecial;
+    public ItemInventoryData currentEquipPassiveA;
+    public ItemInventoryData currentEquipPassiveB;
+
     [Header("ショップでの購入回数（セーブ対象）")]
     public int hpUpPurchaseCount = 0;
     public int spUpPurchaseCount = 0;
@@ -200,7 +207,7 @@ public class GameManager : MonoBehaviour {
         ownedItems.Add(new OwnedItemData { itemId = 0, itemLevel = 1 }); // アクション1
         ownedItems.Add(new OwnedItemData { itemId = 1, itemLevel = 1 }); // アクション2
         ownedItems.Add(new OwnedItemData { itemId = 2, itemLevel = 1 }); // アクション3
-        ownedItems.Add(new OwnedItemData { itemId = 3, itemLevel = 1 }); // スペシャル技
+        ownedItems.Add(new OwnedItemData { itemId = 21, itemLevel = 1 }); // スペシャル技（ID:21）
 
         clearedStageNumbers.Clear();
 

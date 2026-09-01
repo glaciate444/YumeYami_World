@@ -34,8 +34,8 @@ public class InventoryItemSlot : MonoBehaviour{
             currentLevel = 1;
         }
 
-        // （※おまけ）もし特定のスペシャル技（例: IDが3のもの）も初期から強制所持させたい場合
-        if (itemData.itemId == 3 && currentLevel <= 0){
+        // （※おまけ）もし特定のスペシャル技（例: IDが21のもの）も初期から強制所持させたい場合
+        if (itemData.itemId == 21 && currentLevel <= 0){
             currentLevel = 1;
         }
 
