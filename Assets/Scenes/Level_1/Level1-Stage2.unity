@@ -14881,11 +14881,11 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 1.0699768, y: 6.7065425}
-      - {x: -10.96298, y: 6.8053036}
+    - - {x: 1.0699768, y: 8.206543}
+      - {x: -10.96298, y: 8.305304}
       - {x: -10.956365, y: -4.277746}
       - {x: 202.20839, y: -4.463564}
-      - {x: 202.2216, y: 6.4977193}
+      - {x: 202.2216, y: 7.9977193}
   m_UseDelaunayMesh: 1
 --- !u!4 &1528447495
 Transform:
@@ -16385,6 +16385,7 @@ MonoBehaviour:
   clearedStageNumber: 12
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &1968579192
 BoxCollider2D:

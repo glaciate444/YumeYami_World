@@ -47,6 +47,10 @@ public class PlayerController : MonoBehaviour{
     [Header("ダッシュUI連携")]
     public TMP_Text dashText; // ※アイコンにする場合は後でImageの配列等に変更可能です
 
+    [Header("ダッシュ演出")]
+    public AudioClip dashSE;
+    public GameObject dashSmokePrefab;
+
     [Header("ヒップドロップ設定")]
     public GameObject hipDropHitbox; // ヒップドロップ中にONにする判定
     [HideInInspector] public bool isHipDropping = false; // 外から参照できるようにする
@@ -469,6 +473,20 @@ public class PlayerController : MonoBehaviour{
         isDashing = true;
         currentDashCharges--;
         UpdateDashUI();
+
+        // 効果音と煙の演出
+        if (SoundManager.instance != null && dashSE != null){
+            SoundManager.instance.PlaySE(dashSE);
+        }
+
+        if (dashSmokePrefab != null && groundCheck != null){
+            // 既存の足元判定（groundCheck）の位置に煙を生成
+            GameObject smoke = Instantiate(dashSmokePrefab, groundCheck.position, Quaternion.identity);
+
+            // プレイヤーの向きに合わせて、煙の反転（向き）を合わせる
+            float facingDir = Mathf.Sign(transform.localScale.x);
+            smoke.transform.localScale = new Vector3(facingDir, 1f, 1f);
+        }
 
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;

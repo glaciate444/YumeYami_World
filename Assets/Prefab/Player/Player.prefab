@@ -410,6 +410,8 @@ MonoBehaviour:
   dashOnSprite: {fileID: 21300000, guid: 926ff5087e9ab724d9607ebf0ea9166a, type: 3}
   dashOffSprite: {fileID: 21300000, guid: f64fc45b30882d041ab0046b22382f7a, type: 3}
   dashText: {fileID: 0}
+  dashSE: {fileID: 8300000, guid: ab8f3499c602d4044bafd4b25c1dc2f1, type: 3}
+  dashSmokePrefab: {fileID: 5374668852920394375, guid: a514779fcc4a8e040a46115b14ebe403, type: 3}
   hipDropHitbox: {fileID: 6413640022298465149}
   isHipDropping: 0
   isSlowFallingActive: 0
