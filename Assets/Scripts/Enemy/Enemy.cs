@@ -66,6 +66,9 @@ public class Enemy : MonoBehaviour, IDamageable {
     private void Die(){
         isDead = true;
 
+        // 裏で動いているノックバック処理などをすべて強制停止させ、死への干渉を防ぐ
+        StopAllCoroutines();
+
         if (explosionEffectPrefab != null){
             Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
         }
@@ -73,6 +76,7 @@ public class Enemy : MonoBehaviour, IDamageable {
             Instantiate(itemPrefab, transform.position, Quaternion.identity);
         }
 
+        // StopAllCoroutines() の「後」に呼ばれるので、この落下コルーチンだけは安全に最後まで実行されます
         StartCoroutine(ComicalDeathRoutine());
     }
 
@@ -83,11 +87,9 @@ public class Enemy : MonoBehaviour, IDamageable {
         // 1. 通常の移動スクリプトを止める
         if (movementScript != null) movementScript.enabled = false;
 
-        // ▼【超重要・新規追加】画面外でリスポーン（復活）させようとするスクリプトを止める！
         EnemyActivator activator = GetComponent<EnemyActivator>();
         if (activator != null) activator.enabled = false;
 
-        // キラー等の「強制等速移動」スクリプトを止める！ ▼▼▼
         ConstantVelocity cv = GetComponent<ConstantVelocity>();
         if (cv != null) cv.enabled = false;
 
@@ -100,12 +102,16 @@ public class Enemy : MonoBehaviour, IDamageable {
         // 3. アニメーションを「Damage」に固定する
         if (anim != null){
             anim.Play("Damage");
+            // アニメーション自体が座標を強制固定してしまうのを防ぐ
+            anim.speed = 0f;
         }
 
         // 4. マリオのように、少し上に跳ねてから画面下に落ちる物理設定
         if (rb != null){
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = 4f;
+            //　インスペクターの「Y座標固定(Freeze Position Y)」などを強制的に破壊する
+            rb.constraints = RigidbodyConstraints2D.None;
             rb.linearVelocity = new Vector2(0f, deathJumpForce);
         }
 
