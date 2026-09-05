@@ -8393,6 +8393,8 @@ PolygonCollider2D:
     m_Paths:
     - - {x: -9.8, y: -5}
       - {x: 350, y: -5}
+      - {x: 354.5067, y: -4.9850674}
+      - {x: 354.5, y: 5}
       - {x: 350, y: 5}
       - {x: -9.8, y: 5}
   m_UseDelaunayMesh: 1
