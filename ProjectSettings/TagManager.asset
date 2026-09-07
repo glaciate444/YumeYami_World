@@ -11,6 +11,7 @@ TagManager:
   - DashText
   - Ladder
   - StrictOneWay
+  - Water
   layers:
   - Default
   - TransparentFX

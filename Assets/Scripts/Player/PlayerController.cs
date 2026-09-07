@@ -63,7 +63,6 @@ public class PlayerController : MonoBehaviour{
     private bool isAttacking;
     private bool canAttack = true;
 
-
     [Header("坂道対策の摩擦マテリアル")]
     public PhysicsMaterial2D zeroFriction; // 動く時・空中の時用
     public PhysicsMaterial2D highFriction; // 立ち止まった時用
@@ -104,6 +103,10 @@ public class PlayerController : MonoBehaviour{
     private bool isWallSliding;
     private bool isWallJumping;
     private float wallJumpTimer;
+
+    [Header("水中設定")]
+    public float swimSpeed = 4f;
+    private bool isSwimming = false; // タイポ(isSwimisSwimming)を修正
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -213,6 +216,10 @@ public class PlayerController : MonoBehaviour{
 
         // ダッシュ中は他の行動（向きの反転や接地判定）を一時停止
         if (isDashing) return;
+
+        // ▼ 新規追加：水中状態をAnimatorに教える ▼
+        anim.SetBool("isSwimming", isSwimming);
+        anim.SetBool("isSwimmingMoving", isSwimming && moveInput.magnitude > 0.1f);
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         // ▼ 壁に触れているか判定 ▼
@@ -332,6 +339,16 @@ public class PlayerController : MonoBehaviour{
             rb.gravityScale = defaultGravity; // 梯子から降りたら重力を元に戻す
         }
 
+        // ▼ 【追加】水中を泳いでいる最中の専用処理 ▼
+        if (isSwimming){
+            // 方向キーの入力がある時は、入力方向へ自由に泳ぐ
+            if (moveInput.magnitude > 0.1f){
+                rb.linearVelocity = new Vector2(moveInput.x * swimSpeed, moveInput.y * swimSpeed);
+            }
+            // 入力がない時は、Buoyancy Effector の浮力でプカプカと自然に浮くのを邪魔しない
+            return; // 泳ぎ中は、これより下の通常の歩行・落下処理を完全にキャンセル
+        }
+
         // ▼【変更】壁ずり落ち中の落下速度制限 ▼
         if (isInsideCannon) return;
 
@@ -368,6 +385,9 @@ public class PlayerController : MonoBehaviour{
     }
 
     private void Jump(){
+        // ▼ 新規追加：水中にいる時は通常のジャンプ処理を行わない
+        if (isSwimming) return;
+
         // 【変更】isGrounded ではなく coyoteTimeCounter が 0 より大きいかで判定する
         if (coyoteTimeCounter > 0f && !isDashing && !isHipDropping){
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
@@ -552,12 +572,22 @@ public class PlayerController : MonoBehaviour{
         if (other.CompareTag("Ladder")){
             isNearLadder = true;
         }
+        if (other.CompareTag("Water")){
+            isSwimming = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other){
         if (other.CompareTag("Ladder")){
             isNearLadder = false;
             isClimbing = false; // 梯子から離れたら強制的に登り状態を解除
+        }
+        if (other.CompareTag("Water")){
+            isSwimming = false;
+            // ▼ 新規追加：水から出る時、上に入力していれば水面ジャンプ！
+            if (moveInput.y > 0){
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 0.8f);
+            }
         }
     }
 
