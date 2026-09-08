@@ -578,15 +578,25 @@ public class PlayerController : MonoBehaviour{
     }
 
     private void OnTriggerExit2D(Collider2D other){
+        // ▼ はしごの処理
         if (other.CompareTag("Ladder")){
-            isNearLadder = false;
-            isClimbing = false; // 梯子から離れたら強制的に登り状態を解除
+            // 子オブジェクト（攻撃判定など）の消失による誤作動を防ぐため、本体が離れたか厳密に確認する
+            if (!GetComponent<Collider2D>().IsTouching(other)){
+                isNearLadder = false;
+                isClimbing = false;
+            }
         }
+
+        // ▼ 水面の処理
         if (other.CompareTag("Water")){
-            isSwimming = false;
-            // ▼ 新規追加：水から出る時、上に入力していれば水面ジャンプ！
-            if (moveInput.y > 0){
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 0.8f);
+            // 攻撃判定ではなく、プレイヤー本体のコライダーが本当に水面から出た時だけ解除する
+            if (!GetComponent<Collider2D>().IsTouching(other)){
+                isSwimming = false;
+
+                // 水から出る時、上に入力していれば水面ジャンプ
+                if (moveInput.y > 0){
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 0.8f);
+                }
             }
         }
     }
