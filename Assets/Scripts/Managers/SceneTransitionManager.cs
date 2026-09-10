@@ -96,4 +96,30 @@ public class SceneTransitionManager : MonoBehaviour {
         // トランジションOut アニメーション再生
         anim.SetTrigger(outTrigger);
     }
+    // 同一シーン内のワープ用メソッド
+    public void WarpInSameScene(System.Action warpAction, TransitionType type = TransitionType.Fade){
+        StartCoroutine(WarpSameSceneRoutine(warpAction, type));
+    }
+
+    private IEnumerator WarpSameSceneRoutine(System.Action warpAction, TransitionType type){
+        if (courseText != null){
+            courseText.gameObject.SetActive(false);
+        }
+
+        string inTrigger = type == TransitionType.Fade ? "FadeIn" : "CourseIn";
+        string outTrigger = type == TransitionType.Fade ? "FadeOut" : "CourseOut";
+        float waitTime = type == TransitionType.Fade ? fadeWaitTime : slideWaitTime;
+
+        // トランジションIn アニメーション再生
+        anim.SetTrigger(inTrigger);
+        // 【重要】ゲームの時間が停止していてもフェードが進むように Realtime を使用
+        yield return new WaitForSecondsRealtime(waitTime);
+
+        // 画面が完全に暗転した瞬間に、渡された処理（キャラとカメラの移動）を実行！
+        warpAction?.Invoke();
+        yield return null;
+
+        // トランジションOut アニメーション再生
+        anim.SetTrigger(outTrigger);
+    }
 }

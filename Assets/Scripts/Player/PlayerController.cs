@@ -119,6 +119,11 @@ public class PlayerController : MonoBehaviour{
     // 武器を振った時の音
     public AudioClip attackSwingSE;
 
+    // ▼ 外から上キーの入力を読み取るためのプロパティ
+    public float MoveInputY => moveInput.y;
+    // ▼ ワープ中に他の動作を止めるためのフラグ
+    [HideInInspector] public bool isWarping = false;
+
     [HideInInspector] public bool isKnockback; // 外から操作できるように public または [HideInInspector]
 
     // 動く床から受け取る速度
@@ -202,6 +207,7 @@ public class PlayerController : MonoBehaviour{
     private void OnDisable() => inputActions.Disable();
 
     void Update(){
+        if (isWarping) return; // ワープ中は一切の操作とアニメーション更新を無効化
         // 大砲の中にいる間は、毎フレーム強制的にWaitPointへ座標を固定する ▼▼▼
         if (isInsideCannon){
             if (cannonWaitPoint != null){
@@ -319,6 +325,7 @@ public class PlayerController : MonoBehaviour{
     }
 
     void FixedUpdate(){
+        if (isWarping) return; // ワープ中は一切の操作とアニメーション更新を無効化
         // ダッシュ中またはヒップドロップ中は通常の移動処理を行わない
         if (isDashing || isHipDropping) return;
         // ノックバック中は、InputSystemによる移動入力を無視する
