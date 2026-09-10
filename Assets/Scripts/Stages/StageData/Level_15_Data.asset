@@ -19,5 +19,6 @@ MonoBehaviour:
   requiredClearedStageNumbers: 20000000
   requiredEventFlags: []
   thumbnail: {fileID: 0}
-  description: "\u30E1\u30EA\u30FC\u30B4\u30FC\u30E9\u30F3\u30C9"
+  description: "\u3077\u304F\u3077\u304F\u30D5\u30ED\u30FC\u30C8\u30DC\u30FC\u30EB"
   maxMedals: 4
+  stageBGM: {fileID: 8300000, guid: 46ff921daee2e5c428affd2b98e3e4eb, type: 3}

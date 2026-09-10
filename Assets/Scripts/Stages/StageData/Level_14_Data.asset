@@ -19,5 +19,6 @@ MonoBehaviour:
   requiredClearedStageNumbers: 1f000000
   requiredEventFlags: []
   thumbnail: {fileID: 0}
-  description: "\u304A\u3082\u3061\u3083\u306E\u6C7D\u8ECA"
+  description: "\u30E1\u30EA\u30FC\u30B4\u30FC\u30E9\u30F3\u30C9"
   maxMedals: 4
+  stageBGM: {fileID: 0}
