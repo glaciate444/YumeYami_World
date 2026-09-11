@@ -99,6 +99,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Level_3/Level3-Stage1.unity
     guid: e91c4324231dcc147ad1beb1ec4efce4
   - enabled: 1
+    path: Assets/Scenes/Level_3/Level3-Stage2.unity
+    guid: ab048fb065d387a439063650f6e8e404
+  - enabled: 1
+    path: Assets/Scenes/Level_3/Level3-Stage3.unity
+    guid: 6c1d2b80204a2ea4c89b1c7d2bb55d91
+  - enabled: 1
+    path: Assets/Scenes/Level_3/Level3-Stage4.unity
+    guid: 7b6d57e8708bdff49bdcf11a410fc829
+  - enabled: 1
     path: Assets/Scenes/Level_3/LevelEndingScene_3.unity
     guid: 651e1291884aa354881df52528867315
   - enabled: 1
