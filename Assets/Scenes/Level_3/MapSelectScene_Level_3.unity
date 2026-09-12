@@ -359,6 +359,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: fd34bc065fa22fc43a5712cb8b5a9cde, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 144916495}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -394,7 +396,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -619,6 +621,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: bdebf11a7dcc0144f86b06d88baa0a35, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 179194805}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -800,6 +804,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: 70b811c5d95d559479e48131a36a421f, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 216246494}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -1043,6 +1049,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: cd48ff4afe64045448364a92bf9eda4c, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 329518401}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -1203,6 +1211,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: ed4743ccb31ee5c46af6d2f8c8f24bc0, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 509168687}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -1736,6 +1746,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: a3ec011b437029a43a041a9d20822932, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 1027083740}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
@@ -2902,6 +2914,7 @@ MonoBehaviour:
   - {fileID: 946287070}
   gotMedalColor: {r: 1, g: 1, b: 1, a: 1}
   notGotMedalColor: {r: 0, g: 0, b: 0, a: 0.5}
+  myWorldData: {fileID: 0}
 --- !u!4 &1665485294
 Transform:
   m_ObjectHideFlags: 0
@@ -3099,6 +3112,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
   myLevelData: {fileID: 11400000, guid: e006775f82369ee4f9b7319eab70c350, type: 2}
+  isShopNode: 0
+  shopSceneName: ShopScene
   nodeImage: {fileID: 1935131183}
   lockedSprite: {fileID: -1100349257, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}
   unlockedSprite: {fileID: -6496197820926200057, guid: 1295265ebd1c1644099e74f3a2baaaed, type: 3}

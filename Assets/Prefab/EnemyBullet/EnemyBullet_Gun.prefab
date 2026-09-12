@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 7814645704091411752}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.18425, y: 0.13174, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,12 +84,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 676b29ff1365bf24ea64b68fd42f9702, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.359375, y: 1.9140625}
+  m_Size: {x: 0.625, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -128,8 +128,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.25}
-  m_Radius: 0.666
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.4
 --- !u!50 &3225714926973216369
 Rigidbody2D:
   serializedVersion: 5
@@ -172,7 +172,7 @@ MonoBehaviour:
   speed: 15
   damage: 1
   impact: 5
-  lifeTime: 6
+  lifeTime: 3
   isPiercing: 0
   ignoreTag: Enemy
   hitEffectPrefab: {fileID: 8286972500862344658, guid: 67118bc584b70f74984698d59d874fd9, type: 3}

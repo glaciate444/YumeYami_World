@@ -48,6 +48,12 @@ public class GoalPoint : MonoBehaviour {
         isGoal = true;
         Debug.Log("ゴール処理開始！");
 
+        // ▼▼▼ 新規追加：アイリスアウト中に敵が動くのを防ぐため、全敵を停止 ▼▼▼
+        EnemyMovement[] enemies = FindObjectsByType<EnemyMovement>(FindObjectsSortMode.None);
+        foreach (var enemy in enemies){
+            if (enemy != null) enemy.PauseMovement(true);
+        }
+
         // ゴールした瞬間にジングルを鳴らす（前のBGMは自動で止まります）
         // ▼ 修正：SoundManagerが存在するかどうかの確認（if文）で全体を囲む
         if (SoundManager.instance != null){
