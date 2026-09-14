@@ -1003,13 +1003,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 017ac6b0b18f5a243ae5965e21c3e35c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawner
-  spawnPrefab: {fileID: 0}
+  spawnPrefab: {fileID: 1497450700671623618, guid: 1c86ebb0034e0e242a672ab03d0cf10a, type: 3}
   spawnInterval: 3
   initialDelay: 0.5
   lifeTime: 10
-  initialVelocity: {x: -5, y: 0}
+  initialVelocity: {x: 5, y: 0}
   inheritDirection: 1
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 1682502947}
   activeDistance: 8
 --- !u!212 &170352903
 SpriteRenderer:
@@ -1079,10 +1079,11 @@ Transform:
   m_GameObject: {fileID: 170352901}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 151.55, y: 17.48, z: 0}
+  m_LocalPosition: {x: 151.5, y: 17.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1682502947}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &179742832
@@ -14171,6 +14172,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1682502946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1682502947}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1682502947
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682502946}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.6, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 170352904}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1711895006
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14228,6 +14260,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3ad63132d8c05b44b278ee899016379, type: 3}
+--- !u!1 &1722127165
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1722127166}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1722127166
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722127165}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2123653736}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1730349635
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15633,13 +15696,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 017ac6b0b18f5a243ae5965e21c3e35c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawner
-  spawnPrefab: {fileID: 0}
+  spawnPrefab: {fileID: 1497450700671623618, guid: 1c86ebb0034e0e242a672ab03d0cf10a, type: 3}
   spawnInterval: 3
   initialDelay: 0.5
   lifeTime: 10
   initialVelocity: {x: -5, y: 0}
   inheritDirection: 1
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 1722127166}
   activeDistance: 8
 --- !u!212 &2123653735
 SpriteRenderer:
@@ -15709,10 +15772,11 @@ Transform:
   m_GameObject: {fileID: 2123653733}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 156.55, y: 12.48, z: 0}
+  m_LocalPosition: {x: 156.5, y: 12.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1722127166}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2144404158824839691
