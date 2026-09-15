@@ -51,9 +51,8 @@ public class Bullet : MonoBehaviour {
             target.TakeDamage(damage, knockbackForce);
         }
 
-        // ▼▼▼ 新規追加：貫通フラグがONなら、ここで処理を終えて弾を飛ばし続ける ▼▼▼
+        // 貫通フラグがONなら、ここで処理を終えて弾を飛ばし続ける ▼▼▼
         if (isPiercing) return;
-        // ▲▲▲ 新規追加ここまで ▲▲▲
 
         Destroy(gameObject); // 貫通フラグがOFFの時のみ、弾自身を消滅させる
     }
