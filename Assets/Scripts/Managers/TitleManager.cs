@@ -1,30 +1,29 @@
 ﻿/* ===================================================
  * スクリプト名 : TitleManager.cs
  * 用途 : タイトル画面の演出、状態遷移、メニュー選択
- * 拡張 : セーブデータ多重スロット対応＆サブメニュー化
+ * 拡張 : PlayerControls完全対応（コントローラー＆キーボード両対応版）
  * =================================================== */
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using TMPro; // テキスト操作用
+using TMPro;
 
-// ▼ 追加：サブメニュー用の状態（FileMenu）を追加
-public enum TitleState {
+public enum TitleState{
     PressAnyKey,
     MainMenu,
-    FileMenu,    // ファイルを選択した後の「スタート/消す」メニュー
+    FileMenu,
     Options,
     Credits
 }
 
-public class TitleManager : MonoBehaviour {
+public class TitleManager : MonoBehaviour{
     [Header("状態管理")]
     public TitleState currentState = TitleState.PressAnyKey;
 
     [Header("UIパネル設定")]
     public GameObject pressAnyKeyPanel;
     public GameObject mainPanel;
-    public GameObject fileMenuPanel;    // ▼ 追加：ファイル選択後のサブメニュー枠
+    public GameObject fileMenuPanel;
     public GameObject optionsPanel;
     public GameObject creditsPanel;
 
@@ -32,12 +31,9 @@ public class TitleManager : MonoBehaviour {
     public RectTransform cursorImage;
     [Tooltip("上から順に: 0:Data1, 1:Data2, 2:Data3, 3:Data4, 4:Option, 5:Credit")]
     public RectTransform[] menuPositions;
-
-    [Tooltip("カーソルをボタンの左側どれくらい離れた位置に置くか")]
     public float cursorOffsetX = 150f;
 
     [Header("ファイルテキスト設定")]
-    [Tooltip("ファイル1〜4のテキスト（データ有無の表示切り替え用）")]
     public TMP_Text[] fileTexts;
 
     [Header("サブメニュー設定")]
@@ -47,20 +43,33 @@ public class TitleManager : MonoBehaviour {
     public float subMenuCursorOffsetX = 80f;
 
     private int currentIndex = 0;
-    private int subMenuIndex = 0;     // サブメニューのカーソル位置
-    private int selectedSlot = 1;     // 選んだファイル番号（1〜4）
+    private int subMenuIndex = 0;
+    private int selectedSlot = 1;
+
+    // ▼ 新規追加：Input Actionのクラスとクールダウン
+    private PlayerControls input;
     private float inputCooldown = 0f;
 
-    // ▼ 修正：「ニューゲーム」を廃止し、6つのボタン用のナビゲーションに再構築
-    // 配列の中身： { 上, 下, 左, 右 }
     private readonly int[,] navigation = new int[6, 4] {
-        { 4, 2, 1, 1 }, // 0: Data1  (上->Option, 下->Data3, 左右->Data2)
-        { 5, 3, 0, 0 }, // 1: Data2  (上->Credit, 下->Data4, 左右->Data1)
-        { 0, 4, 3, 3 }, // 2: Data3  (上->Data1,  下->Option, 左右->Data4)
-        { 1, 5, 2, 2 }, // 3: Data4  (上->Data2,  下->Credit, 左右->Data3)
-        { 2, 0, 5, 5 }, // 4: Option (上->Data3,  下->Data1,  左右->Credit)
-        { 3, 1, 4, 4 }  // 5: Credit (上->Data4,  下->Data2,  左右->Option)
+        { 4, 2, 1, 1 },
+        { 5, 3, 0, 0 },
+        { 0, 4, 3, 3 },
+        { 1, 5, 2, 2 },
+        { 2, 0, 5, 5 },
+        { 3, 1, 4, 4 }
     };
+
+    void Awake(){
+        input = new PlayerControls();
+    }
+
+    void OnEnable(){
+        input.Enable();
+    }
+
+    void OnDisable(){
+        input.Disable();
+    }
 
     void Start(){
         ChangeState(TitleState.PressAnyKey);
@@ -68,42 +77,56 @@ public class TitleManager : MonoBehaviour {
 
     void Update(){
         if (inputCooldown > 0f){
-            inputCooldown -= Time.deltaTime;
-            return;
+            inputCooldown -= Time.unscaledDeltaTime;
         }
 
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        // ▼ PlayerControls からの入力取得
+        Vector2 moveDir = input.Player.Move.ReadValue<Vector2>();
+        bool isUp = false, isDown = false, isLeft = false, isRight = false;
+
+        // カーソル移動のクールダウン管理
+        if (inputCooldown <= 0f && moveDir.sqrMagnitude > 0.1f){
+            if (Mathf.Abs(moveDir.x) > Mathf.Abs(moveDir.y)){
+                if (moveDir.x > 0.5f) isRight = true;
+                else if (moveDir.x < -0.5f) isLeft = true;
+            }else{
+                if (moveDir.y > 0.5f) isUp = true;
+                else if (moveDir.y < -0.5f) isDown = true;
+            }
+        }
+
+        bool isSubmit = input.Player.Attack.WasPressedThisFrame() || input.Player.Jump.WasPressedThisFrame();
+        bool isCancel = input.Player.Dash.WasPressedThisFrame() || input.Player.Pause.WasPressedThisFrame();
+
+        // PressAnyKey用の「何らかのアクションが入力されたか」判定
+        bool isAnyAction = isUp || isDown || isLeft || isRight || isSubmit || isCancel ||
+                           (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame);
 
         switch (currentState){
             case TitleState.PressAnyKey:
-                if (keyboard.anyKey.wasPressedThisFrame)
-                {
+                if (isAnyAction){
                     ChangeState(TitleState.MainMenu);
                     inputCooldown = 0.2f;
                 }
                 break;
 
             case TitleState.MainMenu:
-                HandleMainMenuInput(keyboard);
+                HandleMainMenuInput(isUp, isDown, isLeft, isRight, isSubmit);
                 break;
 
             case TitleState.FileMenu:
-                HandleFileMenuInput(keyboard);
+                HandleFileMenuInput(isUp, isDown, isSubmit, isCancel);
                 break;
 
             case TitleState.Options:
-                if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame)
-                {
+                if (isCancel){
                     ChangeState(TitleState.MainMenu);
                     inputCooldown = 0.2f;
                 }
                 break;
 
             case TitleState.Credits:
-                if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame ||
-                    keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame)
-                {
+                if (isCancel || isSubmit){
                     ChangeState(TitleState.MainMenu);
                     inputCooldown = 0.2f;
                 }
@@ -111,51 +134,51 @@ public class TitleManager : MonoBehaviour {
         }
     }
 
-    private void HandleMainMenuInput(Keyboard keyboard){
-        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame){
+    private void HandleMainMenuInput(bool isUp, bool isDown, bool isLeft, bool isRight, bool isSubmit){
+        bool moved = false;
+        if (isUp){
             currentIndex = navigation[currentIndex, 0];
-            UpdateCursorPosition();
-        }else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
+            moved = true;
+        }else if (isDown){
             currentIndex = navigation[currentIndex, 1];
-            UpdateCursorPosition();
-        }else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame){
+            moved = true;
+        }else if (isLeft){
             currentIndex = navigation[currentIndex, 2];
-            UpdateCursorPosition();
-        }else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame){
+            moved = true;
+        }else if (isRight){
             currentIndex = navigation[currentIndex, 3];
-            UpdateCursorPosition();
+            moved = true;
         }
 
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
+        if (moved){
+            UpdateCursorPosition();
+            inputCooldown = 0.2f;
+        }
+
+        if (isSubmit){
             ExecuteMainMenu();
         }
     }
 
-    private void HandleFileMenuInput(Keyboard keyboard){
-        // サブメニュー（ゲームスタート / 消す）の上下移動
-        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame ||
-            keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame){
-            subMenuIndex = (subMenuIndex == 0) ? 1 : 0; // 0と1を切り替える
+    private void HandleFileMenuInput(bool isUp, bool isDown, bool isSubmit, bool isCancel){
+        if (isUp || isDown){
+            subMenuIndex = (subMenuIndex == 0) ? 1 : 0;
             UpdateSubMenuCursorPosition();
+            inputCooldown = 0.2f;
         }
 
-        // サブメニューの決定
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame){
-            inputCooldown = 0.2f;
+        if (isSubmit){
             if (subMenuIndex == 0){
-                // 「ゲームスタート」を選んだ場合
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.LoadGame();
                 SceneTransitionManager.Instance.LoadScene("WorldMapScene");
             }else{
-                // 「ファイルを消す」を選んだ場合
                 GameManager.Instance.DeleteSaveData(selectedSlot);
-                ChangeState(TitleState.MainMenu); // 消したらメインメニューに戻る
+                ChangeState(TitleState.MainMenu);
             }
         }
 
-        // キャンセル（Xキー）でメインメニューに戻る
-        if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame){
+        if (isCancel){
             ChangeState(TitleState.MainMenu);
             inputCooldown = 0.2f;
         }
@@ -177,11 +200,10 @@ public class TitleManager : MonoBehaviour {
         }
     }
 
-    // データがあるかどうかを調べてUIテキストを書き換える
     private void UpdateFileTexts(){
         for (int i = 0; i < 4; i++){
             if (fileTexts != null && i < fileTexts.Length && fileTexts[i] != null){
-                int slot = i + 1; // 配列0=ファイル1
+                int slot = i + 1;
                 if (GameManager.HasSaveData(slot)){
                     fileTexts[i].text = $"ファイル {slot}\n(つづきから)";
                 }else{
@@ -193,19 +215,14 @@ public class TitleManager : MonoBehaviour {
 
     private void ExecuteMainMenu(){
         inputCooldown = 0.2f;
-
-        // ファイル1〜4を選んだ場合
         if (currentIndex >= 0 && currentIndex <= 3){
-            selectedSlot = currentIndex + 1; // ファイル番号（1〜4）
-
+            selectedSlot = currentIndex + 1;
             if (GameManager.HasSaveData(selectedSlot)){
-                // データがある場合はサブメニューを開く
                 ChangeState(TitleState.FileMenu);
             }else{
-                // データがない（空きスロット）場合は、即座にニューゲーム！
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.ResetData();
-                GameManager.Instance.SaveGame(); // 空のファイルを作成
+                GameManager.Instance.SaveGame();
                 SceneTransitionManager.Instance.LoadScene("OpeningScene");
             }
         }else if (currentIndex == 4){
@@ -217,9 +234,7 @@ public class TitleManager : MonoBehaviour {
 
     private void ChangeState(TitleState newState){
         currentState = newState;
-
         if (pressAnyKeyPanel) pressAnyKeyPanel.SetActive(false);
-        // サブメニューの時はメインパネルを裏に残しておく
         if (mainPanel && newState != TitleState.FileMenu) mainPanel.SetActive(false);
         if (fileMenuPanel) fileMenuPanel.SetActive(false);
         if (optionsPanel) optionsPanel.SetActive(false);
@@ -233,13 +248,13 @@ public class TitleManager : MonoBehaviour {
             case TitleState.MainMenu:
                 if (mainPanel) mainPanel.SetActive(true);
                 if (cursorImage) cursorImage.gameObject.SetActive(true);
-                UpdateFileTexts(); // メインメニューに戻るたびに「データあり/なし」を最新化
+                UpdateFileTexts();
                 UpdateCursorPosition();
                 break;
             case TitleState.FileMenu:
                 if (mainPanel) mainPanel.SetActive(true);
                 if (fileMenuPanel) fileMenuPanel.SetActive(true);
-                subMenuIndex = 0; // カーソル位置を「ゲームスタート」にリセット
+                subMenuIndex = 0;
                 UpdateSubMenuCursorPosition();
                 break;
             case TitleState.Options:

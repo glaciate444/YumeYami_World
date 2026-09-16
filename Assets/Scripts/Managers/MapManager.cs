@@ -1,17 +1,13 @@
 ﻿/* ===================================================
  * スクリプト名 : MapManager.cs
- * Version : Ver0.05
- * Since : 2026/04/28
- * Update : 2026/07/02
- * 用途 : MapManager (マップ管理者): プレイヤーの移動を制御し、
- * 今どのノードにいるのか、次はどこへ移動できるのかを管理します。
- * 拡張 : 決定ボタンの連打バグを防ぐフラグを追加
+ * 用途 : プレイヤーのマップ移動制御
+ * 拡張 : PlayerControls完全対応
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro; // ▼【新規追加】TextMeshProを扱うために必要
+using TMPro; 
 
 public class MapManager : MonoBehaviour{
     [Header("マップ設定")]
@@ -27,29 +23,38 @@ public class MapManager : MonoBehaviour{
 
     private bool isMoving = false;
     private MapNode targetNode;
-
-    // ▼【新規追加】シーン遷移が始まったら true にして入力の連打を防ぐ
     private bool isStartingCourse = false; 
 
-    [Header("ワールドマップ（大マップ）へ戻る設定")]
+    [Header("ワールドマップへ戻る設定")]
     public string worldMapSceneName = "WorldMapScene";
 
     [Header("UI表示設定")]
-    public TextMeshProUGUI stageNameText; // 「1-1: AAAAA」などのステージ名表示用
-    public TextMeshProUGUI livesText;     // 残機表示用
-    public Image[] medalImages;           // メダルのアイコン画像（インスペクターで3つセットする）
-
-    [Tooltip("取得済みのメダルの色（デフォルトは白）")]
+    public TextMeshProUGUI stageNameText; 
+    public TextMeshProUGUI livesText;     
+    public Image[] medalImages;           
     public Color gotMedalColor = Color.white;
-    [Tooltip("未取得のメダルの色（デフォルトは半透明の黒など）")]
     public Color notGotMedalColor = new Color(0, 0, 0, 0.5f);
 
-    [Header("このワールドマップのデータ")]
-    [Tooltip("このシーンの WorldData をセットしてください")]
+    [Header("データ")]
     public WorldData myWorldData;
 
+    // ▼ 新規追加
+    private PlayerControls input;
+    private float inputCooldown = 0f;
+
+    void Awake() {
+        input = new PlayerControls();
+    }
+
+    void OnEnable() {
+        input.Enable();
+    }
+
+    void OnDisable() {
+        input.Disable();
+    }
+
     void Start(){
-        // ▼ シーン開始と同時にBGMを再生する
         PlayStageBGM();
 
         MapNode[] allNodes = FindObjectsByType<MapNode>(FindObjectsSortMode.None);
@@ -73,7 +78,6 @@ public class MapManager : MonoBehaviour{
             playerIcon.position = currentNode.transform.position;
         }
 
-        // ▼【新規追加】ゲーム開始時にUIを初期状態に更新する
         UpdateMapUI();
     }
 
@@ -107,31 +111,26 @@ public class MapManager : MonoBehaviour{
 
         lineRect.sizeDelta = new Vector2(distance, 15f);
         lineRect.rotation = Quaternion.Euler(0, 0, angle);
-
-        if (fromNode.IsUnlocked && toNode.IsUnlocked){
-            lineImage.color = unlockedLineColor;
-        }else{
-            lineImage.color = lockedLineColor;
-        }
-
+        lineImage.color = (fromNode.IsUnlocked && toNode.IsUnlocked) ? unlockedLineColor : lockedLineColor;
         lineRect.SetAsFirstSibling();
     }
 
     void Update(){
-        // ▼【新規追加】すでに画面遷移が始まっていたら、これ以下の処理（キー入力）を一切無視する！
         if (isStartingCourse) return;
+
+        if (inputCooldown > 0f) {
+            inputCooldown -= Time.unscaledDeltaTime;
+        }
 
         if (isMoving){
             MovePlayerIcon();
             return;
         }
 
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
-
-        // ▼ キャンセルキーでの戻る処理（ここでも連打防止のロックをかける）
-        if (keyboard.xKey.wasPressedThisFrame || keyboard.escapeKey.wasPressedThisFrame) {
-            isStartingCourse = true; // ← ここでロック！
+        bool isCancel = input.Player.Dash.WasPressedThisFrame() || input.Player.Pause.WasPressedThisFrame();
+        
+        if (isCancel) {
+            isStartingCourse = true; 
             if (SceneTransitionManager.Instance != null) {
                 SceneTransitionManager.Instance.LoadScene(worldMapSceneName, TransitionType.Fade);
             } else {
@@ -140,47 +139,49 @@ public class MapManager : MonoBehaviour{
             return; 
         }
 
-        MapNode nextNode = null;
+        Vector2 moveDir = input.Player.Move.ReadValue<Vector2>();
+        bool isUp = false, isDown = false, isLeft = false, isRight = false;
 
-        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame) nextNode = currentNode.upNode;
-        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame) nextNode = currentNode.downNode;
-        else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame) nextNode = currentNode.leftNode;
-        else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame) nextNode = currentNode.rightNode;
+        if (inputCooldown <= 0f && moveDir.sqrMagnitude > 0.1f) {
+            if (Mathf.Abs(moveDir.x) > Mathf.Abs(moveDir.y)) {
+                if (moveDir.x > 0.5f) isRight = true;
+                else if (moveDir.x < -0.5f) isLeft = true;
+            } else {
+                if (moveDir.y > 0.5f) isUp = true;
+                else if (moveDir.y < -0.5f) isDown = true;
+            }
+        }
+
+        MapNode nextNode = null;
+        if (isUp) nextNode = currentNode.upNode;
+        else if (isDown) nextNode = currentNode.downNode;
+        else if (isLeft) nextNode = currentNode.leftNode;
+        else if (isRight) nextNode = currentNode.rightNode;
 
         if (nextNode != null && nextNode.IsUnlocked){
             targetNode = nextNode;
             isMoving = true;
+            inputCooldown = 0.2f; // 行き過ぎ防止
         }
 
-        // ▼ 決定ボタンの処理
-        // ▼ 決定ボタンの処理
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
+        bool isSubmit = input.Player.Attack.WasPressedThisFrame() || input.Player.Jump.WasPressedThisFrame();
 
+        if (isSubmit){
             if (currentNode != null && currentNode.IsUnlocked){
-
-                // ショップマスだった場合の処理
                 if (currentNode.isShopNode){
                     isStartingCourse = true;
-                    if (GameManager.Instance != null){
-                        // 今いるマップの名前（MapSelectScene_Level_N）を記憶させる！
-                        GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
-                    }
-                    if (SceneTransitionManager.Instance != null){
-                        SceneTransitionManager.Instance.LoadScene(currentNode.shopSceneName, TransitionType.Fade); // 文字なしフェード
-                    }else{
-                        SceneManager.LoadScene(currentNode.shopSceneName);
-                    }
+                    if (GameManager.Instance != null) GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
+                    
+                    if (SceneTransitionManager.Instance != null) SceneTransitionManager.Instance.LoadScene(currentNode.shopSceneName, TransitionType.Fade);
+                    else SceneManager.LoadScene(currentNode.shopSceneName);
                 }
-
-                // ▼ 既存のコース遷移処理（else if に変更します）
                 else if (currentNode.myLevelData != null){
                     isStartingCourse = true;
-                    if (GameManager.Instance != null){
-                        GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
-                    }
+                    if (GameManager.Instance != null) GameManager.Instance.returnMapSceneName = SceneManager.GetActiveScene().name;
+                    
                     SceneTransitionManager.Instance.LoadCourseByNumber(
                         currentNode.myLevelData.sceneName,
-                        currentNode.myLevelData.displayCourseNumber // ← 修正：表向きの番号を渡す！
+                        currentNode.myLevelData.displayCourseNumber 
                     );
                 }
             }
@@ -189,7 +190,6 @@ public class MapManager : MonoBehaviour{
 
     private void MovePlayerIcon(){
         if (playerIcon == null || targetNode == null) return;
-
         playerIcon.position = Vector3.MoveTowards(playerIcon.position, targetNode.transform.position, moveSpeed * Time.deltaTime);
 
         if (Vector3.Distance(playerIcon.position, targetNode.transform.position) < 0.01f){
@@ -201,47 +201,32 @@ public class MapManager : MonoBehaviour{
                 GameManager.Instance.currentMapNodeNumber = currentNode.myLevelData.stageNumber;
                 GameManager.Instance.SaveGame(); 
             }
+            UpdateMapUI();
         }
-        UpdateMapUI();
     }
-    /// <summary>
-    /// 現在のノード情報やGameManagerのデータを元に、UIを最新状態に更新します
-    /// </summary>
+
     private void UpdateMapUI(){
-        // 1. 残機の更新
         if (livesText != null && GameManager.Instance != null){
             livesText.text = GameManager.Instance.currentLives.ToString("D2");
         }
 
-        // 2. ステージ名とメダルの更新
         if (currentNode != null && currentNode.isShopNode){
             if (stageNameText != null) stageNameText.text = "ショップ";
-            // メダル枠は非表示にする
             for (int i = 0; i < medalImages.Length; i++){
                 if (medalImages[i] != null) medalImages[i].gameObject.SetActive(false);
             }
         }else if (currentNode != null && currentNode.myLevelData != null){
+            if (stageNameText != null) stageNameText.text = currentNode.myLevelData.levelName;
 
-            if (stageNameText != null){
-                stageNameText.text = currentNode.myLevelData.levelName;
-            }
-
-            // LevelDataから最大枚数を取得して表示枠を切り替える
             int maxMedals = currentNode.myLevelData.maxMedals;
-
-            // GameManagerから現在のファイル番号を取得
-            int slot = 1;
-            if (GameManager.Instance != null) slot = GameManager.Instance.currentSaveSlot;
+            int slot = (GameManager.Instance != null) ? GameManager.Instance.currentSaveSlot : 1;
 
             for (int i = 0; i < medalImages.Length; i++){
                 if (medalImages[i] != null){
                     if (i < maxMedals){
                         medalImages[i].gameObject.SetActive(true);
-
-                        // 末尾に _{slot} を追加して読み込む
                         string saveKey = $"Stage_{currentNode.myLevelData.stageNumber}_SpecialItem_{i}_{slot}";
                         bool isGot = PlayerPrefs.GetInt(saveKey, 0) == 1;
-
                         medalImages[i].color = isGot ? gotMedalColor : notGotMedalColor;
                     }else{
                         medalImages[i].gameObject.SetActive(false);
@@ -249,26 +234,16 @@ public class MapManager : MonoBehaviour{
                 }
             }
         }else{
-            // ステージデータを持たない「通過点」に止まった場合の処理
             if (stageNameText != null) stageNameText.text = "";
-
-            // ▼ 修正：通過点は枠ごと非表示にする
             for (int i = 0; i < medalImages.Length; i++){
-                if (medalImages[i] != null){
-                    medalImages[i].gameObject.SetActive(false);
-                }
+                if (medalImages[i] != null) medalImages[i].gameObject.SetActive(false);
             }
         }
     }
 
     private void PlayStageBGM(){
-        if (myWorldData != null && myWorldData.worldBGM != null){
-            if (SoundManager.instance != null){
-                // ※SoundManagerにBGM再生用のメソッド（PlayBGMなど）がある前提のコードです
-                SoundManager.instance.PlayBGM(myWorldData.worldBGM);
-            }else{
-                Debug.LogWarning("SoundManagerが見つかりません。BGMが再生できませんでした。");
-            }
+        if (myWorldData != null && myWorldData.worldBGM != null && SoundManager.instance != null){
+            SoundManager.instance.PlayBGM(myWorldData.worldBGM);
         }
     }
 }

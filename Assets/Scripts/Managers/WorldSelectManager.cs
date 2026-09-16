@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : WorldSelectManager.cs
  * 用途 : 大マップ（ワールド選択）のカーソル移動とシーン遷移
- * 拡張 : 決定ボタンの連打バグを防ぐフラグを追加 / ストーリー既読判定を追加
+ * 拡張 : PlayerControls完全対応
  * =================================================== */
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,9 +15,23 @@ public class WorldSelectManager : MonoBehaviour {
 
     private bool isMoving = false;
     private WorldNode targetNode;
-
-    // シーン遷移が始まったら true にして入力の連打を防ぐ
     private bool isStartingWorld = false;
+
+    // ▼ 新規追加
+    private PlayerControls input;
+    private float inputCooldown = 0f;
+
+    void Awake() {
+        input = new PlayerControls();
+    }
+
+    void OnEnable() {
+        input.Enable();
+    }
+
+    void OnDisable() {
+        input.Disable();
+    }
 
     void Start(){
         WorldNode[] allNodes = FindObjectsByType<WorldNode>(FindObjectsSortMode.None);
@@ -25,7 +39,6 @@ public class WorldSelectManager : MonoBehaviour {
             node.SetupNode();
         }
 
-        // GameManagerの記憶からスタート位置を復元
         if (GameManager.Instance != null){
             int savedNodeNum = GameManager.Instance.currentWorldNodeNumber;
             foreach (var node in allNodes){
@@ -42,58 +55,64 @@ public class WorldSelectManager : MonoBehaviour {
     }
 
     void Update(){
-        // すでに画面遷移が始まっていたら、これ以下の処理（キー入力）を一切無視する！
         if (isStartingWorld) return;
+
+        if (inputCooldown > 0f) {
+            inputCooldown -= Time.unscaledDeltaTime;
+        }
 
         if (isMoving){
             MovePlayerIcon();
             return;
         }
 
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        Vector2 moveDir = input.Player.Move.ReadValue<Vector2>();
+        bool isUp = false, isDown = false, isLeft = false, isRight = false;
+
+        if (inputCooldown <= 0f && moveDir.sqrMagnitude > 0.1f) {
+            if (Mathf.Abs(moveDir.x) > Mathf.Abs(moveDir.y)) {
+                if (moveDir.x > 0.5f) isRight = true;
+                else if (moveDir.x < -0.5f) isLeft = true;
+            } else {
+                if (moveDir.y > 0.5f) isUp = true;
+                else if (moveDir.y < -0.5f) isDown = true;
+            }
+        }
 
         WorldNode nextNode = null;
-
-        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame) nextNode = currentNode.upNode;
-        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame) nextNode = currentNode.downNode;
-        else if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame) nextNode = currentNode.leftNode;
-        else if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame) nextNode = currentNode.rightNode;
+        if (isUp) nextNode = currentNode.upNode;
+        else if (isDown) nextNode = currentNode.downNode;
+        else if (isLeft) nextNode = currentNode.leftNode;
+        else if (isRight) nextNode = currentNode.rightNode;
 
         if (nextNode != null && nextNode.IsUnlocked){
             targetNode = nextNode;
             isMoving = true;
+            inputCooldown = 0.2f;
         }
 
-        // 決定ボタンで遷移！
-        if (keyboard.zKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.spaceKey.wasPressedThisFrame){
-            if (currentNode != null && currentNode.myWorldData != null && currentNode.IsUnlocked){
+        bool isSubmit = input.Player.Attack.WasPressedThisFrame() || input.Player.Jump.WasPressedThisFrame();
 
-                // ワールドに入ることが確定したら、フラグをONにして連打をロックする！
+        if (isSubmit){
+            if (currentNode != null && currentNode.myWorldData != null && currentNode.IsUnlocked){
                 isStartingWorld = true;
 
-                // ▼▼▼ ここから修正：ストーリーの既読判定（フラグ式に完全対応） ▼▼▼
                 WorldData targetWorld = currentNode.myWorldData;
-
-                // 1. GameManagerのイベントフラグから「既読フラグ」をチェック
                 string storyFlag = "StoryWatched_World_" + targetWorld.worldNumber;
                 bool isStoryWatched = false;
 
                 if (GameManager.Instance != null){
                     isStoryWatched = GameManager.Instance.HasEventFlag(storyFlag);
                 }else{
-                    // テストモード時（GameManager不在時）の保険
                     isStoryWatched = PlayerPrefs.GetInt(storyFlag, 0) == 1;
                 }
 
-                string sceneToLoad = targetWorld.sceneName; // デフォルトは直接マップへ遷移
+                string sceneToLoad = targetWorld.sceneName; 
 
-                // 2. 「未読」かつ「ストーリーシーン名が設定されている」場合はストーリーシーンへ上書き
                 if (!isStoryWatched && !string.IsNullOrEmpty(targetWorld.storySceneName)){
                     sceneToLoad = targetWorld.storySceneName;
                 }
 
-                // ロード実行
                 if (SceneTransitionManager.Instance != null){
                     SceneTransitionManager.Instance.LoadScene(sceneToLoad, TransitionType.Fade);
                 }else{
@@ -105,7 +124,6 @@ public class WorldSelectManager : MonoBehaviour {
 
     private void MovePlayerIcon(){
         if (playerIcon == null || targetNode == null) return;
-
         playerIcon.position = Vector3.MoveTowards(playerIcon.position, targetNode.transform.position, moveSpeed * Time.deltaTime);
 
         if (Vector3.Distance(playerIcon.position, targetNode.transform.position) < 0.01f){
