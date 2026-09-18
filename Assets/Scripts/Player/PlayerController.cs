@@ -10,21 +10,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; // コルーチンを使うために追加
 using TMPro;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour{
-    [Header("移動・ジャンプ設定")]
-    public float moveSpeed = 8f;
-    public float jumpForce = 9f; // 調整済みの値
-    [Range(0f, 1f)] public float jumpCutMultiplier = 0.5f;
-    public float coyoteTime = 0.15f;    // 空中ジャンプを許容する時間（0.15秒が王道です）
-    private float coyoteTimeCounter;    // 現在のタイマーの残り時間
-
-    [Header("接地判定設定")]
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
-    public LayerMask groundLayer;
+    public PlayerMovement pm { get; private set; }
+    public bool isGrounded => pm != null && pm.isGrounded;
+    public Vector2 platformVelocity { get => pm.platformVelocity; set => pm.platformVelocity = value; }
+    public float moveSpeed { get => pm.moveSpeed; set => pm.moveSpeed = value; }
+    public float jumpForce { get => pm.jumpForce; set => pm.jumpForce = value; }
+    public Transform groundCheck => pm.groundCheck;
 
     [Header("ダッシュ設定")]
     public ItemInventoryData currentSubActionEquip;
@@ -35,14 +29,14 @@ public class PlayerController : MonoBehaviour{
     public int currentDashCharges;     // 現在のストック数
     public float dashRecoveryTime = 2.0f; // 1メモリ回復するまでの秒数
     private float dashRecoveryTimer = 0f;
-    private bool isDashing;
+    [HideInInspector] public bool isDashing;
     private bool canDash = true;
     // ▼ダッシュ設定のUI連携部分を書き換え
     [Header("ダッシュUI連携（アイコン式）")]
     public Sprite dashOnSprite;  // 黄色いアイコン
     public Sprite dashOffSprite; // 白い（空の）アイコン
     // スクリプト内で見つけたアイコンを格納する配列
-    private Image[] dashIcons;
+    private PlayerDashHud dashHud;
 
     [Header("ダッシュUI連携")]
     public TMP_Text dashText; // ※アイコンにする場合は後でImageの配列等に変更可能です
@@ -60,12 +54,8 @@ public class PlayerController : MonoBehaviour{
     public GameObject attackHitbox;    // 攻撃判定用の小オブジェクト
     public float attackDuration = 0.1f; // 攻撃判定が出ている時間
     public float attackCooldown = 0.3f; // 次の攻撃ができるまでの時間
-    private bool isAttacking;
+    [HideInInspector] public bool isAttacking;
     private bool canAttack = true;
-
-    [Header("坂道対策の摩擦マテリアル")]
-    public PhysicsMaterial2D zeroFriction; // 動く時・空中の時用
-    public PhysicsMaterial2D highFriction; // 立ち止まった時用
 
     [Header("壁キック設定")]
     public Transform wallCheck;         // 壁判定用の円の中心
@@ -78,7 +68,7 @@ public class PlayerController : MonoBehaviour{
     [Header("梯子設定")]
     public float climbSpeed = 5f; // 登る速度
     private bool isNearLadder;    // 梯子に触れているか
-    private bool isClimbing;      // 今実際に登っているか
+    [HideInInspector] public bool isClimbing;      // 今実際に登っているか
     private float defaultGravity; // 元の重力を記憶しておく用
 
     [Header("装備中のパッシブ")]
@@ -89,9 +79,6 @@ public class PlayerController : MonoBehaviour{
     [HideInInspector] public int passiveDefenseBonus = 0;
     [HideInInspector] public float passiveInvincibleBonus = 0f;
 
-    private float baseMoveSpeed;
-    private float baseJumpForce;
-
     [Header("大砲ギミック設定")]
     [HideInInspector] public bool isInsideCannon = false; // 大砲の中にいるか
     [HideInInspector] public bool isCannonFlying = false; // 大砲から発射されて飛んでいる最中か
@@ -100,58 +87,45 @@ public class PlayerController : MonoBehaviour{
     [HideInInspector] public Vector2 savedFlyingVelocity; // 飛んでいる最中の勢いを記憶する用
 
     private bool isWallTouch;
-    private bool isWallSliding;
-    private bool isWallJumping;
+    [HideInInspector] public bool isWallSliding;
+    [HideInInspector] public bool isWallJumping;
     private float wallJumpTimer;
 
     [Header("水中設定")]
     public float swimSpeed = 4f;
-    private bool isSwimming = false; // タイポ(isSwimisSwimming)を修正
+    [HideInInspector] public bool isSwimming = false;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
-    private bool isGrounded;
     private PlayerControls inputActions;
-    private Animator anim;
+    private PlayerAnimationController animCtrl;
 
     [Header("効果音")]
-    public AudioClip jumpSE;
     // 武器を振った時の音
     public AudioClip attackSwingSE;
 
     // ▼ 外から上キーの入力を読み取るためのプロパティ
+    public float MoveInputX => moveInput.x; // ▼ 新規追加
     public float MoveInputY => moveInput.y;
     // ▼ ワープ中に他の動作を止めるためのフラグ
     [HideInInspector] public bool isWarping = false;
 
     [HideInInspector] public bool isKnockback; // 外から操作できるように public または [HideInInspector]
 
-    // 動く床から受け取る速度
-    [HideInInspector]
-    public Vector2 platformVelocity;
-
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        animCtrl = GetComponent<PlayerAnimationController>();
         rb = GetComponent<Rigidbody2D>();
         defaultGravity = rb.gravityScale; // 初期重力を記憶
         inputActions = new PlayerControls();
 
-        // 素のステータスを記憶しておく
-        baseMoveSpeed = moveSpeed;
-        baseJumpForce = jumpForce;
+        pm = GetComponent<PlayerMovement>();
 
         // ダッシュチャージの初期化とUI検索
         currentDashCharges = maxDashCharges;
 
-        // 親オブジェクトを探し、子供のImageを全て取得する
-        GameObject dashIconContainer = GameObject.FindWithTag("DashText");
-        if (dashIconContainer != null){
-            // 親オブジェクトの下にあるすべての Image コンポーネントを取得
-            dashIcons = dashIconContainer.GetComponentsInChildren<Image>();
-        }else{
-            Debug.LogWarning("DashTextタグの付いたアイコンの親が見つかりません。");
-        }
+        dashHud = new PlayerDashHud(dashOnSprite, dashOffSprite);
+        dashHud.Initialize();
 
         UpdateDashUI(); // 初期表示の更新
 
@@ -213,21 +187,12 @@ public class PlayerController : MonoBehaviour{
             if (cannonWaitPoint != null){
                 transform.position = cannonWaitPoint.position;
             }
-            // 中で方向キーを押されても、絶対に歩行アニメーションを再生させない
-            if (anim != null){
-                anim.SetBool("isWalking", false);
-            }
             return; // ここで return するため、これより下の移動入力処理は一切呼ばれない
         }
 
         // ダッシュ中は他の行動（向きの反転や接地判定）を一時停止
         if (isDashing) return;
 
-        // ▼ 新規追加：水中状態をAnimatorに教える ▼
-        anim.SetBool("isSwimming", isSwimming);
-        anim.SetBool("isSwimmingMoving", isSwimming && moveInput.magnitude > 0.1f);
-
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         // ▼ 壁に触れているか判定 ▼
         isWallTouch = Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, wallLayer);
 
@@ -250,66 +215,28 @@ public class PlayerController : MonoBehaviour{
         if (moveInput.x > 0) transform.localScale = new Vector3(1, 1, 1);
         else if (moveInput.x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
-        // ▼ アニメーションの更新 ▼
-        // 1. 歩行判定（左右の入力が少しでもあれば true）
-        anim.SetBool("isWalking", Mathf.Abs(moveInput.x) > 0.1f);
-
-        // 2. 接地判定
-        anim.SetBool("isGrounded", isGrounded);
-
-        // 【追加】壁ずり落ち中かどうかをAnimatorに教える
-        anim.SetBool("isWallSliding", isWallSliding);
-
         // 現在のYの速度を取得
         float currentVelY = rb.linearVelocity.y;
 
         // ▼ 梯子に触れている時に「上下」を入力したら登り状態に移行 ▼
         if (isNearLadder && Mathf.Abs(moveInput.y) > 0.1f){
             isClimbing = true;
-            anim.SetFloat("velocityY", isClimbing ? 0f : currentVelY);
         }
 
-        // ▼ アニメーションの更新部分に以下を追加 ▼
-        anim.SetBool("isClimbing", isClimbing);
         // 上下に入力がある（動いている）時だけ true にする
         // 0.1f だと敏感すぎる場合があるので、0.3f くらいまで上げると安定します
         bool isMovingOnLadder = isClimbing && Mathf.Abs(moveInput.y) > 0.3f;
-        anim.SetBool("isClimbingMoving", isMovingOnLadder);
 
         // ▼ isGrounded の処理を1つにまとめる ▼
-        if (isGrounded){
-            currentVelY = 0f; // Y方向の揺れを無視
-            coyoteTimeCounter = coyoteTime; // 【追加】タイマーを最大値に保つ
-
-            // 着地したらゆっくり降下を解除
-            isSlowFallingActive = false;
-
-            // ▼ 追加：着地したら大砲の飛行状態を解除して元に戻す
-            if (isCannonFlying){
-                // Y軸の速度がほぼゼロ以下（つまり落下し始めた、または本当に地面に着いた時）だけ解除する
-                if (rb.linearVelocity.y <= 0.1f){
-                    isCannonFlying = false;
-                    if (anim != null) anim.SetBool("isCannonFlying", false);
-                }
-            }
-        }else{
-            if (Mathf.Abs(currentVelY) < 0.05f) currentVelY = 0f; // 極小ノイズ対策
-            coyoteTimeCounter -= Time.deltaTime; // 【追加】空中にいる間はタイマーを減らす
+        // ▼ 着地時の大砲解除チェックだけここに残す
+        if (isGrounded && isCannonFlying && rb.linearVelocity.y <= 0.1f){
+            isCannonFlying = false;
         }
 
         // ヒップドロップ中に加え、大砲で飛んでいる間も数値を0に偽装する ▼▼▼
         if (isHipDropping || isCannonFlying){
             currentVelY = 0f;
         }
-
-        // フィルターを通した綺麗な数値をAnimatorに渡す
-        anim.SetFloat("velocityY", currentVelY);
-
-        // ▼ 【追加】今、攻撃ルーチンの真っ最中かどうかをAnimatorに教える ▼
-        anim.SetBool("isAttacking", isAttacking);
-
-        // ▼ 【追加】今、ノックバック中かどうかをAnimatorに教える ▼
-        anim.SetBool("isKnockback", isKnockback);
 
         // ▼【追加】ダッシュチャージの自然回復処理 ▼
         if (currentDashCharges < maxDashCharges){
@@ -364,78 +291,33 @@ public class PlayerController : MonoBehaviour{
             savedFlyingVelocity = rb.linearVelocity;
             return;
         }
-
-        float currentVelocityY = rb.linearVelocity.y;
-
-        if (isWallSliding){
-            currentVelocityY = Mathf.Clamp(currentVelocityY, -wallSlidingSpeed, float.MaxValue);
-        }else if (isSlowFallingActive && currentVelocityY < 0){
-            float slowFallSpeed = currentSubActionEquip.actionSpeed > 0 ? currentSubActionEquip.actionSpeed : 2f;
-            currentVelocityY = Mathf.Clamp(currentVelocityY, -slowFallSpeed, float.MaxValue);
-        }
-
-        rb.linearVelocity = new Vector2((moveInput.x * moveSpeed) + platformVelocity.x, currentVelocityY);
-        platformVelocity = Vector2.zero;
-
-        // 【超重要】足し終わったらゼロに戻す
-        platformVelocity = Vector2.zero;
-
-        // 2. 坂道滑り落ち防止（摩擦の切り替え）
-        // 「地面にいる」かつ「左右の移動入力がゼロ（スティックから手を離している）」場合
-        if (isGrounded && Mathf.Abs(moveInput.x) < 0.1f){
-            // 摩擦MAXのマテリアルをセットして、斜面でもピタッと止める
-            rb.sharedMaterial = highFriction;
-        }else{
-            // 動いている時やジャンプ中は、摩擦ゼロに戻して壁への張り付きなどを防ぐ
-            rb.sharedMaterial = zeroFriction;
-        }
     }
 
     private void Jump(){
-        // ▼ 新規追加：水中にいる時は通常のジャンプ処理を行わない
         if (isSwimming) return;
 
-        // 【変更】isGrounded ではなく coyoteTimeCounter が 0 より大きいかで判定する
-        if (coyoteTimeCounter > 0f && !isDashing && !isHipDropping){
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        // 1. まず通常ジャンプを試みる
+        bool didJump = pm.ExecuteJump();
 
-            // ▼ 音を鳴らす（安全装置付き）
-            if (SoundManager.instance != null){
-                SoundManager.instance.PlaySE(jumpSE);
-            }
+        // 2. もし通常ジャンプしなかった（空中だった）場合のみ、壁キックを試みる
+        if (!didJump && isWallSliding){
+            isWallJumping = true;
+            wallJumpTimer = wallJumpDuration;
 
-            // 【超重要】ジャンプしたらタイマーを即座にゼロにする（空中での連続ジャンプ防止）
-            coyoteTimeCounter = 0f;
-        }
-        // 2. ▼【追加】壁キック ▼
-        else if (isWallSliding){
-            isWallJumping = true;                 // 壁キック状態にする
-            wallJumpTimer = wallJumpDuration;     // 操作無効タイマーをセット
-
-            // 今プレイヤーが向いている方向（スケールのX）を取得し、その「逆方向」へ飛ぶ
             float facingDir = Mathf.Sign(transform.localScale.x);
             float jumpDirection = -facingDir;
 
-            // 斜め上に向かって力を加える
             rb.linearVelocity = new Vector2(wallJumpForce.x * jumpDirection, wallJumpForce.y);
-
-            // ▼ 音を鳴らす（安全装置付き）
-            if (SoundManager.instance != null){
-                SoundManager.instance.PlaySE(jumpSE);
-            }
-
-            // 飛ぶと同時に、プレイヤーの向き（絵）も反転させる
             transform.localScale = new Vector3(jumpDirection, 1, 1);
         }
+
         if (isClimbing){
             isClimbing = false;
         }
     }
 
     private void OnJumpCanceled(){
-        if (rb.linearVelocity.y > 0 && !isDashing){
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
-        }
+        pm.ExecuteJumpCancel();
     }
 
     // Animationイベントから呼び出すためのメソッド
@@ -535,25 +417,14 @@ public class PlayerController : MonoBehaviour{
 
     // ▼【変更】UI更新用のメソッド（アイコン切り替え版）
     private void UpdateDashUI(){
-        // アイコンが見つかっていなければ何もしない
-        if (dashIcons == null || dashIcons.Length == 0) return;
-
-        // アイコンの数だけループ処理
-        for (int i = 0; i < dashIcons.Length; i++){
-            // i番目のアイコンが、現在のチャージ数より小さければON画像、それ以外はOFF画像
-            if (i < currentDashCharges){
-                dashIcons[i].sprite = dashOnSprite;
-            }else{
-                dashIcons[i].sprite = dashOffSprite;
-            }
-        }
+        dashHud?.UpdateChargeIcons(currentDashCharges);
     }
 
     // ▼ 今までの AttackRoutine を上書きします
     private IEnumerator AttackRoutine(){
         canAttack = false;
         isAttacking = true;
-        anim.SetTrigger("Attack");
+        animCtrl.TriggerAttack();
 
         // 万が一、着地などでアニメーションが途切れてイベントが不発だった時のための「絶対解除タイマー（安全装置）」
         // ※攻撃アニメーション全体（0.5秒）より少し長い 0.6秒 後に、強制的に false に戻します
@@ -634,7 +505,7 @@ public class PlayerController : MonoBehaviour{
         rb.gravityScale = 0f;
         rb.linearVelocity = Vector2.zero;
 
-        if (anim != null) anim.SetTrigger("HipDrop");
+        animCtrl.TriggerHipDrop();
 
         yield return new WaitForSeconds(0.2f); // 0.2秒タメる
 
@@ -681,12 +552,7 @@ public class PlayerController : MonoBehaviour{
         rb.linearVelocity = Vector2.zero;
 
         // 3. アニメーションを「待機」状態に戻す
-        anim.SetBool("isWalking", false);
-        anim.SetFloat("velocityY", 0f);
-
-        // ▼「Goal」という名前のTriggerをAnimatorに追加すれば、ここで専用ポーズを再生できます！
-        // （ポーズのアニメーションを作成したら、以下のコメントアウトを外してください）
-        // anim.SetTrigger("Goal"); 
+        animCtrl.PlayGoalAction();
     }
 
     // 大砲に格納された瞬間の処理
@@ -699,11 +565,6 @@ public class PlayerController : MonoBehaviour{
 
         // ▼ 追加：壁や地面に弾き出されるのを防ぐため、物理エンジンの計算から一時的に消す！
         rb.simulated = false;
-
-        // ▼▼▼ 新規追加：入った瞬間に歩行アニメーションを強制ストップ ▼▼▼
-        if (anim != null){
-            anim.SetBool("isWalking", false);
-        }
     }
 
     // 大砲から発射された瞬間の処理
@@ -718,8 +579,6 @@ public class PlayerController : MonoBehaviour{
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.linearVelocity = force;
 
-        if (anim != null) anim.SetBool("isCannonFlying", true);
-
         // ▼ 追加：飛んでいく方向（X軸の力）を見て、自動的に左右を振り向かせる
         if (Mathf.Abs(force.x) > 0.1f){
             float facingDir = Mathf.Sign(force.x); // 右なら1、左なら-1になる
@@ -728,8 +587,8 @@ public class PlayerController : MonoBehaviour{
     }
     public void ApplyPassiveEffects(){
         // 1. 一旦ステータスを元の基準値（素の状態）に戻す
-        moveSpeed = baseMoveSpeed;
-        jumpForce = baseJumpForce;
+        pm.moveSpeed = pm.baseMoveSpeed;
+        pm.jumpForce = pm.baseJumpForce;
         passiveAttackBonus = 0;
         passiveDefenseBonus = 0;
         passiveInvincibleBonus = 0f;
@@ -746,10 +605,10 @@ public class PlayerController : MonoBehaviour{
 
         switch (passiveObj.passiveType){
             case PassiveEffectType.Emerald_JumpUp:
-                jumpForce += (stars * 1.5f); // 星1つにつきジャンプ力が1.5加算
+                pm.jumpForce += (stars * 1.5f);
                 break;
             case PassiveEffectType.Amethyst_SpeedUp:
-                moveSpeed += (stars * 1.0f); // 星1つにつき移動速度が1.0加算
+                pm.moveSpeed += (stars * 1.0f);
                 break;
             case PassiveEffectType.Ruby_AttackUp:
                 passiveAttackBonus += stars; // 星1につき攻撃力+1

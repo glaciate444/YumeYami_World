@@ -259,10 +259,12 @@ GameObject:
   - component: {fileID: 8587076540771316044}
   - component: {fileID: 8433183692743263814}
   - component: {fileID: 1727009743244101717}
+  - component: {fileID: 6346742163077605030}
   - component: {fileID: 3311214140920176185}
   - component: {fileID: 2234151228853066145}
   - component: {fileID: 1249696312333318633}
   - component: {fileID: 5823058687030863279}
+  - component: {fileID: 3790333572974799433}
   - component: {fileID: 991714840886531652}
   - component: {fileID: 5765877929901030345}
   m_Layer: 3
@@ -393,20 +395,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e14345c0e472f44b8599b3a3d3e42d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 6
-  jumpForce: 18
-  jumpCutMultiplier: 0.5
-  coyoteTime: 0.15
-  groundCheck: {fileID: 8117479354609981520}
-  groundCheckRadius: 0.2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 66432
   currentSubActionEquip: {fileID: 11400000, guid: a2608a6f698695348b674bebba7a2f5c, type: 2}
   dashCooldown: 0.5
   maxDashCharges: 3
   currentDashCharges: 0
   dashRecoveryTime: 5
+  isDashing: 0
   dashOnSprite: {fileID: 21300000, guid: 926ff5087e9ab724d9607ebf0ea9166a, type: 3}
   dashOffSprite: {fileID: 21300000, guid: f64fc45b30882d041ab0046b22382f7a, type: 3}
   dashText: {fileID: 0}
@@ -418,8 +412,7 @@ MonoBehaviour:
   attackHitbox: {fileID: 1810350716830482527}
   attackDuration: 0.1
   attackCooldown: 0.3
-  zeroFriction: {fileID: 6200000, guid: 0007f1202d44d0a439d67733c9935de6, type: 2}
-  highFriction: {fileID: 6200000, guid: cadff2904034650409e70df052a962f3, type: 2}
+  isAttacking: 0
   wallCheck: {fileID: 2298629326272668635}
   wallCheckRadius: 0.2
   wallLayer:
@@ -429,6 +422,7 @@ MonoBehaviour:
   wallJumpForce: {x: 8, y: 12}
   wallJumpDuration: 0.4
   climbSpeed: 5
+  isClimbing: 0
   equipPassiveA: {fileID: 0}
   equipPassiveB: {fileID: 0}
   passiveAttackBonus: 0
@@ -438,10 +432,42 @@ MonoBehaviour:
   isCannonFlying: 0
   cannonWaitPoint: {fileID: 0}
   savedFlyingVelocity: {x: 0, y: 0}
-  jumpSE: {fileID: 8300000, guid: aaedd21b2b9a14d43911160b41247e82, type: 3}
+  isWallSliding: 0
+  isWallJumping: 0
+  swimSpeed: 4
+  isSwimming: 0
   attackSwingSE: {fileID: 8300000, guid: d3183abe55a432f42a50a6f5a1c32206, type: 3}
+  isWarping: 0
   isKnockback: 0
+--- !u!114 &6346742163077605030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218694174269193068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6c6f5bcb2df0e43bb2b164f606c706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  moveSpeed: 6
+  jumpForce: 16
+  jumpCutMultiplier: 0.75
+  coyoteTime: 0.15
+  coyoteTimeCounter: 0
+  groundCheck: {fileID: 8117479354609981520}
+  groundCheckRadius: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 66304
+  isGrounded: 0
+  zeroFriction: {fileID: 6200000, guid: 0007f1202d44d0a439d67733c9935de6, type: 2}
+  highFriction: {fileID: 6200000, guid: cadff2904034650409e70df052a962f3, type: 2}
+  jumpSE: {fileID: 0}
   platformVelocity: {x: 0, y: 0}
+  baseMoveSpeed: 0
+  baseJumpForce: 0
 --- !u!114 &3311214140920176185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -532,6 +558,18 @@ MonoBehaviour:
     m_Bits: 512
   groundCheck: {fileID: 8117479354609981520}
   checkRadius: 0.2
+--- !u!114 &3790333572974799433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218694174269193068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3db24ba7e97e40a42a4b2f39903b0ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
 --- !u!95 &991714840886531652
 Animator:
   serializedVersion: 7
