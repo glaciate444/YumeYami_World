@@ -30,6 +30,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level_3/MapSelectScene_Level_3.unity
     guid: 8df79c8cb6ff79d4fa9b027813ff3406
   - enabled: 1
+    path: Assets/Scenes/Level_4/MapSelectScene_Level_4.unity
+    guid: 962a56b483f04d54297344e3f5746b64
+  - enabled: 1
     path: Assets/Scenes/MiniGameScene.unity
     guid: f4fb243433358f942b1613cfdd9a48fd
   - enabled: 1
@@ -108,8 +111,20 @@ EditorBuildSettings:
     path: Assets/Scenes/Level_3/Level3-Stage4.unity
     guid: 7b6d57e8708bdff49bdcf11a410fc829
   - enabled: 1
+    path: Assets/Scenes/Level_3/Level3-Stage5.unity
+    guid: 07d33e1a25e632b46ac93dd35f3a30ca
+  - enabled: 1
+    path: Assets/Scenes/Level_3/Level3-Stage6.unity
+    guid: d59075c23a8b79141968d825ceaabad1
+  - enabled: 1
+    path: Assets/Scenes/Level_3/Level3-Stage7_Boss.unity
+    guid: c6c6e39e283f350449c2f7120d62b542
+  - enabled: 1
     path: Assets/Scenes/Level_3/LevelEndingScene_3.unity
     guid: 651e1291884aa354881df52528867315
+  - enabled: 1
+    path: Assets/Scenes/Level_4/Level4-Stage1.unity
+    guid: 020fe4ef53d984b43bcca2677b1064b5
   - enabled: 1
     path: Assets/Scenes/StageTemple/StageTemplate05.unity
     guid: 835bc7ee091ce2d4d8402ae1c8264ef1
