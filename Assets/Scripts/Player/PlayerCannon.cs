@@ -29,7 +29,7 @@ public class PlayerCannon : MonoBehaviour {
             playerController = collision.GetComponent<PlayerController>();
             if (playerController != null){
                 isPlayerInside = true;
-                playerController.EnterCannon(playerWaitPoint != null ? playerWaitPoint : transform);
+                playerController.pac.EnterCannon(playerWaitPoint != null ? playerWaitPoint : transform);
 
                 if (mode == LaunchMode.Auto){
                     StartCoroutine(AutoLaunchRoutine());
@@ -68,7 +68,7 @@ public class PlayerCannon : MonoBehaviour {
             Vector2 force = firePoint.up * launchPower;
             // ▲▲▲ 修正ここまで ▲▲▲
 
-            playerController.FireFromCannon(force);
+            playerController.pac.FireFromCannon(force);
             playerController = null;
         }
     }

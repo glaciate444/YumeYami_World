@@ -265,6 +265,8 @@ GameObject:
   - component: {fileID: 1249696312333318633}
   - component: {fileID: 5823058687030863279}
   - component: {fileID: 3790333572974799433}
+  - component: {fileID: 7715144686743452607}
+  - component: {fileID: 3990080871334343304}
   - component: {fileID: 991714840886531652}
   - component: {fileID: 5765877929901030345}
   m_Layer: 3
@@ -395,47 +397,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e14345c0e472f44b8599b3a3d3e42d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  currentSubActionEquip: {fileID: 11400000, guid: a2608a6f698695348b674bebba7a2f5c, type: 2}
-  dashCooldown: 0.5
-  maxDashCharges: 3
-  currentDashCharges: 0
-  dashRecoveryTime: 5
-  isDashing: 0
-  dashOnSprite: {fileID: 21300000, guid: 926ff5087e9ab724d9607ebf0ea9166a, type: 3}
-  dashOffSprite: {fileID: 21300000, guid: f64fc45b30882d041ab0046b22382f7a, type: 3}
-  dashText: {fileID: 0}
-  dashSE: {fileID: 8300000, guid: ab8f3499c602d4044bafd4b25c1dc2f1, type: 3}
-  dashSmokePrefab: {fileID: 5374668852920394375, guid: a514779fcc4a8e040a46115b14ebe403, type: 3}
-  hipDropHitbox: {fileID: 6413640022298465149}
-  isHipDropping: 0
-  isSlowFallingActive: 0
   attackHitbox: {fileID: 1810350716830482527}
   attackDuration: 0.1
   attackCooldown: 0.3
   isAttacking: 0
-  wallCheck: {fileID: 2298629326272668635}
-  wallCheckRadius: 0.2
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  wallSlidingSpeed: 2
-  wallJumpForce: {x: 8, y: 12}
-  wallJumpDuration: 0.4
-  climbSpeed: 5
-  isClimbing: 0
-  equipPassiveA: {fileID: 0}
-  equipPassiveB: {fileID: 0}
-  passiveAttackBonus: 0
-  passiveDefenseBonus: 0
-  passiveInvincibleBonus: 0
-  isInsideCannon: 0
-  isCannonFlying: 0
-  cannonWaitPoint: {fileID: 0}
-  savedFlyingVelocity: {x: 0, y: 0}
-  isWallSliding: 0
-  isWallJumping: 0
-  swimSpeed: 4
-  isSwimming: 0
   attackSwingSE: {fileID: 8300000, guid: d3183abe55a432f42a50a6f5a1c32206, type: 3}
   isWarping: 0
   isKnockback: 0
@@ -452,7 +417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 6
-  jumpForce: 16
+  jumpForce: 18
   jumpCutMultiplier: 0.75
   coyoteTime: 0.15
   coyoteTimeCounter: 0
@@ -460,7 +425,7 @@ MonoBehaviour:
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 66304
+    m_Bits: 66432
   isGrounded: 0
   zeroFriction: {fileID: 6200000, guid: 0007f1202d44d0a439d67733c9935de6, type: 2}
   highFriction: {fileID: 6200000, guid: cadff2904034650409e70df052a962f3, type: 2}
@@ -570,6 +535,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db24ba7e97e40a42a4b2f39903b0ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
+--- !u!114 &7715144686743452607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218694174269193068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 350fe37fa6ad94c44bb5aeb20be77ea8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTraversal
+  wallCheck: {fileID: 2298629326272668635}
+  wallCheckRadius: 0.2
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 65792
+  wallSlidingSpeed: 2
+  wallJumpForce: {x: 8, y: 12}
+  wallJumpDuration: 0.4
+  climbSpeed: 5
+  swimSpeed: 4
+  isWallTouch: 0
+  isWallSliding: 0
+  isWallJumping: 0
+  wallJumpTimer: 0
+  isNearLadder: 0
+  isClimbing: 0
+  defaultGravity: 0
+  isSwimming: 0
+--- !u!114 &3990080871334343304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4218694174269193068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221e99abac51fee43bc5c0ea3b02da1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityController
+  currentSubActionEquip: {fileID: 11400000, guid: a2608a6f698695348b674bebba7a2f5c, type: 2}
+  dashCooldown: 0.5
+  maxDashCharges: 3
+  currentDashCharges: 0
+  dashRecoveryTime: 5
+  isDashing: 0
+  dashOnSprite: {fileID: 21300000, guid: 926ff5087e9ab724d9607ebf0ea9166a, type: 3}
+  dashOffSprite: {fileID: 21300000, guid: f64fc45b30882d041ab0046b22382f7a, type: 3}
+  dashText: {fileID: 0}
+  dashSE: {fileID: 8300000, guid: ab8f3499c602d4044bafd4b25c1dc2f1, type: 3}
+  dashSmokePrefab: {fileID: 0}
+  hipDropHitbox: {fileID: 6413640022298465149}
+  isHipDropping: 0
+  isSlowFallingActive: 0
+  equipPassiveA: {fileID: 0}
+  equipPassiveB: {fileID: 0}
+  passiveAttackBonus: 0
+  passiveDefenseBonus: 0
+  passiveInvincibleBonus: 0
+  isInsideCannon: 0
+  isCannonFlying: 0
+  cannonWaitPoint: {fileID: 0}
+  savedFlyingVelocity: {x: 0, y: 0}
 --- !u!95 &991714840886531652
 Animator:
   serializedVersion: 7

@@ -284,7 +284,7 @@ public class InventoryMenuController : MonoBehaviour{
             if (GameManager.Instance != null) GameManager.Instance.currentEquipPassiveB = selectedItem;
         }
 
-        if (pc != null) pc.ApplyPassiveEffects();
+        if (pc != null) pc.pac.ApplyPassiveEffects();
         if (PauseManager.Instance != null) PauseManager.Instance.UpdatePersonalData();
 
         isSelectingPassive = false;
