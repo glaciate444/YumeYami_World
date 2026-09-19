@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// ダッシュ残量アイコンの検索と表示更新を担当する、PlayerController から分離した UI ヘルパー。
-/// </summary>
 public sealed class PlayerDashHud{
     private readonly Sprite dashOnSprite;
     private readonly Sprite dashOffSprite;
@@ -15,17 +12,14 @@ public sealed class PlayerDashHud{
     }
 
     public void Initialize(){
-        GameObject dashIconContainer = GameObject.FindWithTag("DashText");
-        if (dashIconContainer != null){
-            dashIcons = dashIconContainer.GetComponentsInChildren<Image>();
-        }else{
-            Debug.LogWarning("DashTextタグの付いたアイコンの親が見つかりません。");
+        // ▼ タグ検索を廃止し、HUDManagerが持っている枠を使わせてもらう
+        if (HUDManager.Instance != null && HUDManager.Instance.dashIconContainer != null){
+            dashIcons = HUDManager.Instance.dashIconContainer.GetComponentsInChildren<Image>();
         }
     }
 
     public void UpdateChargeIcons(int currentCharges){
         if (dashIcons == null || dashIcons.Length == 0) return;
-
         for (int i = 0; i < dashIcons.Length; i++){
             dashIcons[i].sprite = i < currentCharges ? dashOnSprite : dashOffSprite;
         }

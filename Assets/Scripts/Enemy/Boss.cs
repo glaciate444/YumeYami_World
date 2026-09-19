@@ -1,7 +1,7 @@
 ﻿/* ===================================================
  * スクリプト名 : Boss.cs
  * 用途 : ボスのステータス管理、HPバー連動、登場演出、撃破演出
- * 拡張 : 被弾時の無敵時間（点滅）処理を追加
+ * 拡張 : 文字列指定のGetComponentを廃止し、型指定(TryGetComponent)で安全化
  * =================================================== */
 using System.Collections;
 using TMPro;
@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Boss : MonoBehaviour, IDamageable {
+public class Boss : MonoBehaviour, IDamageable{
 
     public enum BossType { StageBoss, RoomGuarder }
 
@@ -19,14 +19,12 @@ public class Boss : MonoBehaviour, IDamageable {
     public int maxHp = 50;
     private int currentHp;
 
-    // ▼▼▼ 新規追加：無敵時間の設定 ▼▼▼
     [Header("被弾時の無敵設定")]
     [Tooltip("ダメージを受けた後に無敵になる秒数")]
     public float invincibilityTime = 1.0f;
     [Tooltip("点滅の速さ")]
     public float blinkInterval = 0.1f;
     private bool isInvincible = false;
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("UI連携")]
     public Slider bossHpSlider;
@@ -103,22 +101,16 @@ public class Boss : MonoBehaviour, IDamageable {
         SetMovementScriptsEnabled(true);
     }
 
+    // ▼▼▼ 修正：文字列検索を完全廃止し、型指定（TryGetComponent）に変更 ▼▼▼
     private void SetMovementScriptsEnabled(bool isEnabled){
-        MonoBehaviour hover = GetComponent("BossHoverMove") as MonoBehaviour;
-        if (hover != null) hover.enabled = isEnabled;
-
-        MonoBehaviour patrol = GetComponent("EnemyPatrol") as MonoBehaviour;
-        if (patrol != null) patrol.enabled = isEnabled;
-
-        MonoBehaviour move = GetComponent("EnemyMovement") as MonoBehaviour;
-        if (move != null) move.enabled = isEnabled;
-
-        MonoBehaviour teleport = GetComponent("BossTeleportMove") as MonoBehaviour;
-        if (teleport != null) teleport.enabled = isEnabled;
+        if (TryGetComponent<BossHoverMove>(out var hover)) hover.enabled = isEnabled;
+        if (TryGetComponent<EnemyPatrol>(out var patrol)) patrol.enabled = isEnabled;
+        if (TryGetComponent<EnemyMovement>(out var move)) move.enabled = isEnabled;
+        if (TryGetComponent<BossTeleportMove>(out var teleport)) teleport.enabled = isEnabled;
     }
+    // ▲▲▲ 修正ここまで ▲▲▲
 
     public void TakeDamage(int damage, Vector2 knockbackDirection){
-        // ▼▼▼ 修正：無敵状態（isInvincible）の時はダメージ処理をシャットアウトする ▼▼▼
         if (!isBattleStarted || isDead || isInvincible) return;
 
         currentHp -= damage;
@@ -133,33 +125,25 @@ public class Boss : MonoBehaviour, IDamageable {
         if (currentHp <= 0){
             Die();
         }else{
-            // 死んでいなければ、フェーズ移行判定と無敵時間の開始を行う
             if (!isPhase2 && currentHp <= (maxHp * phase2Threshold)){
                 EnterPhase2();
             }
-
-            // ▼ 追加：無敵状態（点滅）を開始する
             StartCoroutine(InvincibilityRoutine());
         }
     }
 
-    // ▼▼▼ 新規追加：無敵時間の点滅コルーチン ▼▼▼
     private IEnumerator InvincibilityRoutine(){
-        isInvincible = true; // 無敵フラグをON
+        isInvincible = true;
 
-        // ボス本体や子オブジェクトにある SpriteRenderer（画像）をすべて取得
         SpriteRenderer[] srs = GetComponentsInChildren<SpriteRenderer>();
         float elapsed = 0f;
 
-        // 指定した無敵時間が経過するまで、またはボスが死ぬまで点滅を繰り返す
         while (elapsed < invincibilityTime && !isDead){
-            // 透明にする
             foreach (var sr in srs){
                 if (sr != null) sr.color = new Color(1f, 1f, 1f, 0f);
             }
             yield return new WaitForSeconds(blinkInterval);
 
-            // 元に戻す
             foreach (var sr in srs){
                 if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
             }
@@ -168,14 +152,12 @@ public class Boss : MonoBehaviour, IDamageable {
             elapsed += blinkInterval * 2f;
         }
 
-        // 念のため、最後は確実に不透明（元の状態）に戻す
         foreach (var sr in srs){
             if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
         }
 
-        isInvincible = false; // 無敵フラグをOFF
+        isInvincible = false;
     }
-    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     private void EnterPhase2(){
         isPhase2 = true;
@@ -247,8 +229,7 @@ public class Boss : MonoBehaviour, IDamageable {
             Destroy(gameObject, 0.5f);
         }else if (bossType == BossType.StageBoss){
             yield return new WaitForSeconds(2.0f);
-            if (stageGoalPoint != null)
-            {
+            if (stageGoalPoint != null){
                 GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
                 if (playerObj != null) stageGoalPoint.TriggerGoal(playerObj);
             }
