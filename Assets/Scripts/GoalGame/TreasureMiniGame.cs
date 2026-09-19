@@ -27,9 +27,6 @@ public class TreasureMiniGame : MonoBehaviour{
     public RectTransform[] menuPositions;
     public Vector2 cursorOffset = new Vector2(0f, 0f);
 
-    [Header("遷移先")]
-    public string resultSceneName = "ResultScene";
-
     [Header("サウンド設定")]
     public AudioClip miniGameBGM;
 
@@ -245,9 +242,9 @@ public class TreasureMiniGame : MonoBehaviour{
 
     private void GoToResult(){
         if (SceneTransitionManager.Instance != null){
-            SceneTransitionManager.Instance.LoadScene(resultSceneName, TransitionType.Fade);
+            SceneTransitionManager.Instance.LoadScene(SceneNames.Result, TransitionType.Fade);
         }else{
-            SceneManager.LoadScene(resultSceneName);
+            SceneManager.LoadScene(SceneNames.Result);
         }
     }
 }

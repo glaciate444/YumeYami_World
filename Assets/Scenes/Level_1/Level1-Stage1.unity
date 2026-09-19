@@ -444,6 +444,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD_Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3085625136217891837, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
+      propertyPath: bossHpContainer
+      value: 
+      objectReference: {fileID: 408552646}
     - target: {fileID: 3869973833343910511, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -498,28 +502,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
---- !u!114 &408552646 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 830275132215838856, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
+--- !u!1 &408552646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8777396277403328627, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
   m_PrefabInstance: {fileID: 408552642}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &408552647 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 179472890295299698, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
-  m_PrefabInstance: {fileID: 408552642}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &431195624
 GameObject:
   m_ObjectHideFlags: 0
@@ -9523,17 +9510,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3ad63132d8c05b44b278ee899016379, type: 3}
---- !u!114 &1152332283 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5320795781449624593, guid: 2eebb9c17887e4749a756307a8a7098a, type: 3}
-  m_PrefabInstance: {fileID: 408552642}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1153477376
 GameObject:
   m_ObjectHideFlags: 0
@@ -10565,8 +10541,8 @@ GameObject:
   - component: {fileID: 1453657647}
   - component: {fileID: 1453657646}
   - component: {fileID: 1453657651}
-  - component: {fileID: 1453657652}
   - component: {fileID: 1453657653}
+  - component: {fileID: 1453657654}
   m_Layer: 11
   m_Name: RoomG_Enemy
   m_TagString: Untagged
@@ -10627,8 +10603,8 @@ MonoBehaviour:
   maxHp: 6
   invincibilityTime: 1
   blinkInterval: 0.1
-  bossHpSlider: {fileID: 408552647}
-  bossHpText: {fileID: 408552646}
+  movementScripts:
+  - {fileID: 1453657654}
   entranceBlocker: {fileID: 1154109922}
   entranceBlockerR: {fileID: 868255459}
   bossCameraObj: {fileID: 230658882}
@@ -10761,7 +10737,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1453657652
+--- !u!114 &1453657653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453657645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
+  damage: 1
+  impact: 5
+  canBeStomped: 1
+--- !u!114 &1453657654
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10779,22 +10770,7 @@ MonoBehaviour:
   checkRadius: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 384
---- !u!114 &1453657653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1453657645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00b9bfc8cfc8c654eacefe9f6607c8be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TouchDamage
-  damage: 1
-  impact: 5
-  canBeStomped: 1
+    m_Bits: 131328
 --- !u!1 &1471785658
 GameObject:
   m_ObjectHideFlags: 0
@@ -11321,6 +11297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxBackground
   parallaxEffect: 0.5
+  autoScrollSpeed: 0
   fixYToCamera: 1
   scaleWithCamera: 1
 --- !u!4 &1544441402
@@ -11646,6 +11623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxBackground
   parallaxEffect: 0.5
+  autoScrollSpeed: 0
   fixYToCamera: 1
   scaleWithCamera: 1
 --- !u!4 &1608660929
@@ -12192,7 +12170,7 @@ PrefabInstance:
     - target: {fileID: 3311214140920176185, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
       propertyPath: healthText
       value: 
-      objectReference: {fileID: 1152332283}
+      objectReference: {fileID: 0}
     - target: {fileID: 3311214140920176185, guid: 503509192a0b8fc4b8d5ac15c8522609, type: 3}
       propertyPath: healthSlider
       value: 
@@ -12286,6 +12264,7 @@ MonoBehaviour:
   clearedStageNumber: 11
   unlocksNewWorld: 0
   unlockWorldReward: 2
+  resultBGM: {fileID: 0}
   waitTime: 2
 --- !u!61 &2112631401
 BoxCollider2D:

@@ -1,15 +1,14 @@
 ﻿/* ===================================================
  * スクリプト名 : Boss.cs
  * 用途 : ボスのステータス管理、HPバー連動、登場演出、撃破演出
- * 拡張 : 文字列指定のGetComponentを廃止し、型指定(TryGetComponent)で安全化
+ * 拡張 : 移動スクリプトの管理をインスペクター登録式（MonoBehaviour[]）に変更
  * =================================================== */
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Boss : MonoBehaviour, IDamageable{
+public class Boss : MonoBehaviour, IDamageable {
 
     public enum BossType { StageBoss, RoomGuarder }
 
@@ -20,15 +19,15 @@ public class Boss : MonoBehaviour, IDamageable{
     private int currentHp;
 
     [Header("被弾時の無敵設定")]
-    [Tooltip("ダメージを受けた後に無敵になる秒数")]
     public float invincibilityTime = 1.0f;
-    [Tooltip("点滅の速さ")]
     public float blinkInterval = 0.1f;
     private bool isInvincible = false;
 
-    [Header("UI連携")]
-    public Slider bossHpSlider;
-    public TMP_Text bossHpText;
+    // ▼▼▼ 新規追加：インスペクターで直接スクリプトを登録する枠 ▼▼▼
+    [Header("移動スクリプト設定")]
+    [Tooltip("オン/オフを切り替える移動スクリプトをここに入れてください")]
+    public MonoBehaviour[] movementScripts;
+    // ▲▲▲ 新規追加ここまで ▲▲▲
 
     [Header("ルームガーダー用解放設定")]
     public GameObject entranceBlocker;
@@ -59,12 +58,10 @@ public class Boss : MonoBehaviour, IDamageable{
     }
 
     void Start(){
-        if (bossHpSlider != null) bossHpSlider.gameObject.SetActive(false);
+        if (HUDManager.Instance != null) HUDManager.Instance.SetBossHpActive(false);
 
         EnemyTurret[] allTurrets = GetComponentsInChildren<EnemyTurret>();
-        foreach (var t in allTurrets){
-            t.enabled = false;
-        }
+        foreach (var t in allTurrets) t.enabled = false;
 
         SetMovementScriptsEnabled(false);
     }
@@ -75,22 +72,20 @@ public class Boss : MonoBehaviour, IDamageable{
     }
 
     private IEnumerator IntroRoutine(){
-        if (bossHpSlider != null){
-            bossHpSlider.gameObject.SetActive(true);
-            bossHpSlider.maxValue = maxHp;
-            bossHpSlider.value = 0;
-            bossHpText.text = "0";
+        if (HUDManager.Instance != null){
+            HUDManager.Instance.SetBossHpActive(true);
+            HUDManager.Instance.SetupBossHP(maxHp);
 
             float elapsed = 0f;
             float duration = 1.5f;
 
             while (elapsed < duration){
                 elapsed += Time.deltaTime;
-                bossHpSlider.value = Mathf.Lerp(0f, maxHp, elapsed / duration);
-                bossHpText.text = bossHpSlider.value.ToString("0");
+                float currentVal = Mathf.Lerp(0f, maxHp, elapsed / duration);
+                HUDManager.Instance.UpdateBossHP(currentVal, currentVal.ToString("0"));
                 yield return null;
             }
-            bossHpSlider.value = maxHp;
+            HUDManager.Instance.UpdateBossHP(maxHp, maxHp.ToString());
         }
 
         currentHp = maxHp;
@@ -101,12 +96,12 @@ public class Boss : MonoBehaviour, IDamageable{
         SetMovementScriptsEnabled(true);
     }
 
-    // ▼▼▼ 修正：文字列検索を完全廃止し、型指定（TryGetComponent）に変更 ▼▼▼
+    // ▼▼▼ 修正：配列に入っているスクリプトをオンオフするだけの安全な処理 ▼▼▼
     private void SetMovementScriptsEnabled(bool isEnabled){
-        if (TryGetComponent<BossHoverMove>(out var hover)) hover.enabled = isEnabled;
-        if (TryGetComponent<EnemyPatrol>(out var patrol)) patrol.enabled = isEnabled;
-        if (TryGetComponent<EnemyMovement>(out var move)) move.enabled = isEnabled;
-        if (TryGetComponent<BossTeleportMove>(out var teleport)) teleport.enabled = isEnabled;
+        if (movementScripts == null) return;
+        foreach (var script in movementScripts){
+            if (script != null) script.enabled = isEnabled;
+        }
     }
     // ▲▲▲ 修正ここまで ▲▲▲
 
@@ -115,9 +110,8 @@ public class Boss : MonoBehaviour, IDamageable{
 
         currentHp -= damage;
 
-        if (bossHpSlider != null){
-            bossHpSlider.value = currentHp;
-            bossHpText.text = currentHp.ToString();
+        if (HUDManager.Instance != null){
+            HUDManager.Instance.UpdateBossHP(currentHp, currentHp.ToString());
         }
 
         if (anim != null) anim.SetTrigger("Damage");
@@ -133,47 +127,34 @@ public class Boss : MonoBehaviour, IDamageable{
     }
 
     private IEnumerator InvincibilityRoutine(){
-        isInvincible = true;
-
+        isInvincible = true; 
         SpriteRenderer[] srs = GetComponentsInChildren<SpriteRenderer>();
         float elapsed = 0f;
 
         while (elapsed < invincibilityTime && !isDead){
-            foreach (var sr in srs){
-                if (sr != null) sr.color = new Color(1f, 1f, 1f, 0f);
-            }
+            foreach (var sr in srs) if (sr != null) sr.color = new Color(1f, 1f, 1f, 0f);
             yield return new WaitForSeconds(blinkInterval);
 
-            foreach (var sr in srs){
-                if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
-            }
+            foreach (var sr in srs) if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
             yield return new WaitForSeconds(blinkInterval);
 
             elapsed += blinkInterval * 2f;
         }
 
-        foreach (var sr in srs){
-            if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
-        }
-
-        isInvincible = false;
+        foreach (var sr in srs) if (sr != null) sr.color = new Color(1f, 1f, 1f, 1f);
+        isInvincible = false; 
     }
 
     private void EnterPhase2(){
         isPhase2 = true;
         SetTurretsEnabled(phase1Turrets, false);
         SetTurretsEnabled(phase2Turrets, true);
-
-        if (anim != null){
-            anim.SetBool("isPhase2", true);
-        }
+        if (anim != null) anim.SetBool("isPhase2", true);
     }
 
     private void SetTurretsEnabled(EnemyTurret[] turrets, bool isEnabled){
         if (turrets == null) return;
-        foreach (EnemyTurret t in turrets){
-            if (t != null) t.enabled = isEnabled;
-        }
+        foreach (EnemyTurret t in turrets) if (t != null) t.enabled = isEnabled;
     }
 
     public void Shoot(){
@@ -184,7 +165,7 @@ public class Boss : MonoBehaviour, IDamageable{
         isDead = true;
         isBattleStarted = false;
 
-        if (bossHpSlider != null) bossHpSlider.gameObject.SetActive(false);
+        if (HUDManager.Instance != null) HUDManager.Instance.SetBossHpActive(false);
 
         SetTurretsEnabled(phase1Turrets, false);
         SetTurretsEnabled(phase2Turrets, false);
@@ -195,9 +176,7 @@ public class Boss : MonoBehaviour, IDamageable{
 
     private IEnumerator DieRoutine(){
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
-        foreach (Collider2D col in colliders){
-            if (col.isTrigger) col.enabled = false;
-        }
+        foreach (Collider2D col in colliders) if (col.isTrigger) col.enabled = false;
 
         if (anim != null){
             anim.SetBool("Die", true);
@@ -225,7 +204,6 @@ public class Boss : MonoBehaviour, IDamageable{
             if (entranceBlocker != null) entranceBlocker.SetActive(false);
             if (entranceBlockerR != null) entranceBlockerR.SetActive(false);
             if (bossCameraObj != null) bossCameraObj.SetActive(false);
-
             Destroy(gameObject, 0.5f);
         }else if (bossType == BossType.StageBoss){
             yield return new WaitForSeconds(2.0f);

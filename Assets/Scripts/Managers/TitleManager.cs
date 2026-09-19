@@ -171,7 +171,7 @@ public class TitleManager : MonoBehaviour{
             if (subMenuIndex == 0){
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.LoadGame();
-                SceneTransitionManager.Instance.LoadScene("WorldMapScene");
+                SceneTransitionManager.Instance.LoadScene(SceneNames.WorldMap);
             }else{
                 GameManager.Instance.DeleteSaveData(selectedSlot);
                 ChangeState(TitleState.MainMenu);
@@ -223,7 +223,7 @@ public class TitleManager : MonoBehaviour{
                 GameManager.Instance.currentSaveSlot = selectedSlot;
                 GameManager.Instance.ResetData();
                 GameManager.Instance.SaveGame();
-                SceneTransitionManager.Instance.LoadScene("OpeningScene");
+                SceneTransitionManager.Instance.LoadScene(SceneNames.Opening);
             }
         }else if (currentIndex == 4){
             ChangeState(TitleState.Options);

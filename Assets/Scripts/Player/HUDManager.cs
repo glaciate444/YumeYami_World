@@ -1,28 +1,34 @@
 ﻿/* ===================================================
  * スクリプト名 : HUDManager.cs
  * 用途 : 画面上のUI（HP、SP、コイン、ダッシュ等）の統括管理
+ * 拡張 : ボスHPバーの管理機能を追加
  * =================================================== */
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class HUDManager : MonoBehaviour {
-    // どこからでも HUDManager.Instance でアクセスできるようにする魔法（シングルトン）
     public static HUDManager Instance { get; private set; }
 
     [Header("HP UI")]
     public Slider healthSlider;
-    public TMP_Text healthText;
+    public TMP_Text healthText; 
 
     [Header("SP UI")]
     public Slider spSlider;
-    public TMP_Text spText;
+    public TMP_Text spText;     
 
     [Header("Coin UI")]
     public TMP_Text coinText;
 
     [Header("Dash UI")]
-    public GameObject dashIconContainer; // DashTextタグがついていた親オブジェクト
+    public GameObject dashIconContainer;
+
+    // ▼▼▼ 新規追加：ボスUI用の枠 ▼▼▼
+    [Header("Boss UI")]
+    public GameObject bossHpContainer; // ボスHPバーの親オブジェクト（表示ON/OFF用）
+    public Slider bossHpSlider;
+    public TMP_Text bossHpText;
 
     void Awake() {
         if (Instance == null) {
@@ -32,7 +38,6 @@ public class HUDManager : MonoBehaviour {
         }
     }
 
-    // ▼ プレイヤーから数値を送ってもらってUIを更新する窓口
     public void UpdateHP(int current, int max) {
         if (healthSlider != null) {
             healthSlider.maxValue = max;
@@ -51,5 +56,21 @@ public class HUDManager : MonoBehaviour {
 
     public void UpdateCoin(int amount) {
         if (coinText != null) coinText.text = amount.ToString("D3");
+    }
+
+    // ==========================================
+    // ▼ ここから下に追加：ボス用のUI更新メソッド
+    // ==========================================
+    public void SetBossHpActive(bool isActive) {
+        if (bossHpContainer != null) bossHpContainer.SetActive(isActive);
+    }
+
+    public void SetupBossHP(int maxHp) {
+        if (bossHpSlider != null) bossHpSlider.maxValue = maxHp;
+    }
+
+    public void UpdateBossHP(float currentHp, string textValue) {
+        if (bossHpSlider != null) bossHpSlider.value = currentHp;
+        if (bossHpText != null) bossHpText.text = textValue;
     }
 }

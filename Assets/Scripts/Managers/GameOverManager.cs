@@ -1,17 +1,14 @@
 ﻿/* ===================================================
  * スクリプト名 : GameOverManager.cs
  * 用途 : ゲームオーバー画面での選択肢の処理
- * 拡張 : PlayerControls完全対応
+ * 拡張 : シーン遷移をSceneNames定数に固定
  * =================================================== */
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem; 
 
 public class GameOverManager : MonoBehaviour {
-
-    [Header("遷移先設定")]
-    public string mapSceneName = "MapSelectScene"; 
-    public string titleSceneName = "TitleScene";   
+    // ▼ 変数 mapSceneName と titleSceneName を削除してスッキリ！
 
     [Header("UIナビゲーション設定")]
     public RectTransform cursorImage;       
@@ -20,35 +17,18 @@ public class GameOverManager : MonoBehaviour {
 
     private int currentIndex = 0;           
     private float inputCooldown = 0.2f;     
-
-    // ▼ 新規追加
     private PlayerControls input;
 
-    void Awake() {
-        input = new PlayerControls();
-    }
-
-    void OnEnable() {
-        input.Enable();
-    }
-
-    void OnDisable() {
-        input.Disable();
-    }
-
-    void Start() {
-        UpdateCursorPosition();
-    }
+    void Awake() => input = new PlayerControls();
+    void OnEnable() => input.Enable();
+    void OnDisable() => input.Disable();
+    void Start() => UpdateCursorPosition();
 
     void Update() {
-        if (inputCooldown > 0f) {
-            inputCooldown -= Time.unscaledDeltaTime;
-        }
+        if (inputCooldown > 0f) inputCooldown -= Time.unscaledDeltaTime;
 
-        // ▼ PlayerControls対応
         Vector2 moveDir = input.Player.Move.ReadValue<Vector2>();
         
-        // どの方向でもいいので入力を検知したら切り替える
         if (inputCooldown <= 0f && moveDir.sqrMagnitude > 0.1f) {
             currentIndex = (currentIndex == 0) ? 1 : 0;
             UpdateCursorPosition();
@@ -57,9 +37,7 @@ public class GameOverManager : MonoBehaviour {
 
         bool isSubmit = input.Player.Attack.WasPressedThisFrame() || input.Player.Jump.WasPressedThisFrame();
         
-        if (isSubmit) {
-            ExecuteMenu();
-        }
+        if (isSubmit) ExecuteMenu();
     }
 
     private void UpdateCursorPosition() {
@@ -72,11 +50,8 @@ public class GameOverManager : MonoBehaviour {
 
     private void ExecuteMenu() {
         inputCooldown = 999f; 
-        if (currentIndex == 0) {
-            OnClickContinue();
-        } else {
-            OnClickToTitle();
-        }
+        if (currentIndex == 0) OnClickContinue();
+        else OnClickToTitle();
     }
 
     public void OnClickContinue() {
@@ -84,18 +59,20 @@ public class GameOverManager : MonoBehaviour {
             GameManager.Instance.currentLives = 3; 
             GameManager.Instance.SaveGame();
         }
+        // ▼ 修正：定数を使用
         if (SceneTransitionManager.Instance != null) {
-            SceneTransitionManager.Instance.LoadScene(mapSceneName, TransitionType.Fade);
+            SceneTransitionManager.Instance.LoadScene(SceneNames.MapSelect, TransitionType.Fade);
         } else {
-            SceneManager.LoadScene(mapSceneName);
+            SceneManager.LoadScene(SceneNames.MapSelect);
         }
     }
 
     public void OnClickToTitle() {
+        // ▼ 修正：定数を使用
         if (SceneTransitionManager.Instance != null) {
-            SceneTransitionManager.Instance.LoadScene(titleSceneName, TransitionType.Fade);
+            SceneTransitionManager.Instance.LoadScene(SceneNames.Title, TransitionType.Fade);
         } else {
-            SceneManager.LoadScene(titleSceneName);
+            SceneManager.LoadScene(SceneNames.Title);
         }
     }
 }

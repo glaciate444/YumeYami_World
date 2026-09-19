@@ -22,9 +22,6 @@ public class GoalResultManager : MonoBehaviour {
     [Header("サウンド設定")]
     public AudioClip resultBGM;
 
-    [Header("遷移先（予備）")]
-    public string fallbackMapSceneName = "WorldMapScene";
-
     private bool isCounting = false;
     private bool isTransitioning = false;
 
@@ -113,11 +110,14 @@ public class GoalResultManager : MonoBehaviour {
         if (totalCoinText != null) totalCoinText.text = totalCoins.ToString("D6");
     }
 
+// 一番下のメソッドの中身を修正 ▼
     private IEnumerator WaitAndTransitionRoutine(){
         isTransitioning = true;
         yield return new WaitForSecondsRealtime(1.0f);
 
-        string nextScene = fallbackMapSceneName;
+        // ▼ 修正：定数を使用
+        string nextScene = SceneNames.WorldMap;
+        
         if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.returnMapSceneName)){
             nextScene = GameManager.Instance.returnMapSceneName;
         }
