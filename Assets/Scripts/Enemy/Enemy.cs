@@ -1,10 +1,7 @@
 ﻿/* ===================================================
 * スクリプト名 : Enemy.cs
-* Version : Ver0.07
-* Since : 2026/04/09
-* Update : 2026/07/07
 * 用途 : 敵のステータス管理（アニメーション対応版）
-* 拡張 : くるくる落下中にEnemyActivatorが干渉するバグを修正
+* 拡張 : 死亡・ノックバック時、自身に付いている全スクリプトを自動検知して停止するよう改修
 * =================================================== */
 using UnityEngine;
 using System.Collections;
@@ -15,7 +12,6 @@ public class Enemy : MonoBehaviour, IDamageable {
     public float knockbackTime = 0.2f;
 
     [Header("無敵設定")]
-    [Tooltip("チェックを入れると、プレイヤーからの攻撃を一切受け付けなくなります")]
     public bool isInvincible = false;
 
     [Header("ドロップ設定")]
@@ -30,21 +26,23 @@ public class Enemy : MonoBehaviour, IDamageable {
     public float deathSpinSpeed = 1000f;
 
     private Rigidbody2D rb;
-    private EnemyMovement movementScript;
     private Animator anim;
+    
+    // ▼ 変更：1つだけでなく、付いているすべての移動スクリプトを配列で管理する
+    private EnemyMovement[] movementScripts; 
 
-    private bool isDead = false;
+    // ▼ 変更：外（EnemyActivatorなど）から生死を確認できるように public に変更
+    public bool isDead { get; private set; } = false;
 
     void Awake(){
         rb = GetComponent<Rigidbody2D>();
-        movementScript = GetComponent<EnemyMovement>();
         anim = GetComponent<Animator>();
+        // ▼ 自分に付いている「EnemyMovementを継承したスクリプト」を根こそぎ取得する
+        movementScripts = GetComponents<EnemyMovement>(); 
     }
 
     public void TakeDamage(int damage, Vector2 knockbackDirection){
-        if (isInvincible || isDead){
-            return;
-        }
+        if (isInvincible || isDead) return;
 
         hp -= damage;
         rb.linearVelocity = Vector2.zero;
@@ -52,9 +50,7 @@ public class Enemy : MonoBehaviour, IDamageable {
         Vector2 force = new Vector2(knockbackDirection.x, 0f);
         rb.AddForce(force, ForceMode2D.Impulse);
 
-        if (anim != null){
-            anim.SetTrigger("Damage");
-        }
+        if (anim != null) anim.SetTrigger("Damage");
 
         if (hp <= 0){
             Die();
@@ -65,8 +61,6 @@ public class Enemy : MonoBehaviour, IDamageable {
 
     private void Die(){
         isDead = true;
-
-        // 裏で動いているノックバック処理などをすべて強制停止させ、死への干渉を防ぐ
         StopAllCoroutines();
 
         if (explosionEffectPrefab != null){
@@ -76,22 +70,15 @@ public class Enemy : MonoBehaviour, IDamageable {
             Instantiate(itemPrefab, transform.position, Quaternion.identity);
         }
 
-        // StopAllCoroutines() の「後」に呼ばれるので、この落下コルーチンだけは安全に最後まで実行されます
         StartCoroutine(ComicalDeathRoutine());
     }
 
-    // ==========================================
-    // ▼ コミカル撃破コルーチン
-    // ==========================================
     private IEnumerator ComicalDeathRoutine(){
-        // 1. 通常の移動スクリプトを止める
-        if (movementScript != null) movementScript.enabled = false;
-
-        EnemyActivator activator = GetComponent<EnemyActivator>();
-        if (activator != null) activator.enabled = false;
-
-        ConstantVelocity cv = GetComponent<ConstantVelocity>();
-        if (cv != null) cv.enabled = false;
+        // ▼▼▼ 大幅改修：自分（Enemy.cs）以外のすべてのスクリプトを問答無用で完全停止する ▼▼▼
+        MonoBehaviour[] allScripts = GetComponents<MonoBehaviour>();
+        foreach (var script in allScripts){
+            if (script != this) script.enabled = false;
+        }
 
         // 2. 当たり判定を全て消す
         Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
@@ -99,23 +86,21 @@ public class Enemy : MonoBehaviour, IDamageable {
             col.enabled = false;
         }
 
-        // 3. アニメーションを「Damage」に固定する
+        // 3. アニメーションを固定
         if (anim != null){
             anim.Play("Damage");
-            // アニメーション自体が座標を強制固定してしまうのを防ぐ
             anim.speed = 0f;
         }
 
-        // 4. マリオのように、少し上に跳ねてから画面下に落ちる物理設定
+        // 4. マリオのように、少し上に跳ねてから画面下に落ちる
         if (rb != null){
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = 4f;
-            //　インスペクターの「Y座標固定(Freeze Position Y)」などを強制的に破壊する
             rb.constraints = RigidbodyConstraints2D.None;
             rb.linearVelocity = new Vector2(0f, deathJumpForce);
         }
 
-        // 5. くるくる回転させながら落下を待つ
+        // 5. くるくる回転
         float timer = 3f;
         while (timer > 0f){
             transform.Rotate(0, 0, deathSpinSpeed * Time.deltaTime);
@@ -123,13 +108,20 @@ public class Enemy : MonoBehaviour, IDamageable {
             yield return null;
         }
 
-        // 6. 完全にシーンから消去
         Destroy(gameObject);
     }
 
     private IEnumerator DamageRoutine(){
-        if (movementScript != null) movementScript.PauseMovement(true);
+        // ▼ 変更：見つけたすべての移動スクリプトを一時停止する
+        if (movementScripts != null){
+            foreach (var m in movementScripts) m.PauseMovement(true);
+        }
+
         yield return new WaitForSeconds(knockbackTime);
-        if (movementScript != null) movementScript.PauseMovement(false);
+
+        // ▼ 変更：見つけたすべての移動スクリプトを再開する
+        if (movementScripts != null){
+            foreach (var m in movementScripts) m.PauseMovement(false);
+        }
     }
 }
